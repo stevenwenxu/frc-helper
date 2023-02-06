@@ -8,7 +8,8 @@
   },
   "content_scripts": [
     {
-      "js": ["js/content_script.js"],
+      "js": ["js/add_new_family.js", "js/bootstrap.bundle.min.js"],
+      "css": ["css/bootstrap.min.css"],
       "matches": [
         "https://www.schoolinterviews.com.au/*"
       ]
@@ -20,5 +21,11 @@
     "48": "images/icon-48.png",
     "128": "images/icon-128.png",
     "256": "images/icon-256.png"
-  }
+  },
+  "web_accessible_resources": [
+    {
+      "resources": ["html/add_new_family.html"],
+      "matches": ["https://www.schoolinterviews.com.au/*"]
+    }
+  ]
 }

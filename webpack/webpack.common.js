@@ -7,7 +7,7 @@ module.exports = {
   mode: "production",
   entry: {
     popup: path.join(srcDir, "popup.ts"),
-    content_script: path.join(srcDir, "content.ts"),
+    add_new_family: path.join(srcDir, "add_new_family.ts"),
   },
   output: {
     path: path.join(__dirname, "../dist/js"),
