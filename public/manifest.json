@@ -8,10 +8,10 @@
   },
   "content_scripts": [
     {
-      "js": ["js/add_new_family.js", "js/bootstrap.bundle.min.js"],
+      "js": ["js/school_interviews.js", "js/bootstrap.bundle.min.js"],
       "css": ["css/bootstrap.min.css"],
       "matches": [
-        "https://www.schoolinterviews.com.au/*"
+        "https://www.schoolinterviews.com.au/*/parents/*/details"
       ]
     }
   ],
@@ -24,7 +24,7 @@
   },
   "web_accessible_resources": [
     {
-      "resources": ["html/add_new_family.html"],
+      "resources": ["html/details_page.html"],
       "matches": ["https://www.schoolinterviews.com.au/*"]
     }
   ]
