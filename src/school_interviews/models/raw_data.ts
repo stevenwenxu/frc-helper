@@ -9,6 +9,43 @@ export class RawData {
   notes: string | null = null;
   students: string[] = [];
 
+  constructor(table: HTMLTableElement) {
+    for (const row of Array.from(table.rows)) {
+      if (row.cells.length != 2) {
+        continue;
+      }
+
+      const key = row.cells[0].innerText.trim();
+      const value = row.cells[1].innerText.trim();
+      switch (key) {
+        case "PARENT's Name":
+          this.parentsName = value;
+          break;
+        case "Email":
+          this.email = value;
+          break;
+        case "Phone":
+          this.phone = value;
+          break;
+        case "Address":
+          this.address = value;
+          break;
+        case "Immigration Status/ First Language":
+          this.immigrationStatusFirstLanguage = value;
+          break;
+        case "Extra NOTES":
+          this.notes = value;
+          break;
+        case "Students":
+          this.students.push(value);
+          break;
+        default:
+          console.log(`Unknown key: ${key}`);
+          break;
+      }
+    }
+  }
+
   parse(): Person[] {
     const parents: Person[] = [];
     const students: Student[] = [];
@@ -32,8 +69,22 @@ export class RawData {
           .map(s => s.trim())
           .filter(s => s.length > 0);
 
-        student.dateOfBirth = dateOfBirthAndCountryOfBirth.shift() || null;
-        student.countryOfBirth = dateOfBirthAndCountryOfBirth.shift() || null;
+        switch (dateOfBirthAndCountryOfBirth.length) {
+        case 0:
+          break;
+        case 1:
+          student.dateOfBirth = dateOfBirthAndCountryOfBirth.shift() || null;
+          break;
+        case 2:
+          student.dateOfBirth = dateOfBirthAndCountryOfBirth.shift() || null;
+          student.countryOfBirth = dateOfBirthAndCountryOfBirth.shift() || null;
+          break;
+        default:
+          student.countryOfBirth = dateOfBirthAndCountryOfBirth.pop() || null;
+          student.dateOfBirth = dateOfBirthAndCountryOfBirth.join("/")
+          break;
+        }
+
         student.studentNotes = infoArr.join("\n");
         students.push(student);
       }
