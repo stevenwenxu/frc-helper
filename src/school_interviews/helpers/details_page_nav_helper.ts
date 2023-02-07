@@ -60,6 +60,11 @@ export class DetailsPageNavHelpers {
               <label for="addressInput">Address</label>
             </div>
 
+            <div class="form-floating">
+              <textarea class="form-control mb-2" id="extraNotesInput" placeholder="extra notes" style="max-width: 25em; height: auto;">${person.extraNotes}</textarea>
+              <label for="extraNotesInput">Extra Notes</label>
+            </div>
+
             ${person instanceof Student ? this.generateExtraStudentFields(person) : ""}
 
             <button type="submit" class="btn btn-primary">Update</button>

@@ -3,8 +3,7 @@ export class Person {
   email: string | null = null;
   phone: string | null = null;
   address: string | null = null;
-  // immigrationStatus: string | null = null;
-  // extraNotes: string | null = null;
+  extraNotes: string | null = null;
 }
 
 export class Student extends Person {

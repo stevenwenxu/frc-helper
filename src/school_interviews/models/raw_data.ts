@@ -73,11 +73,7 @@ export class RawData {
         case 0:
           break;
         case 1:
-          student.dateOfBirth = dateOfBirthAndCountryOfBirth.shift() || null;
-          break;
-        case 2:
-          student.dateOfBirth = dateOfBirthAndCountryOfBirth.shift() || null;
-          student.countryOfBirth = dateOfBirthAndCountryOfBirth.shift() || null;
+          student.dateOfBirth = dateOfBirthAndCountryOfBirth.pop() || null;
           break;
         default:
           student.countryOfBirth = dateOfBirthAndCountryOfBirth.pop() || null;
@@ -95,6 +91,7 @@ export class RawData {
       p.email = this.email;
       p.phone = this.phone;
       p.address = this.address;
+      p.extraNotes = `${this.immigrationStatusFirstLanguage}\n${this.notes}`;
     });
 
     return result;
