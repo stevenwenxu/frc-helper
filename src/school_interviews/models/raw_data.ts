@@ -1,3 +1,4 @@
+import { Family } from "./family";
 import { Person, Student } from "./person";
 
 export class RawData {
@@ -46,9 +47,8 @@ export class RawData {
     }
   }
 
-  parse(): Person[] {
-    const parents: Person[] = [];
-    const students: Student[] = [];
+  parse(): Family {
+    let family = new Family();
 
     this.parentsName?.split("/")
       .map(s => s.trim())
@@ -56,7 +56,7 @@ export class RawData {
       .forEach(parentName => {
         const parent = new Person();
         parent.name = parentName;
-        parents.push(parent);
+        family.parents.push(parent);
     });
 
     this.students.forEach(studentInfo => {
@@ -82,18 +82,17 @@ export class RawData {
         }
 
         student.studentNotes = infoArr.join("\n");
-        students.push(student);
+        family.students.push(student);
       }
     });
 
-    const result = parents.concat(students);
-    result.forEach(p => {
+    family.people.forEach(p => {
       p.email = this.email;
       p.phone = this.phone;
       p.address = this.address;
       p.extraNotes = `${this.immigrationStatusFirstLanguage}\n${this.notes}`;
     });
 
-    return result;
+    return family;
   }
 }

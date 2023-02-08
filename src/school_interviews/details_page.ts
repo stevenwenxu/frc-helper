@@ -1,4 +1,5 @@
 import { DetailsPageNavHelpers } from "./helpers/details_page_nav_helper";
+import { Family } from "./models/family";
 import { RawData } from "./models/raw_data";
 
 function insertButton(table: HTMLTableElement) {
@@ -7,9 +8,9 @@ function insertButton(table: HTMLTableElement) {
   fetch(chrome.runtime.getURL('/html/details_page.html')).then(r => r.text()).then(html => {
     table.insertAdjacentHTML('beforebegin', html);
 
-    const people = new RawData(table).parse();
+    const family = new RawData(table).parse();
     const container = document.getElementsByClassName("offcanvas-body")[0];
-    container.innerHTML = DetailsPageNavHelpers.generate(people);
+    container.innerHTML = DetailsPageNavHelpers.generate(family);
   });
 }
 

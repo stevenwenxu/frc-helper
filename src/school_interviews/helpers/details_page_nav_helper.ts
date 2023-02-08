@@ -1,9 +1,10 @@
-import { Person, Student } from '../models/person';
+import { Family } from '../models/family';
+import { Student } from '../models/person';
 
 export class DetailsPageNavHelpers {
-  static generate(persons: Person[]) {
-    const navItems = this.generateNavItems(persons);
-    const tabPanes = this.generateTabPanes(persons);
+  static generate(family: Family) {
+    const navItems = this.generateNavItems(family);
+    const tabPanes = this.generateTabPanes(family);
 
     return `
       <ul class="nav nav-pills mb-3" id="pills-tab" role="tablist">
@@ -15,10 +16,10 @@ export class DetailsPageNavHelpers {
     `;
   }
 
-  private static generateNavItems(persons: Person[]) {
+  private static generateNavItems(family: Family) {
     let parentIndex = 1;
     let studentIndex = 1;
-    const listItems = persons.map((person, index) => {
+    const listItems = family.people.map((person, index) => {
       const active = index === 0 ? "active" : "";
       const selected = index === 0 ? "true" : "false";
       const displayName = person instanceof Student ? `Student ${studentIndex++}` : `Parent ${parentIndex++}`;
@@ -33,8 +34,8 @@ export class DetailsPageNavHelpers {
     return listItems.join("");
   }
 
-  private static generateTabPanes(persons: Person[]) {
-    const tabPanes = persons.map((person, index) => {
+  private static generateTabPanes(family: Family) {
+    const tabPanes = family.people.map((person, index) => {
       const active = index === 0 ? "show active" : "";
 
       return `
