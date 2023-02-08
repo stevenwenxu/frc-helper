@@ -1,4 +1,5 @@
 import { DetailsPageNavHelpers } from "./helpers/details_page_nav_helper";
+import { FamilyRepository } from "./helpers/family_repository";
 import { Family } from "./models/family";
 import { RawData } from "./models/raw_data";
 
@@ -15,19 +16,10 @@ function insertButton(table: HTMLTableElement) {
 
 function setupPage(container: Element, table: HTMLTableElement) {
   const familyId = getFamilyIdFromURL();
-  chrome.storage.local.get([familyId], (result) => {
-    let family: Family | null = result[familyId];
-    if (family) {
-      console.log(`details_page.ts: family with id ${familyId} found: ${JSON.stringify(family)}`);
-      // Class instances are stored as serialized objects, so we need to convert them back to class instances
-      family = Object.assign(new Family(), family);
-    } else {
-      console.log(`details_page.ts: family with id ${familyId} not found.`);
-      family = new RawData(table).parse();
-    }
-
-    container.innerHTML = DetailsPageNavHelpers.generate(family);
-    setupButton(familyId, result[familyId] == null, family);
+  FamilyRepository.getFamilyWithUniqueId(familyId).then(family => {
+    const aFamily = family || new RawData(table).parse();
+    container.innerHTML = DetailsPageNavHelpers.generate(aFamily);
+    setupButton(familyId, family == null, aFamily);
   });
 }
 
@@ -39,9 +31,7 @@ function setupButton(familyId: string, isNewFamily: boolean, family: Family) {
 
   function buttonOnClick() {
     family.uniqueId = familyId;
-    chrome.storage.local.set({ [familyId]: family }, () => {
-      console.log(`details_page.ts: Successfully saved family ${familyId} to local storage.`);
-
+    FamilyRepository.saveFamily(family).then(() => {
       // Update the button to say "View Family" and remove the click listener
       setupButton(familyId, false, family);
       button?.removeEventListener("click", buttonOnClick);
