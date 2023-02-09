@@ -1,13 +1,17 @@
 import { Family } from "../models/family";
+import { Person, Student } from "../models/person";
 
 export class FamilyRepository {
   static async getFamilyWithUniqueId(uniqueId: string) {
     const family = await chrome.storage.local.get([uniqueId]);
 
     if (Object.keys(family).length > 0) {
-      console.log(`family_repository.ts: family with id ${uniqueId} found: ${JSON.stringify(family[uniqueId])}`);
-      // Class instances are stored as serialized objects, so we need to convert them back to class instances
-      return Object.assign(new Family(), family[uniqueId]) as Family;
+      console.log(`family_repository.ts: family with id ${uniqueId} found`, family[uniqueId]);
+      const newFamily = new Family();
+      newFamily.parents = family[uniqueId].parents.map((p: any) => Object.assign(new Person(), p));
+      newFamily.students = family[uniqueId].students.map((s: any) => Object.assign(new Student(), s));
+      newFamily.uniqueId = family[uniqueId].uniqueId;
+      return newFamily;
     } else {
       console.log(`family_repository.ts: family with id ${uniqueId} not found.`);
       return null;
