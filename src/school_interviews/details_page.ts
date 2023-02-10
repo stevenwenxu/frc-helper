@@ -24,6 +24,7 @@ function setupOffCanvasPage(container: HTMLElement, table: HTMLTableElement) {
 
     setupPrimaryButton(family == null, aFamily);
     setupForms(aFamily);
+    setupNewPersonMenu(aFamily);
   });
 }
 
@@ -59,14 +60,44 @@ function setupForms(family: Family) {
   });
 }
 
-function updateFamilyWithFormData(form: HTMLFormElement, family: Family) {
-  const formData = new FormData(form);
-  const personIndex = parseInt(form.dataset.personIndex || "");
-  if (isNaN(personIndex)) {
-    throw new Error("details_page.ts: Form does not have a personIndex.");
+function setupNewPersonMenu(family: Family) {
+  const dropdownMenu = document.getElementById("newPersonDropdown");
+  if (!dropdownMenu) {
+    console.error("details_page.ts: Could not find #newPersonDropdown.");
+    return;
   }
 
-  const person = family.people[personIndex];
+  dropdownMenu.querySelectorAll<HTMLButtonElement>("button.dropdown-item").forEach(button => {
+    button.addEventListener("click", (event) => {
+      event.preventDefault();
+      const [_, person] = personIndexAndPersonFromDataset(button, family);
+      const newPerson = JSON.parse(JSON.stringify(person));
+      let newPersonIndex = 0;
+
+      if (person instanceof Parent) {
+        family.parents.push(newPerson);
+        newPersonIndex = family.parents.length - 1;
+      } else {
+        family.students.push(newPerson);
+        newPersonIndex = family.students.length - 1;
+      }
+
+      FamilyRepository.saveFamily(family).then(() => {
+        setupOffCanvasPage(
+          document.getElementById("offcanvasRight")!,
+          document.querySelector("#container > div > section > table")!
+        );
+
+        // const triggerEl = document.querySelector('#myTab button[data-bs-target="#profile"]')
+        // bootstrap.Tab.getInstance(triggerEl).show() // Select tab by name
+      });
+    });
+  });
+}
+
+function updateFamilyWithFormData(form: HTMLFormElement, family: Family) {
+  const formData = new FormData(form);
+  const [personIndex, person] = personIndexAndPersonFromDataset(form, family);
 
   person.firstName = formData.get("firstName") as string;
   person.middleName = formData.get("middleName") as string;
@@ -95,6 +126,15 @@ function getFamilyIdFromURL() {
   }
 
   throw new Error("details_page.ts: Could not get family id.");
+}
+
+function personIndexAndPersonFromDataset(element: HTMLElement, family: Family): [number, Parent | Student] {
+  const personIndex = parseInt(element.dataset.personIndex || "");
+  if (isNaN(personIndex)) {
+    throw new Error(`details_page.ts: ${element} does not have a personIndex.`);
+  }
+
+  return [personIndex, family.people[personIndex]];
 }
 
 // make sure we're on the details page
