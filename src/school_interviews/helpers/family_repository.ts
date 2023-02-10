@@ -1,5 +1,5 @@
 import { Family } from "../models/family";
-import { Person, Student } from "../models/person";
+import { Parent, Student } from "../models/person";
 
 export class FamilyRepository {
   static async getFamilyWithUniqueId(uniqueId: string) {
@@ -8,7 +8,7 @@ export class FamilyRepository {
     if (Object.keys(family).length > 0) {
       console.log(`family_repository.ts: family with id ${uniqueId} found`, family[uniqueId]);
       const newFamily = new Family();
-      newFamily.parents = family[uniqueId].parents.map((p: any) => Object.assign(new Person(), p));
+      newFamily.parents = family[uniqueId].parents.map((p: any) => Object.assign(new Parent(), p));
       newFamily.students = family[uniqueId].students.map((s: any) => Object.assign(new Student(), s));
       newFamily.uniqueId = family[uniqueId].uniqueId;
       return newFamily;

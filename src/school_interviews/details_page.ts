@@ -1,7 +1,7 @@
 import { DetailsPageNavHelpers } from "./helpers/details_page_nav_helper";
 import { FamilyRepository } from "./helpers/family_repository";
 import { Family } from "./models/family";
-import { Student } from "./models/person";
+import { Parent, Student } from "./models/person";
 import { RawData } from "./models/raw_data";
 
 function patchDetailsPage(table: HTMLTableElement) {
@@ -68,12 +68,16 @@ function updateFamilyWithFormData(form: HTMLFormElement, family: Family) {
 
   const person = family.people[personIndex];
 
-  person.name = formData.get("name") as string;
-  person.email = formData.get("email") as string;
+  person.firstName = formData.get("firstName") as string;
+  person.middleName = formData.get("middleName") as string;
+  person.lastName = formData.get("lastName") as string;
   person.phone = formData.get("phone") as string;
   person.address = formData.get("address") as string;
-  person.extraNotes = formData.get("extraNotes") as string;
-  if (person instanceof Student) {
+
+  if (person instanceof Parent) {
+    person.email = formData.get("email") as string;
+    person.parentNotes = formData.get("parentNotes") as string;
+  } else {
     person.dateOfBirth = formData.get("dateOfBirth") as string;
     person.countryOfBirth = formData.get("countryOfBirth") as string;
     person.studentNotes = formData.get("studentNotes") as string;
