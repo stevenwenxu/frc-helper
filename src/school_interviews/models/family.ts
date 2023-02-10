@@ -10,4 +10,9 @@ export class Family {
   get people(): Person[] {
     return this.parents.concat(this.students);
   }
+
+  withUniqueId(uniqueId: string): Family {
+    this.uniqueId = uniqueId;
+    return this;
+  }
 }

@@ -35,12 +35,15 @@ export class DetailsPageNavHelpers {
   }
 
   private static generateTabPanes(family: Family) {
+    let parentIndex = 1;
+    let studentIndex = 1;
     const tabPanes = family.people.map((person, index) => {
       const active = index === 0 ? "show active" : "";
+      const displayName = person instanceof Student ? `Student ${studentIndex++}` : `Parent ${parentIndex++}`;
 
       return `
         <div class="tab-pane fade ${active}" id="pills-person-${index}" role="tabpanel" aria-labelledby="pills-person-${index}-tab" tabindex="0">
-          <form>
+          <form data-person-name="${displayName}" data-person-index="${index}">
             <div class="form-floating">
               <input type="text" class="form-control mb-2" name="name" placeholder="name" value="${person.name}" style="background-color: var(--bs-form-control-bg); border:var(--bs-border-width) solid var(--bs-border-color);">
               <label for="nameInput">Name</label>
@@ -67,8 +70,6 @@ export class DetailsPageNavHelpers {
             </div>
 
             ${person instanceof Student ? this.generateExtraStudentFields(person) : ""}
-
-            <button type="submit" class="btn btn-primary">Save</button>
           </form>
         </div>
       `;
