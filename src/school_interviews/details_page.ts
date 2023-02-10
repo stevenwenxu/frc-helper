@@ -1,3 +1,4 @@
+import * as bootstrap from "bootstrap";
 import { DetailsPageNavHelpers } from "./helpers/details_page_nav_helper";
 import { FamilyRepository } from "./helpers/family_repository";
 import { Family } from "./models/family";
@@ -16,16 +17,16 @@ function patchDetailsPage(table: HTMLTableElement) {
   });
 }
 
-function setupOffCanvasPage(container: HTMLElement, table: HTMLTableElement) {
+async function setupOffCanvasPage(container: HTMLElement, table: HTMLTableElement) {
   const familyId = getFamilyIdFromURL();
-  FamilyRepository.getFamilyWithUniqueId(familyId).then(family => {
-    const aFamily = family || new RawData(table).parse().withUniqueId(familyId);
-    container.getElementsByClassName("offcanvas-body")[0].innerHTML = DetailsPageNavHelpers.generate(aFamily);
+  const family = await FamilyRepository.getFamilyWithUniqueId(familyId);
 
-    setupPrimaryButton(family == null, aFamily);
-    setupForms(aFamily);
-    setupNewPersonMenu(aFamily);
-  });
+  const aFamily = family || new RawData(table).parse().withUniqueId(familyId);
+  container.getElementsByClassName("offcanvas-body")[0].innerHTML = DetailsPageNavHelpers.generate(aFamily);
+
+  setupPrimaryButton(family == null, aFamily);
+  setupForms(aFamily);
+  setupNewPersonMenu(aFamily);
 }
 
 function setupPrimaryButton(isNewFamily: boolean, family: Family) {
@@ -79,17 +80,16 @@ function setupNewPersonMenu(family: Family) {
         newPersonIndex = family.parents.length - 1;
       } else {
         family.students.push(newPerson);
-        newPersonIndex = family.students.length - 1;
+        newPersonIndex = family.parents.length + family.students.length - 1;
       }
 
       FamilyRepository.saveFamily(family).then(() => {
         setupOffCanvasPage(
           document.getElementById("offcanvasRight")!,
           document.querySelector("#container > div > section > table")!
-        );
-
-        // const triggerEl = document.querySelector('#myTab button[data-bs-target="#profile"]')
-        // bootstrap.Tab.getInstance(triggerEl).show() // Select tab by name
+        ).then(() => {
+          bootstrap.Tab.getOrCreateInstance(`#person-${newPersonIndex}-tab`).show();
+        });
       });
     });
   });

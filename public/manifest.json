@@ -4,12 +4,11 @@
   "description": "Helps transfer data from School Interviews to Aspen",
   "version": "1.0",
   "action": {
-    "default_popup": "popup.html"
+    "default_popup": "html/popup.html"
   },
   "content_scripts": [
     {
-      "js": ["js/school_interviews.js", "js/bootstrap.bundle.min.js"],
-      "css": ["css/bootstrap.min.css"],
+      "js": ["js/school_interviews.js"],
       "matches": [
         "https://www.schoolinterviews.com.au/*/parents/*/details"
       ]
