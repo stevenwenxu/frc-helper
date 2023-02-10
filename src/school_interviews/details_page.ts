@@ -9,10 +9,7 @@ function patchDetailsPage(table: HTMLTableElement) {
   fetch(chrome.runtime.getURL('/html/details_page.html')).then(r => r.text()).then(html => {
     table.insertAdjacentHTML('beforebegin', html);
 
-    const container = document.getElementById("offcanvasRight");
-    if (!container) {
-      throw new Error("details_page.ts: Could not find #offcanvasRight.");
-    }
+    const container = document.getElementById("offcanvasRight")!;
     setupOffCanvasPage(container, table);
   });
 }
@@ -26,20 +23,17 @@ async function setupOffCanvasPage(container: HTMLElement, table: HTMLTableElemen
 
   setupPrimaryButton(family == null, aFamily);
   setupForms(aFamily);
-  setupNewPersonMenu(aFamily);
+  setupNewPersonMenu(aFamily, container, table);
 }
 
 function setupPrimaryButton(isNewFamily: boolean, family: Family) {
-  const button = document.getElementById("addNewFamily");
-  if (!button) {
-    throw new Error("details_page.ts: Could not find #addNewFamily.");
-  }
+  const button = document.getElementById("addNewFamily")!;
 
   function buttonOnClick() {
     FamilyRepository.saveFamily(family).then(() => {
       // Update the button to say "View Family" and remove the click listener
       setupPrimaryButton(false, family);
-      button?.removeEventListener("click", buttonOnClick);
+      button.removeEventListener("click", buttonOnClick);
     });
   }
 
@@ -61,12 +55,8 @@ function setupForms(family: Family) {
   });
 }
 
-function setupNewPersonMenu(family: Family) {
-  const dropdownMenu = document.getElementById("newPersonDropdown");
-  if (!dropdownMenu) {
-    console.error("details_page.ts: Could not find #newPersonDropdown.");
-    return;
-  }
+function setupNewPersonMenu(family: Family, container: HTMLElement, table: HTMLTableElement) {
+  const dropdownMenu = document.getElementById("newPersonDropdown")!;
 
   dropdownMenu.querySelectorAll<HTMLButtonElement>("button.dropdown-item").forEach(button => {
     button.addEventListener("click", (event) => {
@@ -84,10 +74,7 @@ function setupNewPersonMenu(family: Family) {
       }
 
       FamilyRepository.saveFamily(family).then(() => {
-        setupOffCanvasPage(
-          document.getElementById("offcanvasRight")!,
-          document.querySelector("#container > div > section > table")!
-        ).then(() => {
+        setupOffCanvasPage(container, table).then(() => {
           bootstrap.Tab.getOrCreateInstance(`#person-${newPersonIndex}-tab`).show();
         });
       });
@@ -139,7 +126,7 @@ function personIndexAndPersonFromDataset(element: HTMLElement, family: Family): 
 
 // make sure we're on the details page
 if (/\/parents\/\d+\/details$/.test(location.pathname)) {
-  const table: HTMLTableElement | null = document.querySelector("#container > div > section > table");
+  const table = document.querySelector<HTMLTableElement>("#container > div > section > table");
   if (table) {
     patchDetailsPage(table);
   }

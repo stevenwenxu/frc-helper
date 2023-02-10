@@ -2,12 +2,12 @@ import { Family } from "./family";
 import { Parent, Student } from "./person";
 
 export class RawData {
-  parentsName: string | null = null;
-  email: string | null = null;
-  phone: string | null = null;
-  address: string | null = null;
-  immigrationStatusFirstLanguage: string | null = null;
-  notes: string | null = null;
+  parentsName: string = "";
+  email: string = "";
+  phone: string = "";
+  address: string = "";
+  immigrationStatusFirstLanguage: string = "";
+  notes: string = "";
   students: string[] = [];
 
   constructor(table: HTMLTableElement) {
@@ -51,7 +51,7 @@ export class RawData {
     let family = new Family();
     const commonNotes = `${this.immigrationStatusFirstLanguage}\n${this.notes}`;
 
-    this.parentsName?.split("/")
+    this.parentsName.split("/")
       .map(s => s.trim())
       .filter(s => s.length > 0)
       .forEach(parentName => {
@@ -68,7 +68,7 @@ export class RawData {
       const infoArr = studentInfo.split("\n").map(s => s.trim()).filter(s => s.length > 0);
       if (infoArr.length > 0) {
         const student = new Student();
-        student.name = infoArr.shift() || null;
+        student.name = infoArr.shift() || "";
         const dateOfBirthAndCountryOfBirth = (infoArr.shift() || "")
           .split("/")
           .map(s => s.trim())
@@ -78,10 +78,10 @@ export class RawData {
         case 0:
           break;
         case 1:
-          student.dateOfBirth = dateOfBirthAndCountryOfBirth.pop() || null;
+          student.dateOfBirth = dateOfBirthAndCountryOfBirth.pop() || "";
           break;
         default:
-          student.countryOfBirth = dateOfBirthAndCountryOfBirth.pop() || null;
+          student.countryOfBirth = dateOfBirthAndCountryOfBirth.pop() || "";
           student.dateOfBirth = dateOfBirthAndCountryOfBirth.join("/")
           break;
         }
