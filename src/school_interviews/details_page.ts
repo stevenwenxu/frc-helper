@@ -18,7 +18,7 @@ async function setupOffCanvasPage(container: HTMLElement, table: HTMLTableElemen
   const familyId = getFamilyIdFromURL();
   const family = await FamilyRepository.getFamilyWithUniqueId(familyId);
 
-  const aFamily = family || new RawData(table).parse().withUniqueId(familyId);
+  const aFamily = family || new RawData(table).parse().withUniqueId(familyId).withVisitDate(new Date());
   container.getElementsByClassName("offcanvas-body")[0].innerHTML = DetailsPageNavHelpers.generate(aFamily);
 
   setupPrimaryButton(family == null, aFamily);

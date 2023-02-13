@@ -11,6 +11,7 @@ export class FamilyRepository {
       newFamily.parents = family[uniqueId].parents.map((p: any) => Object.assign(new Parent(), p));
       newFamily.students = family[uniqueId].students.map((s: any) => Object.assign(new Student(), s));
       newFamily.uniqueId = family[uniqueId].uniqueId;
+      newFamily.visitDate = new Date(family[uniqueId]._visitDate);
       return newFamily;
     } else {
       console.log(`family_repository.ts: family with id ${uniqueId} not found.`);

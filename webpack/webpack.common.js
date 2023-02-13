@@ -7,6 +7,7 @@ module.exports = {
   mode: "production",
   entry: {
     popup: path.join(srcDir, "popup.ts"),
+    background: path.join(srcDir, "background.ts"),
     school_interviews: path.join(srcDir, "school_interviews/entry.ts"),
   },
   output: {
