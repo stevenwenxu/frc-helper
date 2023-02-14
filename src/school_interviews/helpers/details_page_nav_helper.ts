@@ -1,7 +1,7 @@
 import { Family } from '../../common/models/family';
 import { Student, Parent, Person } from '../../common/models/person';
 
-export class DetailsPageNavHelpers {
+export class DetailsPageNavHelper {
   static generate(family: Family) {
     const navItems = this.generateNavItems(family);
     const tabPanes = this.generateTabPanes(family);

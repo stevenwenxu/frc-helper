@@ -1,0 +1,119 @@
+import { Family } from '../../common/models/family';
+import { Student, Parent, Person } from '../../common/models/person';
+
+export class PopupNavHelper {
+  static generate(family: Family) {
+    const navItems = this.generateNavItems(family);
+    const tabPanes = this.generateTabPanes(family);
+
+    return `
+      <div class="card">
+        <div class="card-header">
+          <ul class="nav nav-tabs card-header-tabs" role="tablist">
+            ${navItems}
+          </ul>
+        </div>
+        <div class="card-body">
+          <div class="tab-content">
+            ${tabPanes}
+          </div>
+        </div>
+      </div>
+    `;
+  }
+
+  private static generateNavItems(family: Family) {
+    let parentIndex = 1;
+    let studentIndex = 1;
+
+    const listItems = family.people.map((person, index) => {
+      const active = index === 0 ? "active" : "";
+      const selected = index === 0 ? "true" : "false";
+      const displayName = person instanceof Student ? `Student ${studentIndex++}` : `Parent ${parentIndex++}`;
+
+      return `
+        <li class="nav-item" role="presentation">
+          <button class="nav-link ${active}" id="person-${index}-tab" data-bs-toggle="tab" data-bs-target="#person-${index}" type="button" role="tab" aria-controls="person-${index}" aria-selected="${selected}">${displayName}</button>
+        </li>
+      `;
+    });
+
+    return listItems.join("");
+  }
+
+  private static generateTabPanes(family: Family) {
+    let parentIndex = 1;
+    let studentIndex = 1;
+
+    const tabPanes = family.people.map((person, index) => {
+      const displayName = person instanceof Student ? `Student ${studentIndex++}` : `Parent ${parentIndex++}`;
+
+      return this.tabPaneForPerson(person, index, displayName);
+    });
+
+    return tabPanes.join("");
+  }
+
+  private static tabPaneForPerson(person: Person, personIndex: number, displayName: string) {
+    const active = personIndex === 0 ? "show active" : "";
+
+    return `
+      <div class="tab-pane fade ${active}" id="person-${personIndex}" role="tabpanel" aria-labelledby="person-${personIndex}-tab" tabindex="0">
+        <table class="table" data-person-name="${displayName}" data-person-index="${personIndex}">
+          <tbody>
+            <tr>
+              <th scope="row">First Name</th>
+              <td>${person.firstName}</td>
+            </tr>
+            <tr>
+              <th scope="row">Middle Name</th>
+              <td>${person.middleName}</td>
+            </tr>
+            <tr>
+              <th scope="row">Last Name</th>
+              <td>${person.lastName}</td>
+            </tr>
+
+            ${person instanceof Parent ? `
+            <tr>
+              <th scope="row">Email</th>
+              <td>${person.email}</td>
+            </tr>
+            ` : ""}
+
+            <tr>
+              <th scope="row">Phone</th>
+              <td>${person.phone}</td>
+            </tr>
+            <tr>
+              <th scope="row">Address</th>
+              <td>${person.address}</td>
+            </tr>
+
+            ${person instanceof Parent ? `
+            <tr>
+              <th scope="row">Parent notes</th>
+              <td>${person.parentNotes}</td>
+            </tr>
+            ` : ""}
+
+            ${person instanceof Student ? `
+            <tr>
+              <th scope="row">Date of birth</th>
+              <td>${person.dateOfBirth}</td>
+            </tr>
+            <tr>
+              <th scope="row">Country of birth</th>
+              <td>${person.countryOfBirth}</td>
+            </tr>
+            <tr>
+              <th scope="row">Student notes</th>
+              <td>${person.studentNotes}</td>
+            </tr>
+            ` : ""}
+          </tbody>
+        </table>
+      </div>
+    `;
+  }
+}
