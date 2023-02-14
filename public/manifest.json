@@ -4,7 +4,7 @@
   "description": "Helps transfer data from School Interviews to Aspen",
   "version": "1.0",
   "action": {
-    "default_popup": "html/popup.html"
+
   },
   "content_scripts": [
     {

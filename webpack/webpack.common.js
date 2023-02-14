@@ -6,9 +6,9 @@ const srcDir = path.join(__dirname, "..", "src");
 module.exports = {
   mode: "production",
   entry: {
-    popup: path.join(srcDir, "popup.ts"),
     background: path.join(srcDir, "background.ts"),
     school_interviews: path.join(srcDir, "school_interviews/entry.ts"),
+    popup: path.join(srcDir, "aspen/popup.ts"),
   },
   output: {
     path: path.join(__dirname, "../dist/js"),

@@ -1,5 +1,5 @@
-import { Family } from '../models/family';
-import { Student, Parent, Person } from '../models/person';
+import { Family } from '../../common/models/family';
+import { Student, Parent, Person } from '../../common/models/person';
 
 export class DetailsPageNavHelpers {
   static generate(family: Family) {

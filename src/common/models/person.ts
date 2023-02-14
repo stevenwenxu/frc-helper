@@ -1,4 +1,4 @@
-import { NameHelper } from "../helpers/name_helper";
+import { NameHelper } from "../../school_interviews/helpers/name_helper";
 
 export abstract class Person {
   firstName: string = "";

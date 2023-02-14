@@ -2,12 +2,23 @@
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
-    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <link rel="stylesheet" href="../css/popup.css" />
+    <title>FRC Helper</title>
   </head>
   <body>
-    <h1>FRC Helper</h1>
+    <div class="container">
+      <h1>FRC Helper</h1>
+
+      <p>
+        If the list of families is empty, get new ones from <a target="_blank" href="https://www.schoolinterviews.com.au/">School Interviews</a>.
+      </p>
+
+      <label for="familyPicker" class="form-label">Select a family</label>
+      <select class="form-select mb-2" id="familyPicker" aria-label="Family picker"></select>
+
+      <div class="container" id="familyDetails"></div>
+    </div>
 
     <script src="../js/popup.js" type="module"></script>
   </body>

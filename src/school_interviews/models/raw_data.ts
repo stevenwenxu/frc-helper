@@ -1,5 +1,5 @@
-import { Family } from "./family";
-import { Parent, Student } from "./person";
+import { Family } from "../../common/models/family";
+import { Parent, Student } from "../../common/models/person";
 
 export class RawData {
   parentsName: string = "";

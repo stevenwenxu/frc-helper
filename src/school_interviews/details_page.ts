@@ -1,8 +1,8 @@
 import * as bootstrap from "bootstrap";
 import { DetailsPageNavHelpers } from "./helpers/details_page_nav_helper";
-import { FamilyRepository } from "./helpers/family_repository";
-import { Family } from "./models/family";
-import { Parent, Student } from "./models/person";
+import { FamilyRepository } from "../common/family_repository";
+import { Family } from "../common/models/family";
+import { Parent, Student } from "../common/models/person";
 import { RawData } from "./models/raw_data";
 
 function patchDetailsPage(table: HTMLTableElement) {
