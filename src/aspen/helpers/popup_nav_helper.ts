@@ -3,19 +3,16 @@ import { Student, Parent, Person } from '../../common/models/person';
 
 export class PopupNavHelper {
   static generate(family: Family) {
-    const navItems = this.generateNavItems(family);
-    const tabPanes = this.generateTabPanes(family);
-
     return `
       <div class="card">
         <div class="card-header">
           <ul class="nav nav-tabs card-header-tabs" role="tablist">
-            ${navItems}
+            ${this.generateNavItems(family)}
           </ul>
         </div>
         <div class="card-body">
           <div class="tab-content">
-            ${tabPanes}
+            ${this.generateTabPanes(family)}
           </div>
         </div>
       </div>
@@ -42,24 +39,22 @@ export class PopupNavHelper {
   }
 
   private static generateTabPanes(family: Family) {
-    let parentIndex = 1;
-    let studentIndex = 1;
-
     const tabPanes = family.people.map((person, index) => {
-      const displayName = person instanceof Student ? `Student ${studentIndex++}` : `Parent ${parentIndex++}`;
-
-      return this.tabPaneForPerson(person, index, displayName);
+      return this.tabPaneForPerson(person, index, family.uniqueId);
     });
 
     return tabPanes.join("");
   }
 
-  private static tabPaneForPerson(person: Person, personIndex: number, displayName: string) {
+  private static tabPaneForPerson(person: Person, personIndex: number, familyUniqueId: string) {
     const active = personIndex === 0 ? "show active" : "";
 
     return `
       <div class="tab-pane fade ${active}" id="person-${personIndex}" role="tabpanel" aria-labelledby="person-${personIndex}-tab" tabindex="0">
-        <table class="table" data-person-name="${displayName}" data-person-index="${personIndex}">
+        <div class="d-grid gap-2 mb-3">
+          <button type="button" class="btn btn-outline-primary" data-person-index="${personIndex}" data-family-id="${familyUniqueId}">Fill</button>
+        </div>
+        <table class="table">
           <tbody>
             <tr>
               <th scope="row">First Name</th>
@@ -93,7 +88,7 @@ export class PopupNavHelper {
             ${person instanceof Parent ? `
             <tr>
               <th scope="row">Parent notes</th>
-              <td>${person.parentNotes}</td>
+              <td>${person.parentNotes.replaceAll("\n", "<br>")}</td>
             </tr>
             ` : ""}
 
@@ -108,7 +103,7 @@ export class PopupNavHelper {
             </tr>
             <tr>
               <th scope="row">Student notes</th>
-              <td>${person.studentNotes}</td>
+              <td>${person.studentNotes.replaceAll("\n", "<br>")}</td>
             </tr>
             ` : ""}
           </tbody>

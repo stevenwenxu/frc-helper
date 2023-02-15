@@ -22,10 +22,40 @@ function setupFamilyDetails() {
     const familyUniqueId = familyPicker.value;
     FamilyRepository.getFamilyWithUniqueId(familyUniqueId).then((family) => {
       if (family) {
-        familyDetails.innerHTML = PopupNavHelper.generate(family)
+        familyDetails.innerHTML = PopupNavHelper.generate(family);
+        setupFillButtons();
       }
     });
   });
+}
+
+function setupFillButtons() {
+  const fillButtons = document.querySelectorAll<HTMLButtonElement>(".tab-pane button");
+  for (const fillButton of Array.from(fillButtons)) {
+    fillButton.addEventListener("click", () => {
+      const familyUniqueId = fillButton.dataset.familyId!;
+      const personIndex = parseInt(fillButton.dataset.personIndex!);
+      chrome.tabs.query({ url: [
+        "https://ocdsb.myontarioedu.ca/aspen/studentRegistration*",
+        "https://ocdsb.myontarioedu.ca/aspen/studentPersonAddressDetail*"
+      ] }, (tabs) => {
+        if (tabs.length === 0) {
+          alert("You don't have an Aspen page to fill.");
+        } else if (tabs.length > 1) {
+          alert("You have multiple fillable Aspen pages open. Please close all but one.");
+        } else {
+          chrome.windows.update(tabs[0].windowId!, { focused: true });
+          chrome.tabs.update(tabs[0].id!, { active: true });
+          chrome.tabs.sendMessage(tabs[0].id!, {
+            familyUniqueId: familyUniqueId,
+            personIndex: personIndex
+          }, (response) => {
+            console.log("Got response:", response);
+          });
+        }
+      });
+    });
+  }
 }
 
 document.addEventListener("DOMContentLoaded", function(event) {

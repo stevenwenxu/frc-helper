@@ -12,12 +12,18 @@
       "matches": [
         "https://www.schoolinterviews.com.au/*/parents/*/details"
       ]
+    },
+    {
+      "js": ["js/aspen_fill.js"],
+      "matches": [
+        "https://ocdsb.myontarioedu.ca/aspen/*"
+      ]
     }
   ],
   "background": {
     "service_worker": "js/background.js"
   },
-  "permissions": ["storage", "alarms"],
+  "permissions": ["storage", "alarms", "tabs"],
   "icons": {
     "16": "images/icon-16.png",
     "32": "images/icon-32.png",
