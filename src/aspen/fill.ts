@@ -1,5 +1,6 @@
 import { FamilyRepository } from "../common/family_repository";
 import { Student } from "../common/models/person";
+import { SupportedPath } from "./helpers/supported_path";
 
 chrome.runtime.onMessage.addListener(
   function(request, sender, sendResponse) {
@@ -17,13 +18,13 @@ function fill(familySerialized: any, personIndex: number, pathname: string) {
   const person = family.people[personIndex];
 
   switch (pathname) {
-    case "/aspen/studentRegistration0.do":
+    case SupportedPath.StudentRegistration0:
       fillStudentRegistration0(person as Student);
       break;
-    case "/aspen/studentRegistration1.do":
+    case SupportedPath.StudentRegistration1:
       fillStudentRegistration1(person as Student);
       break;
-    case "/aspen/studentRegistration2.do":
+    case SupportedPath.StudentRegistration2:
       fillStudentRegistration2();
       break;
     default:

@@ -3,7 +3,7 @@ import * as bootstrap from "bootstrap";
 import { FamilyRepository } from "../common/family_repository";
 import { PopupNavHelper } from "./helpers/popup_nav_helper";
 import { Family } from "../common/models/family";
-import { Parent, Student } from "../common/models/person";
+import { SupportedPath } from "./helpers/supported_path";
 
 function setupFamilyPicker() {
   const familyPicker = document.getElementById("familyPicker")!;
@@ -35,10 +35,10 @@ function setupFillButtons(family: Family) {
   const fillButtons = document.querySelectorAll<HTMLButtonElement>(".tab-pane button");
   for (const fillButton of Array.from(fillButtons)) {
     fillButton.addEventListener("click", async () => {
-      const tabs = await chrome.tabs.query({ url: [
-        "https://ocdsb.myontarioedu.ca/aspen/studentRegistration*",
-        "https://ocdsb.myontarioedu.ca/aspen/studentPersonAddressDetail*"
-      ]});
+      const supported_urls = Object.values(SupportedPath).map((path) => {
+        return `https://ocdsb.myontarioedu.ca${path}*`
+      });
+      const tabs = await chrome.tabs.query({ url: supported_urls });
 
       if (tabs.length === 0) {
         alert("You don't have an Aspen page to fill.");
@@ -48,8 +48,9 @@ function setupFillButtons(family: Family) {
         const personIndex = parseInt(fillButton.dataset.personIndex!);
         const person = family.people[personIndex];
         const pathname = new URL(tabs[0].url!).pathname;
-        if (!expectedPersonType(pathname).includes(person.constructor.name)) {
-          notifyWrongType(person.constructor.name, expectedPersonType(pathname).join(" or "));
+        const expected = expectedPersonType(pathname);
+        if (!expected.includes(person.constructor.name)) {
+          alert(`You selected a ${person.constructor.name}, but the form is for a ${expected.join(" or ")}.`);
           return;
         }
 
@@ -67,15 +68,11 @@ function setupFillButtons(family: Family) {
   }
 }
 
-function notifyWrongType(selected: string, destination: string) {
-  alert(`You selected to fill a ${selected}, but this page is for ${destination}.`);
-}
-
 function expectedPersonType(pathname: string) : string[] {
   switch (pathname) {
-    case "/aspen/studentRegistration0.do":
-    case "/aspen/studentRegistration1.do":
-    case "/aspen/studentRegistration2.do":
+    case SupportedPath.StudentRegistration0:
+    case SupportedPath.StudentRegistration1:
+    case SupportedPath.StudentRegistration2:
       return ["Student"];
     default:
       return [];
