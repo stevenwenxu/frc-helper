@@ -47,7 +47,7 @@ export class FamilyRepository {
     });
   }
 
-  private static familyFromStoredFamily(storedFamily: any) {
+  static familyFromStoredFamily(storedFamily: any) {
     const newFamily = new Family();
     newFamily.parents = storedFamily.parents.map((p: any) => Object.assign(new Parent(), p));
     newFamily.students = storedFamily.students.map((s: any) => Object.assign(new Student(), s));
