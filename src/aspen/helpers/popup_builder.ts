@@ -1,7 +1,7 @@
 import { Family } from '../../common/models/family';
 import { Student, Parent, Person } from '../../common/models/person';
 
-export class PopupNavHelper {
+export class PopupBuilder {
   static generate(family: Family) {
     return `
       <div class="card">

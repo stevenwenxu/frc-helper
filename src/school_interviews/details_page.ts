@@ -1,5 +1,5 @@
 import * as bootstrap from "bootstrap";
-import { DetailsPageNavHelper } from "./helpers/details_page_nav_helper";
+import { DetailsPageBuilder } from "./helpers/details_page_builder";
 import { FamilyRepository } from "../common/family_repository";
 import { Family } from "../common/models/family";
 import { Parent, Student } from "../common/models/person";
@@ -19,7 +19,7 @@ async function setupOffCanvasPage(container: HTMLElement, table: HTMLTableElemen
   const family = await FamilyRepository.getFamilyWithUniqueId(familyId);
 
   const aFamily = family || new RawData(table).parse().withUniqueId(familyId).withVisitDate(new Date());
-  container.getElementsByClassName("offcanvas-body")[0].innerHTML = DetailsPageNavHelper.generate(aFamily);
+  container.getElementsByClassName("offcanvas-body")[0].innerHTML = DetailsPageBuilder.generate(aFamily);
 
   setupPrimaryButton(family == null, aFamily);
   setupForms(aFamily);

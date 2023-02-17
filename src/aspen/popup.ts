@@ -1,7 +1,7 @@
 import "../scss/styles.scss";
 import * as bootstrap from "bootstrap";
 import { FamilyRepository } from "../common/family_repository";
-import { PopupNavHelper } from "./helpers/popup_nav_helper";
+import { PopupBuilder } from "./helpers/popup_builder";
 import { Family } from "../common/models/family";
 import { SupportedPath } from "./helpers/supported_path";
 
@@ -24,7 +24,7 @@ function setupFamilyDetails() {
     const familyUniqueId = familyPicker.value;
     FamilyRepository.getFamilyWithUniqueId(familyUniqueId).then((family) => {
       if (family) {
-        familyDetails.innerHTML = PopupNavHelper.generate(family);
+        familyDetails.innerHTML = PopupBuilder.generate(family);
         setupFillButtons(family);
       }
     });
