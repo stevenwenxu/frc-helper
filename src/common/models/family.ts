@@ -9,7 +9,11 @@ export class Family {
   uniqueId: string = "";
 
   get people() {
-    return [...this.parents, ...this.students];
+    return [...this.students, ...this.parents];
+  }
+
+  get studentsNames() {
+    return this.students.map(student => `${student.firstName} ${student.lastName}`).join(" / ");
   }
 
   get visitDate(): Date {

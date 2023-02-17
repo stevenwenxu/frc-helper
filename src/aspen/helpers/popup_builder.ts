@@ -19,6 +19,33 @@ export class PopupBuilder {
     `;
   }
 
+  static buildFamilyPicker(families: Family[]) {
+    let innerHTML = "";
+
+    families.sort((a, b) => b.visitDate.getTime() - a.visitDate.getTime());
+
+    // group families by visit date
+    const familiesByVisitDate = families.reduce((acc, family) => {
+      const visitDate = family.visitDate.toDateString();
+      if (acc[visitDate]) {
+        acc[visitDate].push(family);
+      } else {
+        acc[visitDate] = [family];
+      }
+      return acc;
+    }, {} as { [visitDate: string]: Family[] });
+
+    for (const visitDate of Object.keys(familiesByVisitDate)) {
+      innerHTML += `<optgroup label="${visitDate}">`;
+      for (const family of familiesByVisitDate[visitDate]) {
+        innerHTML += `<option value=${family.uniqueId}>${family.studentsNames}</option>`;
+      }
+      innerHTML += `</optgroup>`;
+    }
+
+    return innerHTML;
+  }
+
   private static generateNavItems(family: Family) {
     let parentIndex = 1;
     let studentIndex = 1;

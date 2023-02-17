@@ -7,12 +7,8 @@ import { SupportedPath } from "./helpers/supported_path";
 
 function setupFamilyPicker() {
   const familyPicker = document.getElementById("familyPicker")!;
-  let innerHTML = "";
   FamilyRepository.getFamilies().then((families) => {
-    for (const family of families) {
-      innerHTML += `<option value=${family.uniqueId}>${family.uniqueId}</option>`;
-    }
-    familyPicker.innerHTML = innerHTML;
+    familyPicker.innerHTML = PopupBuilder.buildFamilyPicker(families);
     familyPicker.dispatchEvent(new Event("change"));
   });
 }
