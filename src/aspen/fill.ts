@@ -1,5 +1,5 @@
 import { FamilyRepository } from "../common/family_repository";
-import { Student } from "../common/models/person";
+import { Parent, Student } from "../common/models/person";
 import { SupportedPath } from "./helpers/supported_path";
 
 chrome.runtime.onMessage.addListener(
@@ -26,6 +26,9 @@ function fill(familySerialized: any, personIndex: number, pathname: string) {
       break;
     case SupportedPath.StudentRegistration2:
       fillStudentRegistration2();
+      break;
+    case SupportedPath.multiplePersonAddressChildDetail:
+      fillAddress(person);
       break;
     default:
       console.log("Unknown page", pathname);
@@ -55,6 +58,12 @@ function fillStudentRegistration2() {
   const elements = document.forms.namedItem("wizardForm")!.elements;
 
   setValue(elements.namedItem("value(enrEnrDate)") as HTMLInputElement, new Date().toDateString());
+}
+
+function fillAddress(person: Parent | Student) {
+  const elements = document.forms.namedItem("multiplePersonAddressChildDetailForm")!.elements;
+
+  setValue(elements.namedItem("propertyValue(relPadAdrOid_adrFieldC010)") as HTMLInputElement, person.address);
 }
 
 function setValue(element: HTMLInputElement, value: string) {
