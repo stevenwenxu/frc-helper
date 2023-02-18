@@ -14,9 +14,21 @@ chrome.alarms.onAlarm.addListener(alarm => {
   }
 });
 
-chrome.action.onClicked.addListener(function(tab) {
+chrome.action.onClicked.addListener(async function(tab) {
+  const popupURL = chrome.runtime.getURL("/html/popup.html");
+
+  const openedWindows = await chrome.windows.getAll({ populate: true, windowTypes: ["popup"] });
+  for (const openedWindow of openedWindows) {
+    for (const tab of (openedWindow.tabs || [])) {
+      if (tab.url === popupURL) {
+        chrome.windows.update(openedWindow.id!, { focused: true });
+        return;
+      }
+    };
+  };
+
   chrome.windows.create({
-    url: chrome.runtime.getURL("/html/popup.html"),
+    url: popupURL,
     type: "popup",
     width: 600,
     height: 800,
