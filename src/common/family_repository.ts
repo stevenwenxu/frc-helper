@@ -34,11 +34,11 @@ export class FamilyRepository {
 
   static clearOldFamilies() {
     this.getFamilies().then((families) => {
-      const twoDaysAgo = new Date();
-      twoDaysAgo.setDate(twoDaysAgo.getDate() - 2);
-      console.log("Clearing families older than", twoDaysAgo.toDateString());
+      const threeDaysAgo = new Date();
+      threeDaysAgo.setDate(threeDaysAgo.getDate() - 3);
+      console.log("Clearing families older than", threeDaysAgo.toDateString());
       for (const family of families) {
-        if (family.visitDate < twoDaysAgo) {
+        if (family.visitDate < threeDaysAgo) {
           chrome.storage.local.remove(family.uniqueId, () => {
             console.log(`Removed family with id ${family.uniqueId}`);
           });
