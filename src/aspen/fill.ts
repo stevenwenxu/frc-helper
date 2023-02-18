@@ -51,7 +51,10 @@ function fillStudentRegistration1(student: Student) {
 
   const birthdate = (elements.namedItem("propertyValue(relStdPsnOid_psnDob)") as HTMLInputElement).value;
   const birthYear = parseInt(birthdate.split("/")[2]);
-  setValue(elements.namedItem("propertyValue(stdFieldA036)") as HTMLInputElement, gradeNineCohort(birthYear));
+  setValue(
+    elements.namedItem("propertyValue(stdFieldA036)") as HTMLInputElement,
+    `${birthYear + 14}-${birthYear + 15}`
+  );
 }
 
 function fillStudentRegistration2() {
@@ -63,7 +66,26 @@ function fillStudentRegistration2() {
 function fillAddress(person: Parent | Student) {
   const elements = document.forms.namedItem("multiplePersonAddressChildDetailForm")!.elements;
 
-  setValue(elements.namedItem("propertyValue(relPadAdrOid_adrFieldC010)") as HTMLInputElement, person.address);
+  const address = person.address
+    .split(",")[0]
+    .replace(/ottawa|nepean|kanata|stittsville|manotick|barrhaven|orleans/i, "")
+    .replace(/ontario| ON /i, "")
+    .replace(/[A-Za-z]\d[A-Za-z] ?\d[A-Za-z]\d/i, "")
+    .replace(/canada/i, "")
+    .replace(/crescent/i, "cres")
+    .replace(/street/i, "st")
+    .replace(/avenue/i, "ave")
+    .replace(/road/i, "rd")
+    .replace(/court/i, "crt")
+    .replace(/drive/i, "dr")
+    .replace(/boulevard/i, "blvd")
+    .replace(/parkway/i, "pkwy")
+    .replace(/circle/i, "cir")
+    .replace(/highway/i, "hwy")
+    .replace(/private/i, "pvt");
+  const addressElement = elements.namedItem("propertyValue(relPadAdrOid_adrFieldC010)") as HTMLInputElement;
+  setValue(addressElement, address);
+  addressElement.dispatchEvent(new Event("keyup"));
 }
 
 function setValue(element: HTMLInputElement, value: string) {
@@ -71,8 +93,4 @@ function setValue(element: HTMLInputElement, value: string) {
   element.dispatchEvent(new Event("change"));
   element.style.backgroundColor = "yellow";
   element.style.borderColor = "green";
-}
-
-function gradeNineCohort(birthYear: number) {
-  return `${birthYear + 14}-${birthYear + 15}`;
 }
