@@ -4,6 +4,7 @@ import { FamilyRepository } from "../common/family_repository";
 import { PopupBuilder } from "./helpers/popup_builder";
 import { Family } from "../common/models/family";
 import { SupportedPath } from "./helpers/supported_path";
+import { Parent, Student } from "../common/models/person";
 
 function setupFamilyPicker() {
   const familyPicker = document.getElementById("familyPicker")!;
@@ -45,7 +46,7 @@ function setupFillButtons(family: Family) {
         const person = family.people[personIndex];
         const pathname = new URL(tabs[0].url!).pathname;
         const expected = expectedPersonType(pathname);
-        if (!expected.includes(person.constructor.name)) {
+        if (!expected.includes(person.constructor)) {
           alert(`You selected a ${person.constructor.name}, but the form is for a ${expected.join(" or ")}.`);
           return;
         }
@@ -64,15 +65,16 @@ function setupFillButtons(family: Family) {
   }
 }
 
-function expectedPersonType(pathname: string) : string[] {
+function expectedPersonType(pathname: string): Function[] {
   switch (pathname) {
     case SupportedPath.StudentRegistration0:
     case SupportedPath.StudentRegistration1:
     case SupportedPath.StudentRegistration2:
-      return ["Student"];
+      return [Student];
     case SupportedPath.multiplePersonAddressChildDetail:
-      return ["Student", "Parent"];
+      return [Student, Parent];
     default:
+      console.log("Unknown path:", pathname);
       return [];
   }
 }
