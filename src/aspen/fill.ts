@@ -9,6 +9,8 @@ chrome.runtime.onMessage.addListener(
         request.hasOwnProperty("pathname")) {
       fill(request.family, request.personIndex, request.pathname);
       sendResponse({ message: "ok" });
+    } else {
+      sendResponse({ message: `unknown request: ${Object.keys(request)}` });
     }
   }
 );
@@ -27,8 +29,11 @@ function fill(familySerialized: any, personIndex: number, pathname: string) {
     case SupportedPath.StudentRegistration2:
       fillStudentRegistration2();
       break;
-    case SupportedPath.multiplePersonAddressChildDetail:
-      fillAddress(person);
+    case SupportedPath.MultiplePersonAddressChildDetail:
+      fillAddressAndPhone(person);
+      break;
+    case SupportedPath.AddRecord:
+      fillParent(person as Parent);
       break;
     default:
       console.log("Unknown page", pathname);
@@ -63,7 +68,7 @@ function fillStudentRegistration2() {
   setValue(elements.namedItem("value(enrEnrDate)") as HTMLInputElement, new Date().toDateString());
 }
 
-function fillAddress(person: Parent | Student) {
+function fillAddressAndPhone(person: Parent | Student) {
   const elements = document.forms.namedItem("multiplePersonAddressChildDetailForm")!.elements;
 
   const address = person.address
@@ -83,12 +88,44 @@ function fillAddress(person: Parent | Student) {
     .replace(/circle/i, "cir")
     .replace(/highway/i, "hwy")
     .replace(/private/i, "pvt");
-  const addressElement = elements.namedItem("propertyValue(relPadAdrOid_adrFieldC010)") as HTMLInputElement;
+  const addressElement = elements.namedItem("propertyValue(relPadAdrOid_adrFieldC010)") as HTMLInputElement | null;
   setValue(addressElement, address);
-  addressElement.dispatchEvent(new Event("keyup"));
+  addressElement?.dispatchEvent(new Event("keyup"));
+
+  setValue(elements.namedItem("propertyValue(padPhoneType)") as HTMLInputElement, "Cell");
+  setValue(elements.namedItem("propertyValue(padFieldB001)") as HTMLInputElement, person.phone);
 }
 
-function setValue(element: HTMLInputElement, value: string) {
+function fillParent(parent: Parent) {
+  const elements = document.forms.namedItem("personAddressDetailForm")!.elements;
+
+  setValue(
+    elements.namedItem("propertyValue(relCtjCntOid_relCntPsnOid_psnNameFirst)") as HTMLInputElement,
+    parent.firstName
+  );
+  setValue(
+    elements.namedItem("propertyValue(relCtjCntOid_relCntPsnOid_psnNameMiddle)") as HTMLInputElement,
+    parent.middleName
+  )
+  setValue(
+    elements.namedItem("relCtjCntOid.relCntPsnOid.psnNameLast") as HTMLInputElement,
+    parent.lastName
+  );
+  setValue(
+    elements.namedItem("propertyValue(relCtjCntOid_relCntPsnOid_psnEmail01)") as HTMLInputElement,
+    parent.email
+  );
+  setValue(
+    elements.namedItem("propertyValue(relCtjCntOid_relCntPsnOid_psnFieldA011)") as HTMLInputElement,
+    "S"
+  );
+}
+
+function setValue(element: HTMLInputElement | null, value: string) {
+  if (!element) {
+    return;
+  }
+
   element.value = value;
   element.dispatchEvent(new Event("change"));
   element.style.backgroundColor = "yellow";

@@ -35,25 +35,25 @@ function setupFillButtons(family: Family) {
       const supported_urls = Object.values(SupportedPath).map((path) => {
         return `https://ocdsb.myontarioedu.ca${path}*`
       });
-      const tabs = await chrome.tabs.query({ url: supported_urls });
+      const tabs = await chrome.tabs.query({ active: true, url: supported_urls });
+      console.log("State of tabs", tabs.map(tab => [tab.url, tab.active]));
 
       if (tabs.length === 0) {
-        alert("You don't have an Aspen page to fill.");
-      } else if (tabs.length > 1) {
-        alert("You have multiple fillable Aspen pages open. Please close all but one.");
+        alert("You don't have any active Aspen page to fill.");
       } else {
+        let tab = tabs.at(-1)!;
+        console.log("Filling tab: ", tab.url);
+
         const personIndex = parseInt(fillButton.dataset.personIndex!);
         const person = family.people[personIndex];
-        const pathname = new URL(tabs[0].url!).pathname;
+        const pathname = new URL(tab.url!).pathname;
         const expected = expectedPersonType(pathname);
         if (!expected.includes(person.constructor)) {
           alert(`You selected a ${person.constructor.name}, but the form is for a ${expected.join(" or ")}.`);
           return;
         }
 
-        chrome.windows.update(tabs[0].windowId!, { focused: true });
-        chrome.tabs.update(tabs[0].id!, { active: true });
-        chrome.tabs.sendMessage(tabs[0].id!, {
+        chrome.tabs.sendMessage(tab.id!, {
           family: family,
           personIndex: personIndex,
           pathname: pathname
@@ -71,8 +71,10 @@ function expectedPersonType(pathname: string): Function[] {
     case SupportedPath.StudentRegistration1:
     case SupportedPath.StudentRegistration2:
       return [Student];
-    case SupportedPath.multiplePersonAddressChildDetail:
+    case SupportedPath.MultiplePersonAddressChildDetail:
       return [Student, Parent];
+    case SupportedPath.AddRecord:
+      return [Parent];
     default:
       console.log("Unknown path:", pathname);
       return [];
