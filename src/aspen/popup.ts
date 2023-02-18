@@ -48,8 +48,9 @@ function setupFillButtons(family: Family) {
         const person = family.people[personIndex];
         const pathname = new URL(tab.url!).pathname;
         const expected = expectedPersonType(pathname);
-        if (!expected.includes(person.constructor)) {
-          alert(`You selected a ${person.constructor.name}, but the form is for a ${expected.join(" or ")}.`);
+        const selection = person instanceof Student ? "student" : "parent";
+        if (!expected.includes(selection)) {
+          alert(`You selected a ${selection}, but the form is for a ${expected.join(" or ")}.`);
           return;
         }
 
@@ -65,16 +66,16 @@ function setupFillButtons(family: Family) {
   }
 }
 
-function expectedPersonType(pathname: string): Function[] {
+function expectedPersonType(pathname: string) {
   switch (pathname) {
     case SupportedPath.StudentRegistration0:
     case SupportedPath.StudentRegistration1:
     case SupportedPath.StudentRegistration2:
-      return [Student];
+      return ["student"];
     case SupportedPath.MultiplePersonAddressChildDetail:
-      return [Student, Parent];
+      return ["student", "parent"];
     case SupportedPath.AddRecord:
-      return [Parent];
+      return ["parent"];
     default:
       console.log("Unknown path:", pathname);
       return [];
