@@ -2,12 +2,12 @@ import { Family } from "../../common/models/family";
 import { Parent, Student } from "../../common/models/person";
 
 export class RawData {
-  parentsName: string = "";
-  email: string = "";
-  phone: string = "";
-  address: string = "";
-  immigrationStatusFirstLanguage: string = "";
-  notes: string = "";
+  parentsName = "";
+  email = "";
+  phone = "";
+  address = "";
+  immigrationStatusFirstLanguage = "";
+  notes = "";
   students: string[] = [];
 
   constructor(table: HTMLTableElement) {

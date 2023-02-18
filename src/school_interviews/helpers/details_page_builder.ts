@@ -3,15 +3,12 @@ import { Student, Parent, Person } from '../../common/models/person';
 
 export class DetailsPageBuilder {
   static generate(family: Family) {
-    const navItems = this.generateNavItems(family);
-    const tabPanes = this.generateTabPanes(family);
-
     return `
       <ul class="nav nav-tabs mb-3" role="tablist">
-        ${navItems}
+        ${this.generateNavItems(family)}
       </ul>
       <div class="tab-content">
-        ${tabPanes}
+        ${this.generateTabPanes(family)}
       </div>
     `;
   }

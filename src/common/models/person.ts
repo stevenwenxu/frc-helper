@@ -1,11 +1,11 @@
-import { NameHelper } from "../../school_interviews/helpers/name_helper";
+import { NameHelper } from "../helpers/name_helper";
 
 export abstract class Person {
-  firstName: string = "";
-  middleName: string = "";
-  lastName: string = "";
-  phone: string = "";
-  address: string = "";
+  firstName = "";
+  middleName = "";
+  lastName = "";
+  phone = "";
+  address = "";
 
   set name(name: string) {
     const [firstName, middleName, lastName] = NameHelper.nameToParts(name);
@@ -16,12 +16,12 @@ export abstract class Person {
 }
 
 export class Parent extends Person {
-  email: string = "";
-  parentNotes: string = "";
+  email = "";
+  parentNotes = "";
 }
 
 export class Student extends Person {
-  dateOfBirth: string = "";
-  countryOfBirth: string = "";
-  studentNotes: string = "";
+  dateOfBirth = "";
+  countryOfBirth = "";
+  studentNotes = "";
 }

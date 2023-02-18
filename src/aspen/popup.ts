@@ -4,7 +4,7 @@ import { FamilyRepository } from "../common/family_repository";
 import { PopupBuilder } from "./helpers/popup_builder";
 import { Family } from "../common/models/family";
 import { SupportedPath } from "./helpers/supported_path";
-import { Parent, Student } from "../common/models/person";
+import { Student } from "../common/models/person";
 
 function setupFamilyPicker() {
   const familyPicker = document.getElementById("familyPicker")!;
@@ -32,10 +32,10 @@ function setupFillButtons(family: Family) {
   const fillButtons = document.querySelectorAll<HTMLButtonElement>(".tab-pane button");
   for (const fillButton of Array.from(fillButtons)) {
     fillButton.addEventListener("click", async () => {
-      const supported_urls = Object.values(SupportedPath).map((path) => {
+      const supportedUrls = Object.values(SupportedPath).map((path) => {
         return `https://ocdsb.myontarioedu.ca${path}*`
       });
-      const tabs = await chrome.tabs.query({ active: true, url: supported_urls });
+      const tabs = await chrome.tabs.query({ active: true, url: supportedUrls });
       console.log("State of tabs", tabs.map(tab => [tab.url, tab.active]));
 
       if (tabs.length === 0) {
