@@ -1,5 +1,6 @@
 import { FamilyRepository } from "../common/family_repository";
 import { Parent, Student } from "../common/models/person";
+import { AddressSanitizer } from "./helpers/address_sanitizer";
 import { SupportedPath } from "./helpers/supported_path";
 
 chrome.runtime.onMessage.addListener(
@@ -71,29 +72,37 @@ function fillStudentRegistration2() {
 function fillAddressAndPhone(person: Parent | Student) {
   const elements = document.forms.namedItem("multiplePersonAddressChildDetailForm")!.elements;
 
-  const address = person.address
-    .split(",")[0]
-    .replace(/ottawa|nepean|kanata|stittsville|manotick|barrhaven|orleans/i, "")
-    .replace(/ontario| ON /i, "")
-    .replace(/[A-Za-z]\d[A-Za-z] ?\d[A-Za-z]\d/i, "")
-    .replace(/canada/i, "")
-    .replace(/crescent/i, "cres")
-    .replace(/street/i, "st")
-    .replace(/avenue/i, "ave")
-    .replace(/road/i, "rd")
-    .replace(/court/i, "crt")
-    .replace(/drive/i, "dr")
-    .replace(/boulevard/i, "blvd")
-    .replace(/parkway/i, "pkwy")
-    .replace(/circle/i, "cir")
-    .replace(/highway/i, "hwy")
-    .replace(/private/i, "pvt");
+  // Fill postal code before address to trigger a more accurate address search
+  setValue(
+    elements.namedItem("propertyValue(relPadAdrOid_adrPostalCode)") as HTMLInputElement | null,
+    AddressSanitizer.postalCode(person.address)
+  );
+
+  const sanitizedAddress = AddressSanitizer.sanitized(person.address);
+
   const addressElement = elements.namedItem("propertyValue(relPadAdrOid_adrFieldC010)") as HTMLInputElement | null;
-  setValue(addressElement, address);
+  setValue(addressElement, AddressSanitizer.addressToFill(sanitizedAddress));
   addressElement?.dispatchEvent(new Event("keyup"));
 
-  setValue(elements.namedItem("propertyValue(padPhoneType)") as HTMLInputElement, "Cell");
-  setValue(elements.namedItem("propertyValue(padFieldB001)") as HTMLInputElement, person.phone);
+  setValue(
+    elements.namedItem("propertyValue(relPadAdrOid_adrFieldB001)") as HTMLInputElement | null,
+    AddressSanitizer.unitType(sanitizedAddress)
+  );
+
+  setValue(
+    elements.namedItem("propertyValue(relPadAdrOid_adrFieldA001)") as HTMLInputElement | null,
+    AddressSanitizer.unitNumber(sanitizedAddress)
+  );
+
+  setValue(
+    elements.namedItem("propertyValue(padPhoneType)") as HTMLInputElement | null,
+    "Cell"
+  );
+
+  setValue(
+    elements.namedItem("propertyValue(padFieldB001)") as HTMLInputElement | null,
+    person.phone
+  );
 }
 
 function fillParent(parent: Parent) {
