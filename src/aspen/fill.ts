@@ -40,6 +40,7 @@ function fill(familySerialized: any, personIndex: number, pathname: string) {
     case SupportedPath.ChildDetail:
       fillFRCTracker(person as Student);
       setupHooks(person as Student);
+      setupFRCTrackerTooltips();
       break;
     default:
       console.log("Unknown page", pathname);
@@ -248,6 +249,27 @@ function setupHooks(student: Student) {
   });
 }
 
+function setupFRCTrackerTooltips() {
+  const elements = document.forms.namedItem("childDetailForm")!.elements;
+  const hintStep = (num: number) => {
+    return `<span style="color: chocolate;">Step ${num}</span>`;
+  };
+
+  // recommendation
+  (elements.namedItem("propertyValue(pgmFieldA006)") as HTMLInputElement).insertAdjacentHTML("afterend", hintStep(1));
+
+  // oral, reading, writing
+  [
+    elements.namedItem("propertyValue(pgmFieldA012)") as HTMLInputElement,
+    elements.namedItem("propertyValue(pgmFieldA013)") as HTMLInputElement,
+    elements.namedItem("propertyValue(pgmFieldA014)") as HTMLInputElement
+  ].forEach(element => {
+    element.insertAdjacentHTML("afterend", hintStep(2));
+  });
+
+  // assessor comments
+  (elements.namedItem("propertyValue(pgmFieldD006)") as HTMLInputElement).insertAdjacentHTML("beforebegin", hintStep(3));
+}
 
 function setValue(element: HTMLInputElement | null, value: string) {
   if (!element) {
