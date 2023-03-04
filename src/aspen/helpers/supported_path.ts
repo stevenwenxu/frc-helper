@@ -6,3 +6,8 @@ export enum SupportedPath {
   AddRecord = "/aspen/addRecord.do",
   ChildDetail = "/aspen/childDetail.do"
 }
+
+export enum SupportedContext {
+  EducationalBackground = "extracurricular.std.edu.bkgd.list.detail",
+  FRCTracker = "extracurricular.std.ell.tracker.list.detail"
+}

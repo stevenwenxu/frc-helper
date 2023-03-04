@@ -1,6 +1,6 @@
 import { Student } from "../../common/models/person";
 
-export class Recommendation {
+export class FRCTrackerFields {
   static schoolCategory(dropdownValue: number) {
     if ((dropdownValue >= 1 && dropdownValue <= 9) || (dropdownValue >= 26 && dropdownValue <= 29)) {
       return "elementary";

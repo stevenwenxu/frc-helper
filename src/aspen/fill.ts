@@ -1,15 +1,17 @@
 import { FamilyRepository } from "../common/family_repository";
 import { Parent, Student } from "../common/models/person";
 import { AddressSanitizer } from "./helpers/address_sanitizer";
-import { Recommendation } from "./helpers/recommendation";
-import { SupportedPath } from "./helpers/supported_path";
+import { EducationalBackgroundFields } from "./helpers/educational_background_fields";
+import { FRCTrackerFields } from "./helpers/frc_tracker_fields";
+import { SupportedContext, SupportedPath } from "./helpers/supported_path";
 
 chrome.runtime.onMessage.addListener(
   function(request, sender, sendResponse) {
     if (request.hasOwnProperty("family") &&
         request.hasOwnProperty("personIndex") &&
-        request.hasOwnProperty("pathname")) {
-      fill(request.family, request.personIndex, request.pathname);
+        request.hasOwnProperty("pathname") &&
+        request.hasOwnProperty("context")) {
+      fill(request.family, request.personIndex, request.pathname, request.context);
       sendResponse({ message: "ok" });
     } else {
       sendResponse({ message: `unknown request: ${Object.keys(request)}` });
@@ -17,7 +19,7 @@ chrome.runtime.onMessage.addListener(
   }
 );
 
-function fill(familySerialized: any, personIndex: number, pathname: string) {
+function fill(familySerialized: any, personIndex: number, pathname: string, context: string | null) {
   const family = FamilyRepository.familyFromStoredFamily(familySerialized);
   const person = family.people[personIndex];
 
@@ -38,9 +40,17 @@ function fill(familySerialized: any, personIndex: number, pathname: string) {
       fillParent(person as Parent);
       break;
     case SupportedPath.ChildDetail:
-      fillFRCTracker(person as Student);
-      setupHooks(person as Student);
-      setupFRCTrackerTooltips();
+      switch (context) {
+        case SupportedContext.EducationalBackground:
+          setupEducationalBackgroundHooks(person as Student);
+          fillEducationalBackground(person as Student);
+          break;
+        case SupportedContext.FRCTracker:
+          fillFRCTracker(person as Student);
+          setupFRCTrackerHooks(person as Student);
+          setupFRCTrackerTooltips();
+          break;
+      }
       break;
     default:
       console.log("Unknown page", pathname);
@@ -173,7 +183,7 @@ function fillFRCTracker(student: Student) {
   });
 }
 
-function setupHooks(student: Student) {
+function setupFRCTrackerHooks(student: Student) {
   const elements = document.forms.namedItem("childDetailForm")!.elements;
   const recommendationElement = elements.namedItem("propertyValue(pgmFieldA006)") as HTMLSelectElement;
   const assessorSummaryLanguageAssessment = elements.namedItem("propertyValue(pgmFieldA011)") as HTMLInputElement;
@@ -188,7 +198,7 @@ function setupHooks(student: Student) {
   const updateAssessorComments = () => {
     setValue(
       assessorComments,
-      Recommendation.assessorComments(
+      FRCTrackerFields.assessorComments(
         student,
         parseInt(recommendationElement.value),
         englishProficiencyOral.value,
@@ -205,7 +215,7 @@ function setupHooks(student: Student) {
     setValue(
       assessorSummaryLanguageAssessment,
       (() => {
-        switch (Recommendation.languageCategory(dropdownValue)) {
+        switch (FRCTrackerFields.languageCategory(dropdownValue)) {
           case "native": return "1";
           case "ESL": return "2";
           case "ELD": return "3";
@@ -214,14 +224,14 @@ function setupHooks(student: Student) {
       })()
     );
 
-    setValue(englishProficiencyOverall, Recommendation.overallCategory(dropdownValue));
+    setValue(englishProficiencyOverall, FRCTrackerFields.overallCategory(dropdownValue));
 
-    setValue(languageSupport, Recommendation.languageSupport(dropdownValue));
+    setValue(languageSupport, FRCTrackerFields.languageSupport(dropdownValue));
 
     setValue(
       recommendedSecondaryEnglishCourse,
       (() => {
-        switch (Recommendation.secondaryEnglishCourse(dropdownValue)) {
+        switch (FRCTrackerFields.secondaryEnglishCourse(dropdownValue)) {
           case "ELDAO": return "1";
           case "ELDBO": return "2";
           case "ELDCO": return "3";
@@ -269,6 +279,46 @@ function setupFRCTrackerTooltips() {
 
   // assessor comments
   (elements.namedItem("propertyValue(pgmFieldD006)") as HTMLInputElement).insertAdjacentHTML("beforebegin", hintStep(3));
+}
+
+function fillEducationalBackground(student: Student) {
+  const elements = document.forms.namedItem("childDetailForm")!.elements;
+  const name = student.firstName;
+
+  const schoolYear = elements.namedItem("propertyValue(pgmFieldB002)") as HTMLInputElement;
+  setValue(schoolYear, EducationalBackgroundFields.schoolYear());
+
+  setValue(
+    elements.namedItem("propertyValue(pgmFieldA002)") as HTMLInputElement,
+    "Yes"
+  );
+
+  setValue(
+    elements.namedItem("propertyValue(pgmFieldD001)") as HTMLInputElement,
+    `${name}'s favourite subject is mathematics, and ${name} wants to become a doctor in the future.`
+  );
+}
+
+function setupEducationalBackgroundHooks(student: Student) {
+  const elements = document.forms.namedItem("childDetailForm")!.elements;
+  const grade = elements.namedItem("propertyValue(pgmFieldA001)") as HTMLSelectElement;
+  const country = elements.namedItem("propertyValue(pgmFieldB001)") as HTMLSelectElement;
+  const schoolYear = elements.namedItem("propertyValue(pgmFieldB002)") as HTMLInputElement;
+  const comments = elements.namedItem("propertyValue(pgmFieldD002)") as HTMLInputElement;
+
+  [grade, country, schoolYear].forEach(element => {
+    element.addEventListener("change", () => {
+      setValue(
+        comments,
+        EducationalBackgroundFields.comments(
+          student,
+          grade.value,
+          country.selectedOptions[0].textContent || "",
+          schoolYear.value
+        )
+      );
+    });
+  });
 }
 
 function setValue(element: HTMLInputElement | null, value: string) {

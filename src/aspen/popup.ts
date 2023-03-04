@@ -46,7 +46,9 @@ function setupFillButtons(family: Family) {
 
         const personIndex = parseInt(fillButton.dataset.personIndex!);
         const person = family.people[personIndex];
-        const pathname = new URL(tab.url!).pathname;
+        const url = new URL(tab.url!);
+        const pathname = url.pathname;
+        const context = url.searchParams.get("context");
         const expected = expectedPersonType(pathname);
         const selection = person instanceof Student ? "student" : "parent";
         if (!expected.includes(selection)) {
@@ -57,7 +59,8 @@ function setupFillButtons(family: Family) {
         chrome.tabs.sendMessage(tab.id!, {
           family: family,
           personIndex: personIndex,
-          pathname: pathname
+          pathname: pathname,
+          context: context
         }, (response) => {
           console.log("Got response:", response);
         });
