@@ -81,7 +81,7 @@ Writing ${languageCategory} STEP ${writing}.`;
     }
 
     if (schoolCategory === "secondary") {
-      comment += `\n\rBased on the initial assessment, ${secondaryEnglish} is recommended for English, and MTH1W is recommended for mathematics.`;
+      comment += `\n\nBased on the initial assessment, ${secondaryEnglish} is recommended for English, and MTH1W is recommended for mathematics.`;
     }
 
     return comment;

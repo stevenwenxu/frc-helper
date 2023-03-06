@@ -70,8 +70,13 @@ function fill(familySerialized: any, personIndex: number, pathname: string, cont
   }
 }
 
-export function setValue(element: HTMLInputElement | null, value: string) {
+export function setValue(element: HTMLInputElement | null, value: string, replaceExisting = true) {
   if (!element) {
+    return;
+  }
+  if (element.value.length > 0 && !replaceExisting) {
+    element.style.backgroundColor = "";
+    element.style.borderColor = "";
     return;
   }
 

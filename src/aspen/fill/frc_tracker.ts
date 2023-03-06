@@ -7,12 +7,15 @@ export function fillFRCTracker(student: Student) {
 
   setValue(
     elements.namedItem("propertyValue(pgmActionStart)") as HTMLInputElement,
-    new Date().toDateString()
+    new Date().toDateString(),
+    false
   );
 
+  // File Status: Complete
   setValue(
     elements.namedItem("propertyValue(pgmFieldA002)") as HTMLInputElement,
-    "1"
+    "1",
+    false
   );
 
   setValue(
@@ -22,7 +25,8 @@ export function fillFRCTracker(student: Student) {
 
   setValue(
     elements.namedItem("propertyValue(pgmFieldD001)") as HTMLInputElement,
-    "No Health Concerns"
+    "No Health Concerns",
+    false
   );
 
   // Start the observations with student's name
@@ -34,7 +38,8 @@ export function fillFRCTracker(student: Student) {
   ].forEach(elementName => {
     setValue(
       elements.namedItem(elementName) as HTMLInputElement,
-      student.firstName + " "
+      student.firstName + " ",
+      false
     )
   });
 }
