@@ -1,4 +1,6 @@
 import { Student } from "../../common/models/person";
+import { Family } from "../../common/models/family";
+import { FamilyRepository } from "../../common/family_repository";
 import { EducationalBackgroundFields } from "../helpers/educational_background_fields";
 import { setValue } from "../fill";
 
@@ -22,7 +24,7 @@ export function fillEducationalBackground(student: Student) {
   );
 }
 
-export function setupEducationalBackgroundHooks(student: Student) {
+export function setupEducationalBackgroundHooks(familyId: string, personIndex: number) {
   const elements = document.forms.namedItem("childDetailForm")!.elements;
   const grade = elements.namedItem("propertyValue(pgmFieldA001)") as HTMLSelectElement;
   const complete = elements.namedItem("propertyValue(pgmFieldA002)") as HTMLInputElement;
@@ -30,8 +32,18 @@ export function setupEducationalBackgroundHooks(student: Student) {
   const schoolYear = elements.namedItem("propertyValue(pgmFieldB002)") as HTMLInputElement;
   const comments = elements.namedItem("propertyValue(pgmFieldD002)") as HTMLInputElement;
 
+  comments.addEventListener("change", async () => {
+    await FamilyRepository.updateStudent(familyId, personIndex, (student) => {
+      student.educationComments = comments.value;
+      return student;
+    });
+  });
+
   [grade, complete, country, schoolYear].forEach(element => {
-    element.addEventListener("change", () => {
+    element.addEventListener("change", async () => {
+      const family = await FamilyRepository.getFamilyWithUniqueId(familyId);
+      if (!family) { return; }
+      const student = family.people[personIndex] as Student;
       setValue(
         comments,
         EducationalBackgroundFields.comments(

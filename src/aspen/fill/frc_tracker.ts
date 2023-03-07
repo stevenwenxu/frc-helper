@@ -1,4 +1,7 @@
 import { Student } from "../../common/models/person";
+import { Family } from "../../common/models/family";
+import { FamilyRepository } from "../../common/family_repository";
+import { SchoolCategory } from "../../common/models/school_category";
 import { FRCTrackerFields } from "../helpers/frc_tracker_fields";
 import { setValue } from "../fill";
 
@@ -44,7 +47,7 @@ export function fillFRCTracker(student: Student) {
   });
 }
 
-export function setupFRCTrackerHooks(student: Student) {
+export function setupFRCTrackerHooks(familyId: string, personIndex: number) {
   const elements = document.forms.namedItem("childDetailForm")!.elements;
   const recommendationElement = elements.namedItem("propertyValue(pgmFieldA006)") as HTMLSelectElement;
   const assessorSummaryLanguageAssessment = elements.namedItem("propertyValue(pgmFieldA011)") as HTMLInputElement;
@@ -56,7 +59,10 @@ export function setupFRCTrackerHooks(student: Student) {
   const languageSupport = elements.namedItem("propertyValue(pgmFieldA016)") as HTMLInputElement;
   const recommendedSecondaryEnglishCourse = elements.namedItem("propertyValue(pgmFieldA017)") as HTMLInputElement;
 
-  const updateAssessorComments = () => {
+  const updateAssessorComments = async () => {
+    const family = await FamilyRepository.getFamilyWithUniqueId(familyId);
+    if (!family) { return; }
+    const student = family.people[personIndex] as Student;
     setValue(
       assessorComments,
       FRCTrackerFields.assessorComments(
@@ -70,7 +76,7 @@ export function setupFRCTrackerHooks(student: Student) {
     assessorComments.dispatchEvent(new Event("keyup"));
   };
 
-  recommendationElement.addEventListener("change", () => {
+  recommendationElement.addEventListener("change", async () => {
     const dropdownValue = parseInt(recommendationElement.value);
 
     setValue(
@@ -108,7 +114,7 @@ export function setupFRCTrackerHooks(student: Student) {
       })()
     );
 
-    updateAssessorComments();
+    await updateAssessorComments();
   });
 
   [
@@ -117,6 +123,39 @@ export function setupFRCTrackerHooks(student: Student) {
     englishProficiencyWriting,
   ].forEach(element => {
     element.addEventListener("change", updateAssessorComments);
+  });
+
+  assessorComments.addEventListener("change", async () => {
+    await FamilyRepository.updateStudent(familyId, personIndex, student => {
+      const dropdownValue = parseInt(recommendationElement.value);
+
+      student.schoolCategory = FRCTrackerFields.schoolCategory(dropdownValue);
+      if (student.schoolCategory == SchoolCategory.Secondary) {
+        student.secondaryCourseRecommendations = [
+          FRCTrackerFields.secondaryEnglishCourse(dropdownValue),
+          assessorComments.value.match(/\bM[A-Z][A-Z][0-9][A-Z]\b/)?.[0] || ""
+        ].filter(str => str.length > 0).join(", ");
+      } else {
+        student.secondaryCourseRecommendations = "";
+      }
+      return student;
+    });
+  });
+
+  [
+    assessorSummaryLanguageAssessment,
+    englishProficiencyOverall
+  ].forEach(element => {
+    element.addEventListener("change", async () => {
+      await FamilyRepository.updateStudent(familyId, personIndex, student => {
+        switch (assessorSummaryLanguageAssessment.value) {
+          case "1": student.overallStepLevel = "No ESL"; break;
+          case "2": student.overallStepLevel = `ESL STEP ${englishProficiencyOverall.value}`; break;
+          case "3": student.overallStepLevel = `ELD STEP ${englishProficiencyOverall.value}`; break;
+        }
+        return student;
+      });
+    });
   });
 }
 

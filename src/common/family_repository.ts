@@ -32,6 +32,14 @@ export class FamilyRepository {
     console.log(`family_repository.ts: Successfully saved family ${familyId} to local storage.`);
   }
 
+  static async updateStudent(familyId: string, personIndex: number, updateBlock: (person: Student) => Student) {
+    const family = await this.getFamilyWithUniqueId(familyId);
+    if (family) {
+      family.people[personIndex] = updateBlock(family.people[personIndex] as Student);
+      await this.saveFamily(family);
+    }
+  }
+
   static clearOldFamilies() {
     this.getFamilies().then((families) => {
       const threeDaysAgo = new Date();

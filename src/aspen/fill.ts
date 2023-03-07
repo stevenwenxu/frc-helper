@@ -9,6 +9,7 @@ import { fillPhone } from "./fill/phone";
 import { fillParent } from "./fill/parent";
 import { fillFRCTracker, setupFRCTrackerHooks, setupFRCTrackerTooltips } from "./fill/frc_tracker";
 import { fillEducationalBackground, setupEducationalBackgroundHooks } from "./fill/educational_background";
+import { saveStudentDetails } from "./fill/student_person_address_detail";
 
 chrome.runtime.onMessage.addListener(
   function(request, sender, sendResponse) {
@@ -54,15 +55,18 @@ function fill(familySerialized: any, personIndex: number, pathname: string, cont
     case SupportedPath.ChildDetail:
       switch (context) {
         case SupportedContext.EducationalBackground:
-          setupEducationalBackgroundHooks(person as Student);
+          setupEducationalBackgroundHooks(family.uniqueId, personIndex);
           fillEducationalBackground(person as Student);
           break;
         case SupportedContext.FRCTracker:
           fillFRCTracker(person as Student);
-          setupFRCTrackerHooks(person as Student);
+          setupFRCTrackerHooks(family.uniqueId, personIndex);
           setupFRCTrackerTooltips();
           break;
       }
+      break;
+    case SupportedPath.StudentPersonAddressDetail:
+      saveStudentDetails(family.uniqueId, personIndex);
       break;
     default:
       console.log("Unknown page", pathname);

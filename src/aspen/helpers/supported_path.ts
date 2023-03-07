@@ -4,7 +4,8 @@ export enum SupportedPath {
   StudentRegistration2 = "/aspen/studentRegistration2.do",
   MultiplePersonAddressChildDetail = "/aspen/multiplePersonAddressChildDetail.do",
   AddRecord = "/aspen/addRecord.do",
-  ChildDetail = "/aspen/childDetail.do"
+  ChildDetail = "/aspen/childDetail.do",
+  StudentPersonAddressDetail = "/aspen/studentPersonAddressDetail.do"
 }
 
 export enum SupportedContext {

@@ -1,15 +1,16 @@
 import { Student } from "../../common/models/person";
+import { SchoolCategory } from "../../common/models/school_category";
 
 export class FRCTrackerFields {
   static schoolCategory(dropdownValue: number) {
     if ((dropdownValue >= 1 && dropdownValue <= 9) || (dropdownValue >= 26 && dropdownValue <= 29)) {
-      return "elementary";
+      return SchoolCategory.Elementary;
     } else if ((dropdownValue >= 10 && dropdownValue <= 14) || (dropdownValue >= 30 && dropdownValue <= 31)) {
-      return "kindergarten";
+      return SchoolCategory.Kindergarten;
     } else if (dropdownValue >= 15 && dropdownValue <= 25) {
-      return "secondary";
+      return SchoolCategory.Secondary;
     } else {
-      return "unknown";
+      return SchoolCategory.Unknown;
     }
   }
 
@@ -36,7 +37,7 @@ export class FRCTrackerFields {
     const overall = this.overallCategory(dropdownValue);
     const school = this.schoolCategory(dropdownValue);
 
-    if (school !== "secondary") {
+    if (school !== SchoolCategory.Secondary) {
       return "";
     } else if (language === "native" || overall === "6") {
       return "ENG2D";
@@ -71,7 +72,7 @@ export class FRCTrackerFields {
 
     if (languageCategory === "native") {
       comment = `${name}'s first language is English, therefore ${name} may be assessed with the tools used for native speakers.`;
-    } else if (schoolCategory === "kindergarten") {
+    } else if (schoolCategory === SchoolCategory.Kindergarten) {
       comment = `Although ${name} is a beginner in English, it is OCDSB's practice that Kindergarten English language learners are not stepped using Steps to English Proficiency at the time. This is because it is difficult to accurately determine the level of English proficiency in young children. However, ${name}'s English language development should be tracked by the teachers in case ${name} might be considered for ESL programming in grade 1.`
     } else {
       comment = `${name} was assessed using the Steps to English Proficiency (STEP) initial assessment tool, based on this initial assessment, ${name} is working in ${languageCategory} STEP ${overallCategory}:
@@ -80,7 +81,7 @@ Reading ${languageCategory} STEP ${reading}
 Writing ${languageCategory} STEP ${writing}.`;
     }
 
-    if (schoolCategory === "secondary") {
+    if (schoolCategory === SchoolCategory.Secondary) {
       comment += `\n\nBased on the initial assessment, ${secondaryEnglish} is recommended for English, and MTH1W is recommended for mathematics.`;
     }
 
@@ -93,7 +94,7 @@ Writing ${languageCategory} STEP ${writing}.`;
     const languageCategory = this.languageCategory(dropdownValue);
     const overallCategory = this.overallCategory(dropdownValue);
 
-    if (schoolCategory === "kindergarten") {
+    if (schoolCategory === SchoolCategory.Kindergarten) {
       return "1";
     } else if (languageCategory === "native") {
       return "1";
@@ -101,12 +102,12 @@ Writing ${languageCategory} STEP ${writing}.`;
       return "3";
     } else if (overallCategory === "") {
       return "";
-    } else if (languageCategory === "ESL" && schoolCategory === "elementary") {
+    } else if (languageCategory === "ESL" && schoolCategory === SchoolCategory.Elementary) {
       switch (overallCategory) {
         case "1": case "2": case "3": case "4": return "2";
         case "5": case "6": return "1";
       }
-    } else if (languageCategory === "ESL" && schoolCategory === "secondary") {
+    } else if (languageCategory === "ESL" && schoolCategory === SchoolCategory.Secondary) {
       switch (overallCategory) {
         case "1": case "2": case "3": case "4": case "5": return "2";
         case "6": return "1";
