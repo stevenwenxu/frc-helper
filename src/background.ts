@@ -31,6 +31,6 @@ chrome.action.onClicked.addListener(async function(tab) {
     url: popupURL,
     type: "popup",
     width: 600,
-    height: 800,
+    height: 900,
   });
 });

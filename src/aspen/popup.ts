@@ -5,31 +5,36 @@ import { PopupBuilder } from "./helpers/popup_builder";
 import { Family } from "../common/models/family";
 import { SupportedPath } from "./helpers/supported_path";
 import { Student } from "../common/models/person";
+import { emailBody, emailSubject } from "./helpers/generate_email";
 
 function setupFamilyPicker() {
   const familyPicker = document.getElementById("familyPicker")!;
+  familyPicker.addEventListener("change", renderFamilyDetails);
   FamilyRepository.getFamilies().then((families) => {
     familyPicker.innerHTML = PopupBuilder.buildFamilyPicker(families);
     familyPicker.dispatchEvent(new Event("change"));
   });
 }
 
-function setupFamilyDetails() {
+async function renderFamilyDetails() {
   const familyPicker = document.getElementById("familyPicker")! as HTMLSelectElement;
   const familyDetails = document.getElementById("familyDetails")!;
-  familyPicker.addEventListener("change", () => {
-    const familyUniqueId = familyPicker.value;
-    FamilyRepository.getFamilyWithUniqueId(familyUniqueId).then((family) => {
-      if (family) {
-        familyDetails.innerHTML = PopupBuilder.generate(family);
-        setupFillButtons(family);
-      }
-    });
-  });
+  const familyUniqueId = familyPicker.value;
+  const family = await FamilyRepository.getFamilyWithUniqueId(familyUniqueId);
+  if (family) {
+    familyDetails.innerHTML = PopupBuilder.generate(family);
+    setupFillButtons(family);
+    setupEmailButtons(family.uniqueId);
+  }
+}
+
+function renderEmail(students: Student[]) {
+  const familyDetails = document.getElementById("familyDetails")!;
+  familyDetails.innerHTML = PopupBuilder.generateEmail(students);
 }
 
 function setupFillButtons(family: Family) {
-  const fillButtons = document.querySelectorAll<HTMLButtonElement>(".tab-pane button");
+  const fillButtons = document.querySelectorAll<HTMLButtonElement>(".tab-pane button[data-function='fill'");
   for (const fillButton of Array.from(fillButtons)) {
     fillButton.addEventListener("click", async () => {
       const supportedUrls = Object.values(SupportedPath).map((path) => {
@@ -69,6 +74,23 @@ function setupFillButtons(family: Family) {
   }
 }
 
+// Take familyId instead of Family because the family object could be stale after picking up more fields from Aspen.
+function setupEmailButtons(familyId: string) {
+  const emailButtons = document.querySelectorAll<HTMLButtonElement>(".tab-pane button[data-function='email'");
+  for (const emailButton of Array.from(emailButtons)) {
+    emailButton.addEventListener("click", async () => {
+      const family = await FamilyRepository.getFamilyWithUniqueId(familyId);
+      if (family) {
+        const subject = encodeURIComponent(emailSubject(family.students));
+        chrome.tabs.create({
+          url: `https://mail.google.com/mail/?view=cm&fs=1&su=${subject}`,
+        });
+        renderEmail(family.students);
+      }
+    });
+  }
+}
+
 function expectedPersonType(pathname: string) {
   switch (pathname) {
     case SupportedPath.StudentRegistration0:
@@ -91,6 +113,5 @@ document.addEventListener("DOMContentLoaded", function(event) {
   // this is needed to make bootstrap work
   const _ = bootstrap;
 
-  setupFamilyDetails();
   setupFamilyPicker();
 });

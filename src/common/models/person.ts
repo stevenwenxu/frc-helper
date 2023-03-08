@@ -14,6 +14,10 @@ export abstract class Person {
     this.middleName = middleName;
     this.lastName = lastName;
   }
+
+  get initials() {
+    return `${this.lastName[0]}.${this.firstName[0]}.`;
+  }
 }
 
 export class Parent extends Person {

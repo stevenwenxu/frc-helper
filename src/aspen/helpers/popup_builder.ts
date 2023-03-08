@@ -1,5 +1,6 @@
 import { Family } from '../../common/models/family';
 import { Student, Parent, Person } from '../../common/models/person';
+import { emailBody } from './generate_email';
 
 export class PopupBuilder {
   static generate(family: Family) {
@@ -79,7 +80,7 @@ export class PopupBuilder {
     return `
       <div class="tab-pane fade ${active}" id="person-${personIndex}" role="tabpanel" aria-labelledby="person-${personIndex}-tab" tabindex="0">
         <div class="d-grid gap-2 mb-3">
-          <button type="button" class="btn btn-outline-primary" data-person-index="${personIndex}" data-family-id="${familyUniqueId}">Fill</button>
+          <button type="button" class="btn btn-outline-primary" data-person-index="${personIndex}" data-family-id="${familyUniqueId}" data-function="fill">Fill</button>
         </div>
         <table class="table">
           <tbody>
@@ -135,7 +136,20 @@ export class PopupBuilder {
             ` : ""}
           </tbody>
         </table>
+        <div class="d-grid gap-2 mb-3">
+          <button type="button" class="btn btn-outline-success" data-person-index="${personIndex}" data-family-id="${familyUniqueId}" data-function="email">Generate email</button>
+        </div>
       </div>
+    `;
+  }
+
+  static generateEmail(students: Student[]) {
+    return `
+      <iframe
+        style="width: 100%; height: 600px; border: none;"
+        srcdoc="${emailBody(students)}"
+      >
+      </iframe>
     `;
   }
 }
