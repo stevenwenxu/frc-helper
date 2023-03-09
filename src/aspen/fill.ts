@@ -10,6 +10,7 @@ import { fillParent } from "./fill/parent";
 import { fillFRCTracker, saveFRCTrackerDetails, setupFRCTrackerHooks, setupFRCTrackerTooltips } from "./fill/frc_tracker";
 import { fillEducationalBackground, saveEducationComments, setupEducationalBackgroundHooks } from "./fill/educational_background";
 import { saveStudentDetails } from "./fill/student_person_address_detail";
+import { fillELL } from "./fill/programs_ell";
 
 chrome.runtime.onMessage.addListener(
   function(request, sender, sendResponse) {
@@ -65,6 +66,9 @@ function fill(familySerialized: any, personIndex: number, pathname: string, cont
           setupFRCTrackerTooltips();
           saveFRCTrackerDetails(family.uniqueId, personIndex);
           break;
+        case SupportedContext.ProgramsELL:
+          fillELL(person as Student);
+          break;
       }
       break;
     case SupportedPath.StudentPersonAddressDetail:
@@ -78,6 +82,7 @@ function fill(familySerialized: any, personIndex: number, pathname: string, cont
 
 export function setValue(element: HTMLInputElement | null, value: string, replaceExisting = true) {
   if (!element) {
+    console.log("Element not found", value);
     return;
   }
   if (element.value.length > 0 && !replaceExisting) {

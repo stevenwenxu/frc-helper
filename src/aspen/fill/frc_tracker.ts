@@ -4,6 +4,7 @@ import { FamilyRepository } from "../../common/family_repository";
 import { SchoolCategory } from "../../common/models/school_category";
 import { FRCTrackerFields } from "../helpers/frc_tracker_fields";
 import { setValue } from "../fill";
+import { LanguageCategory } from "../../common/models/language_category";
 
 export function fillFRCTracker(student: Student) {
   const elements = document.forms.namedItem("childDetailForm")!.elements;
@@ -84,10 +85,10 @@ export function setupFRCTrackerHooks(familyId: string, personIndex: number) {
       assessorSummaryLanguageAssessment,
       (() => {
         switch (FRCTrackerFields.languageCategory(dropdownValue)) {
-          case "native": return "1";
-          case "ESL": return "2";
-          case "ELD": return "3";
-          case "unknown": return "";
+          case LanguageCategory.Native: return "1";
+          case LanguageCategory.ESL: return "2";
+          case LanguageCategory.ELD: return "3";
+          case LanguageCategory.Unknown: return "";
         }
       })()
     );
@@ -163,13 +164,21 @@ export async function saveFRCTrackerDetails(familyId: string, personIndex: numbe
   const elements = document.forms.namedItem("childDetailForm")!.elements;
   const recommendationElement = elements.namedItem("propertyValue(pgmFieldA006)") as HTMLSelectElement;
   const assessorComments = elements.namedItem("propertyValue(pgmFieldD006)") as HTMLInputElement;
-  const assessorSummaryLanguageAssessment = elements.namedItem("propertyValue(pgmFieldA011)") as HTMLInputElement;
+  const englishProficiencyOral = elements.namedItem("propertyValue(pgmFieldA012)") as HTMLInputElement;
+  const englishProficiencyReading = elements.namedItem("propertyValue(pgmFieldA013)") as HTMLInputElement;
+  const englishProficiencyWriting = elements.namedItem("propertyValue(pgmFieldA014)") as HTMLInputElement;
   const englishProficiencyOverall = elements.namedItem("propertyValue(pgmFieldA015)") as HTMLInputElement;
 
   const dropdownValue = parseInt(recommendationElement.value);
 
   await FamilyRepository.updateStudent(familyId, personIndex, student => {
     student.schoolCategory = FRCTrackerFields.schoolCategory(dropdownValue);
+    student.languageCategory = FRCTrackerFields.languageCategory(dropdownValue);
+    student.listeningStep = englishProficiencyOral.value;
+    student.speakingStep = englishProficiencyOral.value;
+    student.readingStep = englishProficiencyReading.value;
+    student.writingStep = englishProficiencyWriting.value;
+    student.overallStep = englishProficiencyOverall.value;
 
     if (student.schoolCategory == SchoolCategory.Secondary) {
       student.secondaryCourseRecommendations = [
@@ -178,12 +187,6 @@ export async function saveFRCTrackerDetails(familyId: string, personIndex: numbe
       ].filter(str => str.length > 0).join(", ");
     } else {
       student.secondaryCourseRecommendations = "";
-    }
-
-    switch (assessorSummaryLanguageAssessment.value) {
-      case "1": student.overallStepLevel = "No ESL"; break;
-      case "2": student.overallStepLevel = `ESL STEP ${englishProficiencyOverall.value}`; break;
-      case "3": student.overallStepLevel = `ELD STEP ${englishProficiencyOverall.value}`; break;
     }
 
     return student;

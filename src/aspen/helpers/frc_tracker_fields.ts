@@ -1,3 +1,4 @@
+import { LanguageCategory } from "../../common/models/language_category";
 import { Student } from "../../common/models/person";
 import { SchoolCategory } from "../../common/models/school_category";
 
@@ -20,15 +21,15 @@ export class FRCTrackerFields {
       (dropdownValue >= 15 && dropdownValue <= 19) ||
       (dropdownValue >= 26 && dropdownValue <= 27) ||
       (dropdownValue >= 30 && dropdownValue <= 31)) {
-      return "ESL";
+      return LanguageCategory.ESL;
     } else if ((dropdownValue >= 5 && dropdownValue <= 8) ||
       (dropdownValue >= 20 && dropdownValue <= 24) ||
       (dropdownValue >= 28 && dropdownValue <= 29)) {
-      return "ELD";
+      return LanguageCategory.ELD;
     } else if (dropdownValue == 9 || dropdownValue == 14 || dropdownValue == 25) {
-      return "native";
+      return LanguageCategory.Native;
     } else {
-      return "unknown"
+      return LanguageCategory.Unknown;
     }
   }
 
@@ -39,9 +40,9 @@ export class FRCTrackerFields {
 
     if (school !== SchoolCategory.Secondary) {
       return "";
-    } else if (language === "native" || overall === "6") {
+    } else if (language === LanguageCategory.Native || overall === "6") {
       return "ENG2D";
-    } else if (language == "unknown" || overall === "") {
+    } else if (language == LanguageCategory.Unknown || overall === "") {
       return "";
     } else {
       // ESLAO, ESLBO, ..., ELDAO, ELDBO, ...
@@ -70,12 +71,12 @@ export class FRCTrackerFields {
 
     let comment = "";
 
-    if (languageCategory === "native") {
+    if (languageCategory === LanguageCategory.Native) {
       comment = `${name}'s first language is English, therefore ${name} may be assessed with the tools used for native speakers.`;
     } else if (schoolCategory === SchoolCategory.Kindergarten) {
       comment = `Although ${name} is a beginner in English, it is OCDSB's practice that Kindergarten English language learners are not stepped using Steps to English Proficiency at the time. This is because it is difficult to accurately determine the level of English proficiency in young children. However, ${name}'s English language development should be tracked by the teachers in case ${name} might be considered for ESL programming in grade 1.`
     } else {
-      if (languageCategory === "ELD") {
+      if (languageCategory === LanguageCategory.ELD) {
         comment = `In view of the gap between ${name}'s age and her academic skills, it is recommended that ${name} be provided with English Literacy Development (ELD) programming. ${name} will require support for developing English language proficiency and literacy across the curriculum.\n\n`;
       }
       comment += `${name} was assessed using the Steps to English Proficiency (STEP) initial assessment tool, based on this initial assessment, ${name} is working in ${languageCategory} STEP ${overallCategory}:
@@ -99,18 +100,18 @@ Writing ${languageCategory} STEP ${writing}.`;
 
     if (schoolCategory === SchoolCategory.Kindergarten) {
       return "1";
-    } else if (languageCategory === "native") {
+    } else if (languageCategory === LanguageCategory.Native) {
       return "1";
-    } else if (languageCategory === "ELD") {
+    } else if (languageCategory === LanguageCategory.ELD) {
       return "3";
     } else if (overallCategory === "") {
       return "";
-    } else if (languageCategory === "ESL" && schoolCategory === SchoolCategory.Elementary) {
+    } else if (languageCategory === LanguageCategory.ESL && schoolCategory === SchoolCategory.Elementary) {
       switch (overallCategory) {
         case "1": case "2": case "3": case "4": return "2";
         case "5": case "6": return "1";
       }
-    } else if (languageCategory === "ESL" && schoolCategory === SchoolCategory.Secondary) {
+    } else if (languageCategory === LanguageCategory.ESL && schoolCategory === SchoolCategory.Secondary) {
       switch (overallCategory) {
         case "1": case "2": case "3": case "4": case "5": return "2";
         case "6": return "1";

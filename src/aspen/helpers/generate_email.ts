@@ -86,7 +86,7 @@ export function emailBody(students: Student[]) {
               ` : "" }
               <tr>
                 <td>Overall STEP Level</td>
-                <td>${student.overallStepLevel}</td>
+                <td>${student.overallStepLevelForEmail}</td>
               </tr>
               <tr>
                 <td>Notes</td>

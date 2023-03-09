@@ -1,4 +1,5 @@
 import { NameHelper } from "../helpers/name_helper";
+import { LanguageCategory } from "./language_category";
 import { SchoolCategory } from "./school_category";
 
 export abstract class Person {
@@ -35,10 +36,24 @@ export class Student extends Person {
   grade = "";
   secondaryCourseRecommendations = "";
   schoolCategory = SchoolCategory.Unknown;
-  overallStepLevel = "";
+  languageCategory = LanguageCategory.Unknown;
+  listeningStep = "";
+  speakingStep = "";
+  readingStep = "";
+  writingStep = "";
+  overallStep = "";
   educationComments = "";
   homeLanguage = "";
   // Students who are registered at FRC Holding School are pending transfer to their target school.
   pendingTransfer = true;
   targetSchool = "";
+
+  get overallStepLevelForEmail() {
+    switch (this.languageCategory) {
+      case LanguageCategory.Native: return "No ESL";
+      case LanguageCategory.ESL: return `ESL STEP ${this.overallStep}`;
+      case LanguageCategory.ELD: return `ELD STEP ${this.overallStep}`;
+      case LanguageCategory.Unknown: return "";
+    }
+  }
 }
