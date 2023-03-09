@@ -157,7 +157,7 @@ export class PopupBuilder {
       </div>
       <iframe
         style="width: 100%; height: 600px; border: none;"
-        srcdoc="${emailBody(students)}"
+        srcdoc='${emailBody(students)}'
       >
       </iframe>
     `;
