@@ -75,7 +75,10 @@ export class FRCTrackerFields {
     } else if (schoolCategory === SchoolCategory.Kindergarten) {
       comment = `Although ${name} is a beginner in English, it is OCDSB's practice that Kindergarten English language learners are not stepped using Steps to English Proficiency at the time. This is because it is difficult to accurately determine the level of English proficiency in young children. However, ${name}'s English language development should be tracked by the teachers in case ${name} might be considered for ESL programming in grade 1.`
     } else {
-      comment = `${name} was assessed using the Steps to English Proficiency (STEP) initial assessment tool, based on this initial assessment, ${name} is working in ${languageCategory} STEP ${overallCategory}:
+      if (languageCategory === "ELD") {
+        comment = `In view of the gap between ${name}'s age and her academic skills, it is recommended that ${name} be provided with English Literacy Development (ELD) programming. ${name} will require support for developing English language proficiency and literacy across the curriculum.\n\n`;
+      }
+      comment += `${name} was assessed using the Steps to English Proficiency (STEP) initial assessment tool, based on this initial assessment, ${name} is working in ${languageCategory} STEP ${overallCategory}:
 Oral ${languageCategory} STEP ${oral}
 Reading ${languageCategory} STEP ${reading}
 Writing ${languageCategory} STEP ${writing}.`;
