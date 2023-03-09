@@ -1,5 +1,4 @@
 import { Student } from "../../common/models/person";
-import { Family } from "../../common/models/family";
 import { FamilyRepository } from "../../common/family_repository";
 import { EducationalBackgroundFields } from "../helpers/educational_background_fields";
 import { setValue } from "../fill";
@@ -33,10 +32,7 @@ export function setupEducationalBackgroundHooks(familyId: string, personIndex: n
   const comments = elements.namedItem("propertyValue(pgmFieldD002)") as HTMLInputElement;
 
   comments.addEventListener("change", async () => {
-    await FamilyRepository.updateStudent(familyId, personIndex, (student) => {
-      student.educationComments = comments.value;
-      return student;
-    });
+    await saveEducationComments(familyId, personIndex);
   });
 
   [grade, complete, country, schoolYear].forEach(element => {
@@ -55,5 +51,15 @@ export function setupEducationalBackgroundHooks(familyId: string, personIndex: n
         )
       );
     });
+  });
+}
+
+export async function saveEducationComments(familyId: string, personIndex: number) {
+  const elements = document.forms.namedItem("childDetailForm")!.elements;
+  const comments = elements.namedItem("propertyValue(pgmFieldD002)") as HTMLInputElement;
+
+  await FamilyRepository.updateStudent(familyId, personIndex, (student) => {
+    student.educationComments = comments.value;
+    return student;
   });
 }

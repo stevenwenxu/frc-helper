@@ -7,8 +7,8 @@ import {
 import { fillAddress } from "./fill/address";
 import { fillPhone } from "./fill/phone";
 import { fillParent } from "./fill/parent";
-import { fillFRCTracker, setupFRCTrackerHooks, setupFRCTrackerTooltips } from "./fill/frc_tracker";
-import { fillEducationalBackground, setupEducationalBackgroundHooks } from "./fill/educational_background";
+import { fillFRCTracker, saveFRCTrackerDetails, setupFRCTrackerHooks, setupFRCTrackerTooltips } from "./fill/frc_tracker";
+import { fillEducationalBackground, saveEducationComments, setupEducationalBackgroundHooks } from "./fill/educational_background";
 import { saveStudentDetails } from "./fill/student_person_address_detail";
 
 chrome.runtime.onMessage.addListener(
@@ -57,11 +57,13 @@ function fill(familySerialized: any, personIndex: number, pathname: string, cont
         case SupportedContext.EducationalBackground:
           setupEducationalBackgroundHooks(family.uniqueId, personIndex);
           fillEducationalBackground(person as Student);
+          saveEducationComments(family.uniqueId, personIndex);
           break;
         case SupportedContext.FRCTracker:
-          fillFRCTracker(person as Student);
           setupFRCTrackerHooks(family.uniqueId, personIndex);
+          fillFRCTracker(person as Student);
           setupFRCTrackerTooltips();
+          saveFRCTrackerDetails(family.uniqueId, personIndex);
           break;
       }
       break;

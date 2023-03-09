@@ -33,4 +33,8 @@ export class Family {
     this.visitDate = visitDate;
     return this;
   }
+
+  studentsInSameSchool(student: Student): Student[] {
+    return this.students.filter(s => s.targetSchool === student.targetSchool);
+  }
 }

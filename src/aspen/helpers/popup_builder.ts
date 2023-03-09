@@ -136,15 +136,25 @@ export class PopupBuilder {
             ` : ""}
           </tbody>
         </table>
+
+        ${person instanceof Student ? `
         <div class="d-grid gap-2 mb-3">
           <button type="button" class="btn btn-outline-success" data-person-index="${personIndex}" data-family-id="${familyUniqueId}" data-function="email">Generate email</button>
         </div>
+        ` : ""}
       </div>
     `;
   }
 
   static generateEmail(students: Student[]) {
     return `
+      <div class="hstack gap-4">
+        <button type="button" class="btn-close" aria-label="Close" data-function="close-email"></button>
+        <button type="button" class="btn btn-outline-success" data-function="gmail">
+          <img src="/images/gmail.png" width="20px" />
+          Open Gmail
+        </button>
+      </div>
       <iframe
         style="width: 100%; height: 600px; border: none;"
         srcdoc="${emailBody(students)}"

@@ -23,7 +23,8 @@ export function fillFRCTracker(student: Student) {
 
   setValue(
     elements.namedItem("propertyValue(pgmFieldA005)") as HTMLInputElement,
-    "0001100033"
+    "0001100033",
+    false
   );
 
   setValue(
@@ -125,36 +126,13 @@ export function setupFRCTrackerHooks(familyId: string, personIndex: number) {
     element.addEventListener("change", updateAssessorComments);
   });
 
-  assessorComments.addEventListener("change", async () => {
-    await FamilyRepository.updateStudent(familyId, personIndex, student => {
-      const dropdownValue = parseInt(recommendationElement.value);
-
-      student.schoolCategory = FRCTrackerFields.schoolCategory(dropdownValue);
-      if (student.schoolCategory == SchoolCategory.Secondary) {
-        student.secondaryCourseRecommendations = [
-          FRCTrackerFields.secondaryEnglishCourse(dropdownValue),
-          assessorComments.value.match(/\bM[A-Z][A-Z][0-9][A-Z]\b/)?.[0] || ""
-        ].filter(str => str.length > 0).join(", ");
-      } else {
-        student.secondaryCourseRecommendations = "";
-      }
-      return student;
-    });
-  });
-
   [
+    assessorComments,
     assessorSummaryLanguageAssessment,
     englishProficiencyOverall
   ].forEach(element => {
     element.addEventListener("change", async () => {
-      await FamilyRepository.updateStudent(familyId, personIndex, student => {
-        switch (assessorSummaryLanguageAssessment.value) {
-          case "1": student.overallStepLevel = "No ESL"; break;
-          case "2": student.overallStepLevel = `ESL STEP ${englishProficiencyOverall.value}`; break;
-          case "3": student.overallStepLevel = `ELD STEP ${englishProficiencyOverall.value}`; break;
-        }
-        return student;
-      });
+      await saveFRCTrackerDetails(familyId, personIndex);
     });
   });
 }
@@ -179,4 +157,35 @@ export function setupFRCTrackerTooltips() {
 
   // assessor comments
   (elements.namedItem("propertyValue(pgmFieldD006)") as HTMLInputElement).insertAdjacentHTML("beforebegin", hintStep(3));
+}
+
+export async function saveFRCTrackerDetails(familyId: string, personIndex: number) {
+  const elements = document.forms.namedItem("childDetailForm")!.elements;
+  const recommendationElement = elements.namedItem("propertyValue(pgmFieldA006)") as HTMLSelectElement;
+  const assessorComments = elements.namedItem("propertyValue(pgmFieldD006)") as HTMLInputElement;
+  const assessorSummaryLanguageAssessment = elements.namedItem("propertyValue(pgmFieldA011)") as HTMLInputElement;
+  const englishProficiencyOverall = elements.namedItem("propertyValue(pgmFieldA015)") as HTMLInputElement;
+
+  const dropdownValue = parseInt(recommendationElement.value);
+
+  await FamilyRepository.updateStudent(familyId, personIndex, student => {
+    student.schoolCategory = FRCTrackerFields.schoolCategory(dropdownValue);
+
+    if (student.schoolCategory == SchoolCategory.Secondary) {
+      student.secondaryCourseRecommendations = [
+        FRCTrackerFields.secondaryEnglishCourse(dropdownValue),
+        assessorComments.value.match(/\bM[A-Z][A-Z][0-9][A-Z]\b/)?.[0] || ""
+      ].filter(str => str.length > 0).join(", ");
+    } else {
+      student.secondaryCourseRecommendations = "";
+    }
+
+    switch (assessorSummaryLanguageAssessment.value) {
+      case "1": student.overallStepLevel = "No ESL"; break;
+      case "2": student.overallStepLevel = `ESL STEP ${englishProficiencyOverall.value}`; break;
+      case "3": student.overallStepLevel = `ELD STEP ${englishProficiencyOverall.value}`; break;
+    }
+
+    return student;
+  });
 }

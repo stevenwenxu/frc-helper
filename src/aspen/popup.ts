@@ -5,7 +5,7 @@ import { PopupBuilder } from "./helpers/popup_builder";
 import { Family } from "../common/models/family";
 import { SupportedPath } from "./helpers/supported_path";
 import { Student } from "../common/models/person";
-import { emailBody, emailSubject } from "./helpers/generate_email";
+import { emailSubject } from "./helpers/generate_email";
 
 function setupFamilyPicker() {
   const familyPicker = document.getElementById("familyPicker")!;
@@ -31,6 +31,17 @@ async function renderFamilyDetails() {
 function renderEmail(students: Student[]) {
   const familyDetails = document.getElementById("familyDetails")!;
   familyDetails.innerHTML = PopupBuilder.generateEmail(students);
+
+  const closeBtn = document.querySelector<HTMLButtonElement>("button[data-function='close-email'");
+  closeBtn?.addEventListener("click", renderFamilyDetails);
+
+  const gmailBtn = document.querySelector<HTMLButtonElement>("button[data-function='gmail'");
+  gmailBtn?.addEventListener("click", () => {
+    const subject = encodeURIComponent(emailSubject(students));
+    chrome.tabs.create({
+      url: `https://mail.google.com/mail/?view=cm&fs=1&su=${subject}`,
+    });
+  });
 }
 
 function setupFillButtons(family: Family) {
@@ -81,11 +92,10 @@ function setupEmailButtons(familyId: string) {
     emailButton.addEventListener("click", async () => {
       const family = await FamilyRepository.getFamilyWithUniqueId(familyId);
       if (family) {
-        const subject = encodeURIComponent(emailSubject(family.students));
-        chrome.tabs.create({
-          url: `https://mail.google.com/mail/?view=cm&fs=1&su=${subject}`,
-        });
-        renderEmail(family.students);
+        const personIndex = parseInt(emailButton.dataset.personIndex!);
+        const students = family.studentsInSameSchool(family.people[personIndex] as Student);
+
+        renderEmail(students);
       }
     });
   }

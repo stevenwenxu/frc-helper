@@ -36,7 +36,7 @@ export function emailBody(students: Student[]) {
       </head>
       <body>
         <p>Dear ${school} Team,</p>
-        <p>We had the pleasure of meeting the ${lastNames} family recently at the Family Reception Centre. This student is already enrolled at your school.</p>
+        <p>We had the pleasure of meeting the ${lastNames} family recently at the Family Reception Centre. ${students.length > 1 ? "These students are" : "This student is" } already enrolled at your school.</p>
         ${ students.map( student => `
         <table>
           <tbody>
@@ -70,7 +70,7 @@ export function emailBody(students: Student[]) {
         </table>
         `).join("<br>") }
         <br>
-        <p style="font-weight: bold;">The Student Profile in Aspen will include:</p>
+        <p style='font-weight: bold;'>The Student Profile in Aspen will include:</p>
         <ul>
           <li>ESL Report and Step levels in FRC Tracker</li>
           ${ students[0].schoolCategory === SchoolCategory.Secondary ? `

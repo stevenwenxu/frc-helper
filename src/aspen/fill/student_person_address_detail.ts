@@ -23,7 +23,7 @@ export async function saveStudentDetails(familyId: string, personIndex: number) 
     if (currentSchool) {
       student.pendingTransfer = currentSchool.value === "FRC Holding School";
     }
-    if (transferSchool) {
+    if (transferSchool && transferSchool.value.length > 0) {
       student.targetSchool = transferSchool.value;
     } else if (currentSchool) {
       student.targetSchool = currentSchool.value;
