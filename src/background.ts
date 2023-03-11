@@ -17,20 +17,16 @@ chrome.alarms.onAlarm.addListener(alarm => {
 chrome.action.onClicked.addListener(async function(tab) {
   const popupURL = chrome.runtime.getURL("/html/popup.html");
 
-  const openedWindows = await chrome.windows.getAll({ populate: true, windowTypes: ["popup"] });
+  const openedWindows = await chrome.windows.getAll({ populate: true });
   for (const openedWindow of openedWindows) {
     for (const tab of (openedWindow.tabs || [])) {
       if (tab.url === popupURL) {
         chrome.windows.update(openedWindow.id!, { focused: true });
+        chrome.tabs.update(tab.id!, { active: true });
         return;
       }
     };
   };
 
-  chrome.windows.create({
-    url: popupURL,
-    type: "popup",
-    width: 600,
-    height: 900,
-  });
+  chrome.tabs.create({ url: popupURL });
 });

@@ -49,12 +49,11 @@ export class PopupBuilder {
 
   private static generateNavItems(family: Family) {
     let parentIndex = 1;
-    let studentIndex = 1;
 
     const listItems = family.people.map((person, index) => {
       const active = index === 0 ? "active" : "";
       const selected = index === 0 ? "true" : "false";
-      const displayName = person instanceof Student ? `Student ${studentIndex++}` : `Parent ${parentIndex++}`;
+      const displayName = person instanceof Student ? person.firstName : `Parent ${parentIndex++}`;
 
       return `
         <li class="nav-item" role="presentation">
