@@ -34,6 +34,13 @@ export function fillFRCTracker(student: Student) {
     false
   );
 
+  // Oral communication: tasks
+  setValue(
+    elements.namedItem("propertyValue(pgmFieldD022)") as HTMLInputElement,
+    "Oral Interview\nStudent Portfolio",
+    false
+  );
+
   // Start the observations with student's name
   [
     "propertyValue(pgmFieldD002)",
