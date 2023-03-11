@@ -44,9 +44,9 @@ export class Student extends Person {
   overallStep = "";
   educationComments = "";
   homeLanguage = "";
-  // Students who are registered at FRC Holding School are pending transfer to their target school.
-  pendingTransfer = true;
-  targetSchool = "";
+  currentSchool = "";
+  transferSchool = "";
+  pendingTransferChecked = true;
 
   get overallStepLevelForEmail() {
     switch (this.languageCategory) {
@@ -55,5 +55,13 @@ export class Student extends Person {
       case LanguageCategory.ELD: return `ELD STEP ${this.overallStep}`;
       case LanguageCategory.Unknown: return "";
     }
+  }
+
+  get targetSchool() {
+    return this.transferSchool || this.currentSchool;
+  }
+
+  get isNewRegistration() {
+    return this.transferSchool.length > 0;
   }
 }

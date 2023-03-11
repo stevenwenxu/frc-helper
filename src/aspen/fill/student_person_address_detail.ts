@@ -8,6 +8,7 @@ export async function saveStudentDetails(familyId: string, personIndex: number) 
   const homeLanguage = elements.namedItem("propertyValue(stdHomeLang)") as HTMLSelectElement | null;
   const currentSchool = elements.namedItem("propertyValue(relStdSklOid_sklSchoolName)") as HTMLInputElement | null;
   const transferSchool = elements.namedItem("#propertyValue(stdSklOIDTrans)") as HTMLInputElement | null;
+  const transferPending = elements.namedItem("prefixpropertyValue(stdTransferInd)") as HTMLInputElement | null;
 
   await FamilyRepository.updateStudent(familyId, personIndex, (student) => {
     if (localId) {
@@ -21,12 +22,13 @@ export async function saveStudentDetails(familyId: string, personIndex: number) 
       student.homeLanguage = homeLanguage.value;
     }
     if (currentSchool) {
-      student.pendingTransfer = currentSchool.value === "FRC Holding School";
+      student.currentSchool = currentSchool.value;
     }
-    if (transferSchool && transferSchool.value.length > 0) {
-      student.targetSchool = transferSchool.value;
-    } else if (currentSchool) {
-      student.targetSchool = currentSchool.value;
+    if (transferSchool) {
+      student.transferSchool = transferSchool.value;
+    }
+    if (transferPending) {
+      student.pendingTransferChecked = transferPending.checked;
     }
 
     return student;

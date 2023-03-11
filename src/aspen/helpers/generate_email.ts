@@ -5,7 +5,7 @@ export function emailSubject(students: Student[]) {
   const formatter = new Intl.ListFormat("en", { style: "long", type: "conjunction" });
   const initials = formatter.format(students.map(s => s.initials));
   const student = students[0];
-  const type = student.pendingTransfer ? "Registration" : "Assessment";
+  const type = student.isNewRegistration ? "Registration" : "Assessment";
   return `New ${type} ${initials} ${student.targetSchool}`;
 }
 
@@ -15,8 +15,8 @@ export function emailBody(students: Student[]) {
   const languages = [...new Set(students.map(s => s.homeLanguage))];
   const languagesText = formatter.format(languages);
   const student = students[0];
-  const school = student.targetSchool;
   const moreThanOneStudent = students.length > 1;
+  const pendingTransferChecked = students.map(s => s.pendingTransferChecked).every(Boolean);
 
   return `
     <html>
@@ -44,23 +44,26 @@ export function emailBody(students: Student[]) {
           .bold {
             font-weight: bold;
           }
+          .error {
+            color: red;
+          }
         </style>
       </head>
       <body>
-        <p>Dear ${school} Team,</p>
+        <p>Dear ${emptyGuard(student.targetSchool)} Team,</p>
 
-        ${ student.pendingTransfer ? `
-        <p>We had the pleasure of meeting the ${lastNames} family recently at the Family Reception Centre. Based on the home address provided during the intake meeting, their ${moreThanOneStudent ? "children have" : "child has"} been activated in Aspen in the "FRC Holding School" and ${moreThanOneStudent ? "are" : "is"} ready to transfer to your school.</p>
+        ${ student.isNewRegistration ? `
+        <p>We had the pleasure of meeting the ${emptyGuard(lastNames)} family recently at the Family Reception Centre. Based on the home address provided during the intake meeting, their ${moreThanOneStudent ? "children have" : "child has"} been activated in Aspen in the "FRC Holding School" and ${moreThanOneStudent ? "are" : "is"} ${pendingTransferChecked ? "ready to transfer" : "<span class=\"error\">ready to transfer</span>"} to your school.</p>
         ` : `
-        <p>We had the pleasure of meeting the ${lastNames} family recently at the Family Reception Centre. ${moreThanOneStudent ? "These students are" : "This student is" } already enrolled at your school.</p>
+        <p>We had the pleasure of meeting the ${emptyGuard(lastNames)} family recently at the Family Reception Centre. ${moreThanOneStudent ? "These students are" : "This student is" } already enrolled at your school.</p>
         `}
 
-        ${ student.pendingTransfer ? `
+        ${ student.isNewRegistration ? `
         <p class="bold" style="color: blue">The family has completed a hard-copy registration form, attached.</p>
 
         <p class="bold" style="color: blue">The family has been instructed to complete the online registration and supporting documents form. They may require support in completing these forms.</p>
 
-        <p>The family speaks ${languagesText}. It is recommended that you invite an MLO who speaks ${languages.length > 1 ? "these languages" : "this language"} to support your conversations. If your school does not have an MLO, please request one here: <a href="https://forms.office.com/Pages/ResponsePage.aspx?id=BtVrYC9iWEK_-fzRubyWjjLYbNjq7tRCuw6D_vq-mF5UQ0FVVFI3WkNVQUNVRzJWUDRYVElOTEVIOS4u">Multicultural Liaison Officer (MLO) Request Form</a></p>
+        <p>The family speaks ${emptyGuard(languagesText)}. It is recommended that you invite an MLO who speaks ${languages.length > 1 ? "these languages" : "this language"} to support your conversations. If your school does not have an MLO, please request one here: <a href="https://forms.office.com/Pages/ResponsePage.aspx?id=BtVrYC9iWEK_-fzRubyWjjLYbNjq7tRCuw6D_vq-mF5UQ0FVVFI3WkNVQUNVRzJWUDRYVElOTEVIOS4u">Multicultural Liaison Officer (MLO) Request Form</a></p>
         ` : ``}
 
         ${ students.map( student => `
@@ -68,29 +71,29 @@ export function emailBody(students: Student[]) {
           <tbody>
               <tr>
                 <td>Student Name</td>
-                <td>${student.lastName}, ${student.firstName}</td>
+                <td>${emptyGuard(student.lastName)}, ${emptyGuard(student.firstName)}</td>
               </tr>
               <tr>
                 <td>Local ID #</td>
-                <td>${student.localId}</td>
+                <td>${emptyGuard(student.localId)}</td>
               </tr>
               <tr>
                 <td>Grade</td>
-                <td>${student.grade}</td>
+                <td>${emptyGuard(student.grade)}</td>
               </tr>
               ${ student.schoolCategory === SchoolCategory.Secondary ? `
               <tr>
                 <td>Course Recommendations</td>
-                <td>${student.secondaryCourseRecommendations}</td>
+                <td>${emptyGuard(student.secondaryCourseRecommendations)}</td>
               </tr>
               ` : "" }
               <tr>
                 <td>Overall STEP Level</td>
-                <td>${student.overallStepLevelForEmail}</td>
+                <td>${emptyGuard(student.overallStepLevelForEmail)}</td>
               </tr>
               <tr>
                 <td>Notes</td>
-                <td>${student.educationComments}</td>
+                <td>${emptyGuard(student.educationComments)}</td>
               </tr>
           </tbody>
         </table>
@@ -99,7 +102,7 @@ export function emailBody(students: Student[]) {
 
         <p class="bold">The Student Profile in Aspen will include:</p>
         <ul>
-          ${student.pendingTransfer ? `
+          ${student.isNewRegistration ? `
           <li>Family contact information</li>
           ` : ``}
           <li>ESL/ELD Report and Step levels in FRC Tracker</li>
@@ -108,7 +111,7 @@ export function emailBody(students: Student[]) {
           ` : "" }
         </ul>
 
-        ${student.pendingTransfer ? `
+        ${student.isNewRegistration ? `
         <p class="bold">Please find attached the following forms:</p>
         <ul>
           <li>Hard-copy Application for Admission Registration Form</li>
@@ -127,4 +130,8 @@ export function emailBody(students: Student[]) {
       </body>
     </html>
   `;
+}
+
+function emptyGuard(value: string) {
+  return value.length > 0 ? value : `<span class="error">[MISSING]</span>`;
 }
