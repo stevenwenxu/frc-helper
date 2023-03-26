@@ -79,7 +79,7 @@ export function emailBody(students: Student[]) {
               </tr>
               <tr>
                 <td>Grade</td>
-                <td>${emptyGuard(student.grade)}</td>
+                <td>${emptyGuard(student.gradeText)}</td>
               </tr>
               ${ student.schoolCategory === SchoolCategory.Secondary ? `
               <tr>

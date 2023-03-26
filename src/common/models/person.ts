@@ -64,4 +64,9 @@ export class Student extends Person {
   get isNewRegistration() {
     return this.transferSchool.length > 0;
   }
+
+  get gradeText() {
+    const gradeNum = parseInt(this.grade);
+    return isNaN(gradeNum) ? this.grade : `Grade ${gradeNum}`;
+  }
 }
