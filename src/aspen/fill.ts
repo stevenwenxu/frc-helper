@@ -95,13 +95,11 @@ export function setValue(element: HTMLInputElement | null, value: string, replac
     return;
   }
   if (element.value.length > 0 && !replaceExisting) {
-    element.style.backgroundColor = "";
     element.style.borderColor = "";
     return;
   }
 
   element.value = value;
   element.dispatchEvent(new Event("change"));
-  element.style.backgroundColor = "yellow";
   element.style.borderColor = "green";
 }
