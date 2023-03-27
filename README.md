@@ -24,7 +24,7 @@ These extraneous tasks require careful attention to detail, are really error-pro
 - The "Fill" button sets up hooks on certain form elements, so that other form elements that are derived or repeated in nature are updated automatically.
 - The "Fill" button also picks up relevant family details along the way, which are not in School Interviews. They are used for email generation.
 - Each student page has a "Generate email" button, which picks the correct template and combines all students in the family who are going to the same school. The email is fully populated if every page is filled using FRC Helper, otherwise it highlights missing fields that it didn't pick up.
-- Stored families are automatically cleaned up after 3 days to reduce clutter and respect privacy.
+- Stored families are automatically cleaned up after 5 days to reduce clutter and respect privacy.
 
 A demo video is available on request.
 
