@@ -14,21 +14,27 @@ import { fillELL } from "./fill/programs_ell";
 
 chrome.runtime.onMessage.addListener(
   function(request, sender, sendResponse) {
+    console.log("Aspen content script got message", request);
     if (request.hasOwnProperty("family") &&
         request.hasOwnProperty("personIndex") &&
         request.hasOwnProperty("pathname") &&
         request.hasOwnProperty("context")) {
-      fill(request.family, request.personIndex, request.pathname, request.context);
-      sendResponse({ message: "ok" });
+      fill(request.family, request.personIndex, request.pathname, request.context).then((fillResponse) => {
+        sendResponse({ type: "fillResponse", message: fillResponse });
+      });
     } else {
-      sendResponse({ message: `unknown request: ${Object.keys(request)}` });
+      sendResponse({ message: `Aspen content script didn't understand request: ${request}` });
     }
+
+    // https://stackoverflow.com/a/56483156
+    return true;
   }
 );
 
-function fill(familySerialized: any, personIndex: number, pathname: string, context: string | null) {
+async function fill(familySerialized: any, personIndex: number, pathname: string, context: string | null) {
   const family = FamilyRepository.familyFromStoredFamily(familySerialized);
   const person = family.people[personIndex];
+  let response = "ok";
 
   switch (pathname) {
     case SupportedPath.StudentRegistration0:
@@ -72,12 +78,15 @@ function fill(familySerialized: any, personIndex: number, pathname: string, cont
       }
       break;
     case SupportedPath.StudentPersonAddressDetail:
-      saveStudentDetails(family.uniqueId, personIndex);
+      const saveResult = await saveStudentDetails(family.uniqueId, personIndex);
+      response = saveResult ? "refreshRequired" : "refreshNotRequired";
       break;
     default:
       console.log("Unknown page", pathname);
       break;
   }
+
+  return response;
 }
 
 export function setValue(element: HTMLInputElement | null, value: string, replaceExisting = true) {

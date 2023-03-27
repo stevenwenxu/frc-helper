@@ -60,6 +60,6 @@ export async function saveEducationComments(familyId: string, personIndex: numbe
 
   await FamilyRepository.updateStudent(familyId, personIndex, (student) => {
     student.educationComments = comments.value;
-    return student;
+    return Promise.resolve(student);
   });
 }

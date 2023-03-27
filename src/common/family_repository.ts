@@ -32,12 +32,27 @@ export class FamilyRepository {
     console.log(`family_repository.ts: Successfully saved family ${familyId} to local storage.`);
   }
 
-  static async updateStudent(familyId: string, personIndex: number, updateBlock: (person: Student) => Student) {
+  /**
+   * Updates the student with the return value of updateBlock.
+   * @param familyId The unique id of the family.
+   * @param personIndex The index of the student in the family.
+   * @param updateBlock A function that takes a persisted student, mutates the student (possibly async), and returns a Promise that resolves to the updated student. If the updateBlock returns false, the student will not be updated.
+   * @returns A Promise that resolves to true if the student was updated, false otherwise.
+   */
+  static async updateStudent(familyId: string, personIndex: number, updateBlock: (person: Student) => Promise<Student | false>) {
+    let studentUpdated = true;
     const family = await this.getFamilyWithUniqueId(familyId);
     if (family) {
-      family.people[personIndex] = updateBlock(family.people[personIndex] as Student);
-      await this.saveFamily(family);
+      const updateResult = await updateBlock(family.people[personIndex] as Student);
+      if (updateResult) {
+        family.people[personIndex] = updateResult;
+        await this.saveFamily(family);
+      } else {
+        console.log("family_repository.ts: updateStudent aborted.");
+        studentUpdated = false;
+      }
     }
+    return studentUpdated;
   }
 
   static clearOldFamilies() {

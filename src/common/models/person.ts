@@ -16,6 +16,10 @@ export abstract class Person {
     this.lastName = lastName;
   }
 
+  get fullName() {
+    return `${this.firstName} ${this.middleName} ${this.lastName}`;
+  }
+
   get initials() {
     return `${this.lastName[0]}.${this.firstName[0]}.`;
   }

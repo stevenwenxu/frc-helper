@@ -72,14 +72,18 @@ function setupFillButtons(family: Family) {
           return;
         }
 
-        chrome.tabs.sendMessage(tab.id!, {
+        const fillResponse = await chrome.tabs.sendMessage(tab.id!, {
           family: family,
           personIndex: personIndex,
           pathname: pathname,
           context: context
-        }, (response) => {
-          console.log("Got response:", response);
         });
+        console.log("Popup fill response:", fillResponse);
+        if (fillResponse.type === "fillResponse" && fillResponse.message === "refreshRequired") {
+          const currentSelectedPerson = document.querySelector(".nav-link.active")!;
+          await renderFamilyDetails();
+          bootstrap.Tab.getOrCreateInstance(`#${currentSelectedPerson.id}`).show();
+        }
       }
     });
   }
@@ -125,3 +129,22 @@ document.addEventListener("DOMContentLoaded", function(event) {
 
   setupFamilyPicker();
 });
+
+chrome.runtime.onMessage.addListener(
+  function(request, sender, sendResponse) {
+    console.log("Popup got message:", request);
+    if (request.hasOwnProperty("type")) {
+      switch (request.type) {
+        case "confirmUpdateStudentName":
+          const response = confirm(`Do you want to update ${request.oldName} to ${request.newName}?`);
+          sendResponse({ confirmUpdateStudentName: response });
+          break;
+        default:
+          sendResponse({ message: `Popup didn't understand request: ${request}` });
+          break;
+      }
+    } else {
+      sendResponse({ message: `Popup didn't understand request: ${request}` });
+    }
+  }
+);

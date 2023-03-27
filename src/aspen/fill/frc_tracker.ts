@@ -178,7 +178,7 @@ export async function saveFRCTrackerDetails(familyId: string, personIndex: numbe
 
   const dropdownValue = parseInt(recommendationElement.value);
 
-  await FamilyRepository.updateStudent(familyId, personIndex, student => {
+  await FamilyRepository.updateStudent(familyId, personIndex, (student) => {
     student.schoolCategory = FRCTrackerFields.schoolCategory(dropdownValue);
     student.languageCategory = FRCTrackerFields.languageCategory(dropdownValue);
     student.listeningStep = englishProficiencyOral.value;
@@ -196,6 +196,6 @@ export async function saveFRCTrackerDetails(familyId: string, personIndex: numbe
       student.secondaryCourseRecommendations = "";
     }
 
-    return student;
+    return Promise.resolve(student);
   });
 }
