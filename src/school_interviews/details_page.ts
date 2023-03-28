@@ -4,6 +4,7 @@ import { FamilyRepository } from "../common/family_repository";
 import { Family } from "../common/models/family";
 import { Parent, Student } from "../common/models/person";
 import { RawData } from "./models/raw_data";
+import "../scss/styles.scss";
 
 function patchDetailsPage(table: HTMLTableElement) {
   fetch(chrome.runtime.getURL('/html/details_page.html')).then(r => r.text()).then(html => {
@@ -124,10 +125,7 @@ function personIndexAndPersonFromDataset(element: HTMLElement, family: Family): 
   return [personIndex, family.people[personIndex]];
 }
 
-// make sure we're on the details page
-if (/\/parents\/\d+\/details$/.test(location.pathname)) {
-  const table = document.querySelector<HTMLTableElement>("#container > div > section > table");
-  if (table) {
-    patchDetailsPage(table);
-  }
+const table = document.querySelector<HTMLTableElement>("#container > div > section > table");
+if (table) {
+  patchDetailsPage(table);
 }

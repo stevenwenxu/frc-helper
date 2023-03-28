@@ -10,7 +10,7 @@
     {
       "js": ["js/school_interviews.js"],
       "matches": [
-        "https://www.schoolinterviews.com.au/*/parents/*/details"
+        "https://www.schoolinterviews.com.au/*"
       ]
     },
     {
