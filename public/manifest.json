@@ -2,7 +2,7 @@
   "manifest_version": 3,
   "name": "FRC Helper",
   "description": "Helps transfer data from School Interviews to Aspen",
-  "version": "1.5.0",
+  "version": "1.6.0",
   "action": {
 
   },
