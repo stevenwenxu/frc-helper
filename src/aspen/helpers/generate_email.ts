@@ -5,8 +5,11 @@ export function emailSubject(students: Student[]) {
   const formatter = new Intl.ListFormat("en", { style: "long", type: "conjunction" });
   const initials = formatter.format(students.map(s => s.initials));
   const student = students[0];
-  const type = student.isNewRegistration ? "Registration" : "Assessment";
-  return `New ${type} ${initials} ${student.targetSchool}`;
+  if (student.isNewRegistration) {
+    return `New Registration ${initials} ${student.targetSchool}`;
+  } else {
+    return `FRC Student Assessment in Aspen ${initials} ${student.targetSchool}`;
+  }
 }
 
 export function emailBody(students: Student[]) {
