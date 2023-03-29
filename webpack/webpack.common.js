@@ -10,6 +10,7 @@ module.exports = {
     school_interviews: path.join(srcDir, "school_interviews/entry.ts"),
     popup: path.join(srcDir, "aspen/popup.ts"),
     aspen_fill: path.join(srcDir, "aspen/fill.ts"),
+    options: path.join(srcDir, "options.ts"),
   },
   output: {
     path: path.join(__dirname, "../dist/js"),

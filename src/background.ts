@@ -1,4 +1,5 @@
 import { FamilyRepository } from "./common/family_repository";
+import { OptionsRepository } from "./common/options_repository";
 
 chrome.runtime.onInstalled.addListener(() => {
   chrome.alarms.create("storage cleanup", {
@@ -28,5 +29,18 @@ chrome.action.onClicked.addListener(async function(tab) {
     };
   };
 
-  chrome.tabs.create({ url: popupURL });
+  const displayMode = await OptionsRepository.getDisplayMode();
+  switch (displayMode) {
+    case "tab":
+      chrome.tabs.create({ url: popupURL });
+      break;
+    case "popup":
+      chrome.windows.create({
+        url: popupURL,
+        type: "popup",
+        width: 600,
+        height: 900,
+      });
+      break;
+  }
 });
