@@ -29,11 +29,15 @@ async function renderFamilyDetails() {
 }
 
 function renderEmail(students: Student[]) {
+  const currentSelectedPersonId = document.querySelector(".nav-link.active")!.id;
   const familyDetails = document.getElementById("familyDetails")!;
   familyDetails.innerHTML = PopupBuilder.generateEmail(students);
 
   const closeBtn = document.querySelector<HTMLButtonElement>("button[data-function='close-email'");
-  closeBtn?.addEventListener("click", renderFamilyDetails);
+  closeBtn?.addEventListener("click", async () => {
+    await renderFamilyDetails();
+    bootstrap.Tab.getOrCreateInstance(`#${currentSelectedPersonId}`).show();
+  });
 
   const gmailBtn = document.querySelector<HTMLButtonElement>("button[data-function='gmail'");
   gmailBtn?.addEventListener("click", () => {
