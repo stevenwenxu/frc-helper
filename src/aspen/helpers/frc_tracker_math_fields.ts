@@ -61,7 +61,7 @@ export class FRCTrackerMathFields {
           str += `\n${student.capitalizedPronoun} demonstrated proficiency in ${formatter.format(assessment.result.P)}.`;
         }
         if (assessment.result.S.length > 0) {
-          str += `\n${student.capitalizedPronoun} also showed some proficiency in ${formatter.format(assessment.result.S)}.`;
+          str += `\n${student.capitalizedPronoun} showed some proficiency in ${formatter.format(assessment.result.S)}.`;
         }
         if (assessment.result.L.length > 0) {
           str += `\n${student.capitalizedPronoun} lacked proficiency in the aspects of ${formatter.format(assessment.result.L)}.`;
