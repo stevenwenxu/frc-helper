@@ -1,3 +1,4 @@
+import { SecondaryMathAssessment } from "./secondary_math_assessment";
 import { NameHelper } from "../helpers/name_helper";
 import { Gender } from "./gender";
 import { LanguageCategory } from "./language_category";
@@ -54,6 +55,7 @@ export class Student extends Person {
   currentSchool = "";
   transferSchool = "";
   pendingTransferChecked = true;
+  secondaryMathAssessment: SecondaryMathAssessment | null = null;
 
   get overallStepLevelForEmail() {
     switch (this.languageCategory) {
@@ -77,11 +79,11 @@ export class Student extends Person {
     return isNaN(gradeNum) ? this.grade : `Grade ${gradeNum}`;
   }
 
-  get pronoun() {
+  get capitalizedPronoun() {
     switch (this.gender) {
-      case Gender.Female: return "she";
-      case Gender.Male: return "he";
-      default: return "they";
+      case Gender.Female: return "She";
+      case Gender.Male: return "He";
+      default: return "They";
     }
   }
 }
