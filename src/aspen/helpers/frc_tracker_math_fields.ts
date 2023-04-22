@@ -1,7 +1,9 @@
 import { Student } from "../../common/models/person";
+import { SecondaryMathAssessment } from "../../common/models/secondary_math_assessment";
+import { SecondaryMathExamGradeLevel, SecondaryMathExams } from "../../common/models/secondary_math_exams";
 
 export class FRCTrackerMathFields {
-  static mathTasksBelowSecondary(student: Student) {
+  static mathTasks(student: Student) {
     switch (student.grade) {
       case "JK": return "Counters and shapes";
       case "SK": return "Manipulatives and shapes";
@@ -13,11 +15,17 @@ export class FRCTrackerMathFields {
       case "6": return "F - Number Sense and Numeration Initial Assessment (Grade 6)";
       case "7": return "G - Number Sense and Numeration Initial Assessment (Grade 7)";
       case "8": return "H - Number Sense and Numeration Initial Assessment (Grade 8)";
-      default: return "";
+      case "9":
+      case "10":
+      case "11":
+      case "12":
+        return student.secondaryMathAssessment?.tasks.join("\n") || "";
+      default:
+        return "";
     }
   }
 
-  static mathObservationsBelowSecondary(student: Student) {
+  static mathObservations(student: Student) {
     switch (student.grade) {
       case "JK":
         return `${student.firstName} was able to group the same coloured counters to the same group and count out the number of counters in each group. ${student.capitalizedPronoun} could count from 1 to 20 in English, and identify the basic shapes.`;
@@ -39,19 +47,46 @@ export class FRCTrackerMathFields {
         return `${student.firstName} demonstrated computational skills that are approximately at the grade 7 level. ${student.capitalizedPronoun} was able to add and subtract four-digit numbers. ${student.capitalizedPronoun} was also able to do the multi-digit multiplication and division. ${student.firstName} needs to improve in addition and subtraction to the decimal numbers.`;
       case "8":
         return `${student.firstName} demonstrated computational skills that are approximately at the grade 8 level. ${student.capitalizedPronoun} was able to add and subtract integers, decimal numbers, and fractions. ${student.firstName} multiplied and divided four-digit numbers by two-digit numbers. ${student.firstName} needs to work on solving equations that contain brackets, using order of operations.`;
+      case "9":
+      case "10":
+      case "11":
+      case "12": {
+        const assessment = student.secondaryMathAssessment;
+        if (!assessment) {
+          return "";
+        }
+        const formatter = new Intl.ListFormat("en", { style: "long", type: "conjunction" });
+        let str = `${student.firstName} was assessed using the Incoming Grade ${assessment.gradeLevelOfExam} Mathematics Assessment.`;
+        if (assessment.result.P.length > 0) {
+          str += `\n${student.capitalizedPronoun} demonstrated proficiency in ${formatter.format(assessment.result.P)}.`;
+        }
+        if (assessment.result.S.length > 0) {
+          str += `\n${student.capitalizedPronoun} also showed some proficiency in ${formatter.format(assessment.result.S)}.`;
+        }
+        if (assessment.result.L.length > 0) {
+          str += `\n${student.capitalizedPronoun} lacked proficiency in the aspects of ${formatter.format(assessment.result.L)}.`;
+        }
+        if (assessment.passed) {
+          str += `\nTherefore, ${this.courseCode(assessment)} is recommended for mathematics.`;
+        } else {
+          str += `\nBased on the math initial assessment, ${student.firstName} lacked proficiency in several topics, therefore the ${this.courseCode(assessment)} course is recommended for mathematics.`;
+        }
+        return str;
+      }
       default:
         return "";
     }
   }
 
-  static mathTasksSecondary(selectedTasks: string[]) {
-    return selectedTasks.join("\n");
-  }
-
-  static mathObservationsSecondary(student: Student) {
-    return `${student.firstName} was assessed using the Incoming Grade 9 Mathematics Assessment, she demonstrated proficiency in
-    She also showed some proficiency in
-    She lacked proficiency in the aspects of
-    `;
+  private static courseCode(assessment: SecondaryMathAssessment) {
+    let grade: SecondaryMathExamGradeLevel = assessment.gradeLevelOfExam;
+    if (!assessment.passed) {
+      grade = `${parseInt(grade) - 1}` as SecondaryMathExamGradeLevel;
+    }
+    const courses = SecondaryMathExams[grade];
+    const courseCode = Object.keys(courses).filter(courseCode => {
+      return courses[courseCode].audience.includes(assessment.examAudience);
+    }).at(0) || "UNKNOWN";
+    return courseCode;
   }
 }
