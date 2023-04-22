@@ -1,32 +1,25 @@
 import { FamilyRepository } from "../../common/family_repository";
+import { Gender } from "../../common/models/gender";
 import { Student } from "../../common/models/person";
 
-// Returns a Promise that resolves to true if the student name was updated, false otherwise.
 export async function saveStudentDetails(familyId: string, personIndex: number) {
   const elements = document.forms.namedItem("personAddressDetailForm")!.elements;
   const preferredFirstName = elements.namedItem("propertyValue(relStdPsnOid_psnNameFirst)") as HTMLInputElement | null;
   const preferredMiddleName = elements.namedItem("propertyValue(relStdPsnOid_psnNameMiddle)") as HTMLInputElement | null;
   const preferredLastName = elements.namedItem("propertyValue(relStdPsnOid_psnNameLast)") as HTMLInputElement | null;
-  let studentNameUpdated = false;
 
   await FamilyRepository.updateStudent(familyId, personIndex, async (student) => {
-    // If the preferred name is different from the current name, ask the user if they want to update it.
-    if (preferredFirstName && preferredMiddleName && preferredLastName &&
-      (preferredFirstName.value !== student.firstName ||
-      preferredMiddleName.value !== student.middleName ||
-      preferredLastName.value !== student.lastName)) {
-
+    if (needsToConfirmChange(student)) {
       const response = await chrome.runtime.sendMessage<Object, {confirmUpdateStudentName: boolean}>(
         {
           type: "confirmUpdateStudentName",
           oldName: student.fullName,
-          newName: `${preferredFirstName.value} ${preferredMiddleName.value} ${preferredLastName.value}`
+          newName: `${preferredFirstName!.value} ${preferredMiddleName!.value} ${preferredLastName!.value}`
         }
       );
 
       console.log("Confirm update student response:", response);
       if (response.confirmUpdateStudentName) {
-        studentNameUpdated = true;
         return updateStudentDetails(student);
       } else {
         return false;
@@ -35,8 +28,6 @@ export async function saveStudentDetails(familyId: string, personIndex: number) 
       return updateStudentDetails(student);
     }
   });
-
-  return studentNameUpdated;
 }
 
 function updateStudentDetails(student: Student) {
@@ -47,6 +38,8 @@ function updateStudentDetails(student: Student) {
   const preferredFirstName = elements.namedItem("propertyValue(relStdPsnOid_psnNameFirst)") as HTMLInputElement | null;
   const preferredMiddleName = elements.namedItem("propertyValue(relStdPsnOid_psnNameMiddle)") as HTMLInputElement | null;
   const preferredLastName = elements.namedItem("propertyValue(relStdPsnOid_psnNameLast)") as HTMLInputElement | null;
+  const dateOfBirth = elements.namedItem("propertyValue(relStdPsnOid_psnDob)") as HTMLInputElement | null;
+  const gender = elements.namedItem("propertyValue(relStdPsnOid_psnGenderCode)") as HTMLSelectElement | null;
   const localId = elements.namedItem("propertyValue(stdIDLocal)") as HTMLInputElement | null;
   const grade = elements.namedItem("propertyValue(stdGradeLevel)") as HTMLSelectElement | null;
   const homeLanguage = elements.namedItem("propertyValue(stdHomeLang)") as HTMLSelectElement | null;
@@ -62,6 +55,13 @@ function updateStudentDetails(student: Student) {
   }
   if (preferredLastName) {
     student.lastName = preferredLastName.value;
+  }
+  if (dateOfBirth) {
+    student.dateOfBirth = dateOfBirth.value;
+  }
+  if (gender) {
+    // TODO: this may need a confirmation dialog if value is unknown
+    student.gender = gender.value as Gender;
   }
   if (localId) {
     student.localId = localId.value;
@@ -84,4 +84,21 @@ function updateStudentDetails(student: Student) {
   }
 
   return student;
+}
+
+function needsToConfirmChange(currentStudent: Student) {
+  const elements = document.forms.namedItem("personAddressDetailForm")!.elements;
+  const preferredFirstName = elements.namedItem("propertyValue(relStdPsnOid_psnNameFirst)") as HTMLInputElement | null;
+  const preferredMiddleName = elements.namedItem("propertyValue(relStdPsnOid_psnNameMiddle)") as HTMLInputElement | null;
+  const preferredLastName = elements.namedItem("propertyValue(relStdPsnOid_psnNameLast)") as HTMLInputElement | null;
+
+  if (!preferredFirstName || !preferredMiddleName || !preferredLastName) {
+    return false;
+  }
+
+  const isNameDifferent = preferredFirstName.value !== currentStudent.firstName ||
+    preferredMiddleName.value !== currentStudent.middleName ||
+    preferredLastName.value !== currentStudent.lastName;
+
+  return isNameDifferent;
 }

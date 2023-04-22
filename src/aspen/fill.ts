@@ -78,8 +78,8 @@ async function fill(familySerialized: any, personIndex: number, pathname: string
       }
       break;
     case SupportedPath.StudentPersonAddressDetail:
-      const saveResult = await saveStudentDetails(family.uniqueId, personIndex);
-      response = saveResult ? "refreshRequired" : "refreshNotRequired";
+      await saveStudentDetails(family.uniqueId, personIndex);
+      response = "refreshRequired";
       break;
     default:
       console.log("Unknown page", pathname);

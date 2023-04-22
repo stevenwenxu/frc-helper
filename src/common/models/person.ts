@@ -1,4 +1,5 @@
 import { NameHelper } from "../helpers/name_helper";
+import { Gender } from "./gender";
 import { LanguageCategory } from "./language_category";
 import { SchoolCategory } from "./school_category";
 
@@ -36,7 +37,9 @@ export class Student extends Person {
   studentNotes = "";
 
   // Fields below are captured from Aspen, they are used to generate email.
+  gender = Gender.PreferNotToDisclose;
   localId = "";
+  // JK, SK, 1-12
   grade = "";
   secondaryCourseRecommendations = "";
   schoolCategory = SchoolCategory.Unknown;
@@ -72,5 +75,13 @@ export class Student extends Person {
   get gradeText() {
     const gradeNum = parseInt(this.grade);
     return isNaN(gradeNum) ? this.grade : `Grade ${gradeNum}`;
+  }
+
+  get pronoun() {
+    switch (this.gender) {
+      case Gender.Female: return "she";
+      case Gender.Male: return "he";
+      default: return "they";
+    }
   }
 }
