@@ -5,8 +5,8 @@ import { PopupBuilder } from "./helpers/popup_builder";
 import { Family } from "../common/models/family";
 import { SupportedPath } from "./helpers/supported_path";
 import { Student } from "../common/models/person";
-import { emailSubject } from "./helpers/generate_email";
-import { MathAssessmentBuilder } from "./helpers/math_assessment_builder";
+import { setupMathAssessmentButtons } from "./math_assessment/math_assessment";
+import { setupEmailButtons } from "./email/email";
 
 function setupFamilyPicker() {
   const familyPicker = document.getElementById("familyPicker")!;
@@ -17,7 +17,7 @@ function setupFamilyPicker() {
   });
 }
 
-async function renderFamilyDetails() {
+export async function renderFamilyDetails() {
   const familyPicker = document.getElementById("familyPicker")! as HTMLSelectElement;
   const familyDetails = document.getElementById("familyDetails")!;
   const familyUniqueId = familyPicker.value;
@@ -31,38 +31,6 @@ async function renderFamilyDetails() {
     setupMathAssessmentButtons(family.uniqueId);
     setupEmailButtons(family.uniqueId);
   }
-}
-
-function renderEmail(students: Student[]) {
-  const currentSelectedPersonId = document.querySelector(".nav-link.active")!.id;
-  const familyDetails = document.getElementById("familyDetails")!;
-  familyDetails.innerHTML = PopupBuilder.generateEmail(students);
-
-  const closeBtn = document.querySelector<HTMLButtonElement>("button[data-function='close-email'");
-  closeBtn?.addEventListener("click", async () => {
-    await renderFamilyDetails();
-    bootstrap.Tab.getOrCreateInstance(`#${currentSelectedPersonId}`).show();
-  });
-
-  const gmailBtn = document.querySelector<HTMLButtonElement>("button[data-function='gmail'");
-  gmailBtn?.addEventListener("click", () => {
-    const subject = encodeURIComponent(emailSubject(students));
-    chrome.tabs.create({
-      url: `https://mail.google.com/mail/?view=cm&fs=1&su=${subject}`,
-    });
-  });
-}
-
-function renderMathAssessment(student: Student) {
-  const currentSelectedPersonId = document.querySelector(".nav-link.active")!.id;
-  const familyDetails = document.getElementById("familyDetails")!;
-  familyDetails.innerHTML = MathAssessmentBuilder.build(student);
-
-  const closeBtn = document.querySelector<HTMLButtonElement>("button[data-function='close-math-assessment'");
-  closeBtn?.addEventListener("click", async () => {
-    await renderFamilyDetails();
-    bootstrap.Tab.getOrCreateInstance(`#${currentSelectedPersonId}`).show();
-  });
 }
 
 function setupFillButtons(family: Family) {
@@ -105,36 +73,6 @@ function setupFillButtons(family: Family) {
           await renderFamilyDetails();
           bootstrap.Tab.getOrCreateInstance(`#${currentSelectedPerson.id}`).show();
         }
-      }
-    });
-  }
-}
-
-function setupMathAssessmentButtons(familyId: string) {
-  const buttons = document.querySelectorAll<HTMLButtonElement>(".tab-pane button[data-function='mathAssessment'");
-  for (const button of Array.from(buttons)) {
-    button.addEventListener("click", async () => {
-      const family = await FamilyRepository.getFamilyWithUniqueId(familyId);
-      if (family) {
-        const personIndex = parseInt(button.dataset.personIndex!);
-        const student = family.people[personIndex] as Student;
-
-        renderMathAssessment(student);
-      }
-    });
-  }
-}
-
-function setupEmailButtons(familyId: string) {
-  const emailButtons = document.querySelectorAll<HTMLButtonElement>(".tab-pane button[data-function='email'");
-  for (const emailButton of Array.from(emailButtons)) {
-    emailButton.addEventListener("click", async () => {
-      const family = await FamilyRepository.getFamilyWithUniqueId(familyId);
-      if (family) {
-        const personIndex = parseInt(emailButton.dataset.personIndex!);
-        const students = family.studentsInSameSchool(family.people[personIndex] as Student);
-
-        renderEmail(students);
       }
     });
   }

@@ -1,7 +1,6 @@
 import { Family } from '../../common/models/family';
 import { Student, Parent, Person } from '../../common/models/person';
 import { SchoolCategory } from '../../common/models/school_category';
-import { emailBody } from './generate_email';
 
 export class PopupBuilder {
   static generate(family: Family) {
@@ -147,23 +146,6 @@ export class PopupBuilder {
         </div>
         ` : ""}
       </div>
-    `;
-  }
-
-  static generateEmail(students: Student[]) {
-    return `
-      <div class="hstack gap-4">
-        <button type="button" class="btn-close" aria-label="Close" data-function="close-email"></button>
-        <button type="button" class="btn btn-outline-success" data-function="gmail">
-          <img src="/images/gmail.png" width="20px" />
-          Open Gmail
-        </button>
-      </div>
-      <iframe
-        style="width: 100%; height: 600px; border: none;"
-        srcdoc='${emailBody(students)}'
-      >
-      </iframe>
     `;
   }
 }
