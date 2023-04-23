@@ -74,6 +74,7 @@ function setupForm(family: Family, personIndex: number) {
   setupDiagnosticTasks(family.uniqueId, personIndex, assessment);
   setupCourseCode(family.uniqueId, personIndex, assessment);
   setupGradingTable(family.uniqueId, personIndex, assessment);
+  setupOutcome(family.uniqueId, personIndex, assessment);
 }
 
 function setupDiagnosticTasks(familyId: string, personIndex: number, assessment: SecondaryMathAssessment) {
@@ -125,4 +126,13 @@ function setupGradingTable(familyId: string, personIndex: number, assessment: Se
       await updateStudentAssessment(familyId, personIndex, assessment);
     });
   }
+}
+
+function setupOutcome(familyId: string, personIndex: number, assessment: SecondaryMathAssessment) {
+  const outcome = document.getElementById("outcome") as HTMLSelectElement;
+  outcome.addEventListener("change", async () => {
+    assessment.passed = outcome.value === "1";
+
+    await updateStudentAssessment(familyId, personIndex, assessment);
+  });
 }

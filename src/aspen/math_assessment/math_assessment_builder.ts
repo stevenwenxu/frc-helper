@@ -25,7 +25,7 @@ export class MathAssessmentBuilder {
           ${this.buildDiagnosticTasksRow(assessment.diagnosticTasks)}
           ${this.buildCourseCodeRow(assessment.courseCode)}
           ${this.buildGradingTableRow(assessment)}
-          ${this.buildOutcomeRow()}
+          ${this.buildOutcomeRow(assessment.passed)}
         </div>
       </div>
     `;
@@ -118,13 +118,16 @@ export class MathAssessmentBuilder {
     `;
   }
 
-  private static buildOutcomeRow() {
+  private static buildOutcomeRow(passed: boolean) {
+    const passedSelected = passed ? "selected" : "";
+    const failedSelected = passed ? "" : "selected";
+
     return `
       <div class="row">
         <div class="col-12 form-floating g-2">
           <select class="form-select" id="outcome">
-            <option value="1">Passed</option>
-            <option value="0">Failed</option>
+            <option value="1" ${passedSelected}>Passed</option>
+            <option value="0" ${failedSelected}>Failed</option>
           </select>
           <label for="outcome" class="col-form-label">Outcome</label>
         </div>
