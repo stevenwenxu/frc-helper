@@ -6,6 +6,7 @@ import { Family } from "../common/models/family";
 import { SupportedPath } from "./helpers/supported_path";
 import { Student } from "../common/models/person";
 import { emailSubject } from "./helpers/generate_email";
+import { MathAssessmentBuilder } from "./helpers/math_assessment_builder";
 
 function setupFamilyPicker() {
   const familyPicker = document.getElementById("familyPicker")!;
@@ -23,7 +24,11 @@ async function renderFamilyDetails() {
   const family = await FamilyRepository.getFamilyWithUniqueId(familyUniqueId);
   if (family) {
     familyDetails.innerHTML = PopupBuilder.generate(family);
+    // TODO: this should probably pass the id as well
     setupFillButtons(family);
+    // Take familyId instead of Family because the family object (at the time of UI creation) could be stale after
+    // picking up more fields from Aspen.
+    setupMathAssessmentButtons(family.uniqueId);
     setupEmailButtons(family.uniqueId);
   }
 }
@@ -45,6 +50,18 @@ function renderEmail(students: Student[]) {
     chrome.tabs.create({
       url: `https://mail.google.com/mail/?view=cm&fs=1&su=${subject}`,
     });
+  });
+}
+
+function renderMathAssessment(student: Student) {
+  const currentSelectedPersonId = document.querySelector(".nav-link.active")!.id;
+  const familyDetails = document.getElementById("familyDetails")!;
+  familyDetails.innerHTML = MathAssessmentBuilder.build(student);
+
+  const closeBtn = document.querySelector<HTMLButtonElement>("button[data-function='close-math-assessment'");
+  closeBtn?.addEventListener("click", async () => {
+    await renderFamilyDetails();
+    bootstrap.Tab.getOrCreateInstance(`#${currentSelectedPersonId}`).show();
   });
 }
 
@@ -93,7 +110,21 @@ function setupFillButtons(family: Family) {
   }
 }
 
-// Take familyId instead of Family because the family object could be stale after picking up more fields from Aspen.
+function setupMathAssessmentButtons(familyId: string) {
+  const buttons = document.querySelectorAll<HTMLButtonElement>(".tab-pane button[data-function='mathAssessment'");
+  for (const button of Array.from(buttons)) {
+    button.addEventListener("click", async () => {
+      const family = await FamilyRepository.getFamilyWithUniqueId(familyId);
+      if (family) {
+        const personIndex = parseInt(button.dataset.personIndex!);
+        const student = family.people[personIndex] as Student;
+
+        renderMathAssessment(student);
+      }
+    });
+  }
+}
+
 function setupEmailButtons(familyId: string) {
   const emailButtons = document.querySelectorAll<HTMLButtonElement>(".tab-pane button[data-function='email'");
   for (const emailButton of Array.from(emailButtons)) {

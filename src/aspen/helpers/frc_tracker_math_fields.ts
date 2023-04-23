@@ -1,6 +1,7 @@
 import { Student } from "../../common/models/person";
 import { SecondaryMathAssessment } from "../../common/models/secondary_math_assessment";
 import { SecondaryMathExamGradeLevel, SecondaryMathExams } from "../../common/models/secondary_math_exams";
+import { SecondaryMathTasks } from "../../common/models/secondary_math_tasks";
 
 export class FRCTrackerMathFields {
   static mathTasks(student: Student) {
@@ -56,7 +57,7 @@ export class FRCTrackerMathFields {
           return "";
         }
         const formatter = new Intl.ListFormat("en", { style: "long", type: "conjunction" });
-        let str = `${student.firstName} was assessed using the Incoming Grade ${assessment.gradeLevelOfExam} Mathematics Assessment.`;
+        let str = `${student.firstName} was assessed using the ${SecondaryMathTasks.assessment[assessment.gradeLevelOfExam]}.`;
         if (assessment.result.P.length > 0) {
           str += `\n${student.capitalizedPronoun} demonstrated proficiency in ${formatter.format(assessment.result.P)}.`;
         }
