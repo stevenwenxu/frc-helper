@@ -57,25 +57,6 @@ export const SecondaryMathExams: SecondaryMathExamsType = {
     },
   },
   "11": {
-    "MBF3C": {
-      "audience": ["college"],
-      "exams": [
-        {
-          "examYear": 2015,
-          "topicsAndQuestions": {
-            "Algebra": [1],
-            "Solving Equations": [2],
-            "Factoring Expressions": [3],
-            "Systems of Equations": [4, 5],
-            "Similar Triangles": [6],
-            "Trigonometry - Right": [7, 8],
-            "Quadratic Functions": [9, 10],
-            "Measurement": [11, 12],
-            "Conversions": [13, 14],
-          },
-        },
-      ],
-    },
     "MCF3M/MCR3U": {
       "audience": ["university"],
       "exams": [
@@ -97,27 +78,27 @@ export const SecondaryMathExams: SecondaryMathExamsType = {
         },
       ],
     },
-  },
-  "12": {
-    "MCT4C": {
+    "MBF3C": {
       "audience": ["college"],
       "exams": [
         {
           "examYear": 2015,
           "topicsAndQuestions": {
-            "Powers": [1, 2],
-            "Polynomials": [3, 4],
-            "Domain and Range": [5],
-            "Function Notation": [6, 7],
-            "Quadratic Functions": [8, 9],
-            "Quadratic Equations": [10],
-            "Trigonometry": [11],
-            "Trigonometric Functions": [12, 13],
-            "Measurement": [14],
+            "Algebra": [1],
+            "Solving Equations": [2],
+            "Factoring Expressions": [3],
+            "Systems of Equations": [4, 5],
+            "Similar Triangles": [6],
+            "Trigonometry - Right": [7, 8],
+            "Quadratic Functions": [9, 10],
+            "Measurement": [11, 12],
+            "Conversions": [13, 14],
           },
         },
       ],
     },
+  },
+  "12": {
     "MHF4U/MCV4U": {
       "audience": ["university"],
       "exams": [
@@ -134,6 +115,25 @@ export const SecondaryMathExams: SecondaryMathExamsType = {
             "Quadratic Equations": [22, 23, 24],
             "Trigonometry": [25, 26, 27],
             "Trigonometric Functions": [28, 29],
+          },
+        },
+      ],
+    },
+    "MCT4C": {
+      "audience": ["college"],
+      "exams": [
+        {
+          "examYear": 2015,
+          "topicsAndQuestions": {
+            "Powers": [1, 2],
+            "Polynomials": [3, 4],
+            "Domain and Range": [5],
+            "Function Notation": [6, 7],
+            "Quadratic Functions": [8, 9],
+            "Quadratic Equations": [10],
+            "Trigonometry": [11],
+            "Trigonometric Functions": [12, 13],
+            "Measurement": [14],
           },
         },
       ],

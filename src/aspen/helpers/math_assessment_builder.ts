@@ -1,4 +1,5 @@
 import { Student } from "../../common/models/person";
+import { SecondaryMathExams } from "../../common/models/secondary_math_exams";
 import { SecondaryMathTasks } from "../../common/models/secondary_math_tasks";
 
 export class MathAssessmentBuilder {
@@ -49,7 +50,7 @@ export class MathAssessmentBuilder {
 
   private static buildAssessmentTasksRow() {
     return `
-      <div class="row align-items-center mb-2">
+      <div class="row mb-2">
         <div class="col-sm-6 form-floating g-2">
           <select class="form-select" id="assessmentLevel">
             ${Object.entries(SecondaryMathTasks.assessment).map(([gradeLevel, assessment]) => {
@@ -59,11 +60,12 @@ export class MathAssessmentBuilder {
           <label for="assessmentLevel" class="col-form-label">Assessment Level</label>
         </div>
         <div class="col-sm-6 form-floating g-2">
-          <select class="form-select" id="school">
-            <option value="university">University</option>
-            <option value="college">College</option>
+          <select class="form-select" id="courseCode">
+            ${Object.keys(SecondaryMathExams["11"]).map((courseCode) => {
+              return `<option value="${courseCode}">${courseCode}</option>`;
+            }).join("")}
           </select>
-          <label for="school" class="col-form-label">Target school</label>
+          <label for="courseCode" class="col-form-label">Course</label>
         </div>
       </div>
     `;
@@ -73,8 +75,7 @@ export class MathAssessmentBuilder {
     return `
       <div class="row">
         <div class="col-12 g-2">
-          <table class="table table-bordered mb-0 text-center">
-            <caption>MCF3M</caption>
+          <table class="table table-bordered text-center align-middle">
             <thead class="table-light">
               <tr>
                 <th scope="col">Topic</th>
@@ -87,18 +88,14 @@ export class MathAssessmentBuilder {
                 <td>Algebra</th>
                 <td>15</td>
                 <td>
-                  <div class="form-check form-check-inline">
-                    <input class="form-check-input" type="radio" name="proficiencyTopic1" id="proficiencyTopic1P" value="P">
-                    <label class="form-check-label" for="proficiencyTopic1P">P</label>
-                  </div>
-                  <div class="form-check form-check-inline">
-                    <input class="form-check-input" type="radio" name="proficiencyTopic1" id="proficiencyTopic1S" value="S">
-                    <label class="form-check-label" for="proficiencyTopic1S">S</label>
-                  </div>
-                  <div class="form-check form-check-inline">
-                    <input class="form-check-input" type="radio" name="proficiencyTopic1" id="proficiencyTopic1L" value="L">
-                    <label class="form-check-label" for="proficiencyTopic1L">L</label>
-                  </div>
+                  <input type="radio" class="btn-check" name="proficiencyTopic1" id="proficiencyTopic1P" autocomplete="off">
+                  <label class="btn btn-outline-success" for="proficiencyTopic1P">Proficient</label>
+
+                  <input type="radio" class="btn-check" name="proficiencyTopic1" id="proficiencyTopic1S" autocomplete="off">
+                  <label class="btn btn-outline-warning" for="proficiencyTopic1S">Somewhat</label>
+
+                  <input type="radio" class="btn-check" name="proficiencyTopic1" id="proficiencyTopic1L" autocomplete="off">
+                  <label class="btn btn-outline-danger" for="proficiencyTopic1L">Lacking</label>
                 </td>
               </tr>
             </tbody>
@@ -110,7 +107,7 @@ export class MathAssessmentBuilder {
 
   private static buildOutcomeRow() {
     return `
-      <div class="row align-items-center">
+      <div class="row">
         <div class="col-12 form-floating g-2">
           <select class="form-select" id="outcome">
             <option value="1">Passed</option>
