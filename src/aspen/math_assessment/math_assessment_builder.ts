@@ -1,44 +1,48 @@
 import { Student } from "../../common/models/person";
+import { SecondaryMathAssessment, SecondaryMathExamLevel } from "../../common/models/secondary_math_assessment";
 import { SecondaryMathExams } from "../../common/models/secondary_math_exams";
 import { SecondaryMathTasks } from "../../common/models/secondary_math_tasks";
 
 export class MathAssessmentBuilder {
   static build(student: Student) {
+    const assessment = student.secondaryMathAssessment!;
     return `
       <button type="button" class="btn-close mb-3" aria-label="Close" data-function="close-math-assessment"></button>
 
       <form>
         <h4>Secondary Math Assessment: ${student.fullName}</h4>
-        ${this.buildConfigurationCard()}
-        ${this.buildMathObservationsCard()}
+        ${this.buildConfigurationCard(assessment)}
+        ${this.buildMathObservationsCard(assessment)}
       </form>
     `;
   }
 
-  private static buildConfigurationCard() {
+  private static buildConfigurationCard(assessment: SecondaryMathAssessment) {
     return `
       <div class="card mb-4">
         <div class="card-header">Configuration</div>
         <div class="card-body mb-2">
-          ${this.buildDiagnosticTasksRow()}
-          ${this.buildAssessmentTasksRow()}
-          ${this.buildGradingTableRow()}
+          ${this.buildDiagnosticTasksRow(assessment.diagnosticTasks)}
+          ${this.buildAssessmentTasksRow(assessment.gradeLevelOfExam, assessment.courseCode)}
+          ${this.buildGradingTableRow(assessment)}
           ${this.buildOutcomeRow()}
         </div>
       </div>
     `;
   }
 
-  private static buildDiagnosticTasksRow() {
+  private static buildDiagnosticTasksRow(tasks: string[]) {
     return `
       <div class="row align-items-center">
         <label for="diagnosticTasks" class="col-4 col-form-label">Diagnostic Tasks</label>
         <div class="col-8" id="diagnosticTasks">
           ${SecondaryMathTasks.diagnosticTasks.map((task) => {
             const id = `diagnostic${task}`;
+            const value = `Diagnostic Task ${task}`;
+            const checked = tasks.includes(value) ? "checked" : "";
             return `
               <div class="form-check form-check-inline">
-                <input class="form-check-input" type="checkbox" id="${id}" value="${id}">
+                <input class="form-check-input" type="checkbox" id="${id}" name="diagnosticTask" value="${value}" ${checked}>
                 <label class="form-check-label" for="${id}">${task}</label>
               </div>
             `;
@@ -48,21 +52,23 @@ export class MathAssessmentBuilder {
     `;
   }
 
-  private static buildAssessmentTasksRow() {
+  private static buildAssessmentTasksRow(examLevel: SecondaryMathExamLevel, courseCode: string) {
     return `
       <div class="row mb-2">
         <div class="col-sm-6 form-floating g-2">
           <select class="form-select" id="assessmentLevel">
             ${Object.entries(SecondaryMathTasks.assessment).map(([gradeLevel, assessment]) => {
-              return `<option value="${gradeLevel}">${assessment}</option>`;
+              const selected = gradeLevel === examLevel ? "selected" : "";
+              return `<option value="${gradeLevel}" ${selected}>${assessment}</option>`;
             }).join("")}
           </select>
           <label for="assessmentLevel" class="col-form-label">Assessment Level</label>
         </div>
         <div class="col-sm-6 form-floating g-2">
           <select class="form-select" id="courseCode">
-            ${Object.keys(SecondaryMathExams["11"]).map((courseCode) => {
-              return `<option value="${courseCode}">${courseCode}</option>`;
+            ${Object.keys(SecondaryMathExams[examLevel]).map((courseCodeOption) => {
+              const selected = courseCodeOption === courseCode ? "selected" : "";
+              return `<option value="${courseCodeOption}" ${selected}>${courseCodeOption}</option>`;
             }).join("")}
           </select>
           <label for="courseCode" class="col-form-label">Course</label>
@@ -71,7 +77,7 @@ export class MathAssessmentBuilder {
     `;
   }
 
-  private static buildGradingTableRow() {
+  private static buildGradingTableRow(assessment: SecondaryMathAssessment) {
     return `
       <div class="row">
         <div class="col-12 g-2">
@@ -119,7 +125,7 @@ export class MathAssessmentBuilder {
     `;
   }
 
-  private static buildMathObservationsCard() {
+  private static buildMathObservationsCard(assessment: SecondaryMathAssessment) {
     return `
       <div class="card">
         <div class="card-header">Math Observations</div>

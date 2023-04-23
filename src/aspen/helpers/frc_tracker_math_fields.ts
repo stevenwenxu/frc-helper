@@ -20,7 +20,7 @@ export class FRCTrackerMathFields {
       case "10":
       case "11":
       case "12":
-        return student.secondaryMathAssessment?.tasks.join("\n") || "";
+        return student.secondaryMathAssessment?.diagnosticTasks.join("\n") || "";
       default:
         return "";
     }
@@ -68,9 +68,9 @@ export class FRCTrackerMathFields {
           str += `\n${student.capitalizedPronoun} lacked proficiency in the aspects of ${formatter.format(assessment.result.L)}.`;
         }
         if (assessment.passed) {
-          str += `\nTherefore, ${this.courseCode(assessment)} is recommended for mathematics.`;
+          str += `\nTherefore, ${this.recommendedCourse(assessment)} is recommended for mathematics.`;
         } else {
-          str += `\nBased on the math initial assessment, ${student.firstName} lacked proficiency in several topics, therefore the ${this.courseCode(assessment)} course is recommended for mathematics.`;
+          str += `\nBased on the math initial assessment, ${student.firstName} lacked proficiency in several topics, therefore the ${this.recommendedCourse(assessment)} course is recommended for mathematics.`;
         }
         return str;
       }
@@ -79,15 +79,18 @@ export class FRCTrackerMathFields {
     }
   }
 
-  private static courseCode(assessment: SecondaryMathAssessment) {
-    let grade: SecondaryMathExamGradeLevel = assessment.gradeLevelOfExam;
-    if (!assessment.passed) {
-      grade = `${parseInt(grade) - 1}` as SecondaryMathExamGradeLevel;
+  private static recommendedCourse(assessment: SecondaryMathAssessment) {
+    if (assessment.passed) {
+      return assessment.courseCode;
     }
+
+    let grade: SecondaryMathExamGradeLevel = assessment.gradeLevelOfExam;
+    grade = `${parseInt(grade) - 1}` as SecondaryMathExamGradeLevel;
     const courses = SecondaryMathExams[grade];
-    const courseCode = Object.keys(courses).filter(courseCode => {
+
+    const result = Object.keys(courses).filter(courseCode => {
       return courses[courseCode].audience.includes(assessment.examAudience);
     }).at(0) || "UNKNOWN";
-    return courseCode;
+    return result;
   }
 }
