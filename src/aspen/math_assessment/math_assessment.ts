@@ -33,12 +33,8 @@ async function setupStudentIfNecessary(family: Family, personIndex: number) {
     return false;
   } else {
     const defaultLevel = student.grade as SecondaryMathExamLevel;
-    const [defaultCourseCode, defaultCourse] = Object.entries(SecondaryMathExams[defaultLevel])[0];
-    assessment = new SecondaryMathAssessment(
-      defaultLevel,
-      defaultCourseCode,
-      defaultCourse.audience[0],
-    );
+    const [defaultCourseCode, _] = Object.entries(SecondaryMathExams[defaultLevel])[0];
+    assessment = new SecondaryMathAssessment(defaultCourseCode);
     await updateStudentAssessment(family.uniqueId, personIndex, assessment);
     return true;
   }
@@ -76,7 +72,6 @@ function setupForm(family: Family, personIndex: number) {
   const assessment = student.secondaryMathAssessment!;
 
   setupDiagnosticTasks(family.uniqueId, personIndex, assessment);
-  setupAssessmentLevel(family.uniqueId, personIndex, assessment);
   setupCourseCode(family.uniqueId, personIndex, assessment);
 }
 
@@ -98,22 +93,10 @@ function setupDiagnosticTasks(familyId: string, personIndex: number, assessment:
   }
 }
 
-function setupAssessmentLevel(familyId: string, personIndex: number, assessment: SecondaryMathAssessment) {
-  const assessmentLevel = document.getElementById("assessmentLevel") as HTMLSelectElement;
-  assessmentLevel.addEventListener("change", async () => {
-    assessment.gradeLevelOfExam = assessmentLevel.value as SecondaryMathExamLevel;
-
-    await updateStudentAssessment(familyId, personIndex, assessment);
-
-    // TODO: rerender form
-  });
-}
-
 function setupCourseCode(familyId: string, personIndex: number, assessment: SecondaryMathAssessment) {
   const courseCode = document.getElementById("courseCode") as HTMLSelectElement;
   courseCode.addEventListener("change", async () => {
     assessment.courseCode = courseCode.value;
-    assessment.examAudience = SecondaryMathExams[assessment.gradeLevelOfExam][assessment.courseCode].audience[0];
 
     await updateStudentAssessment(familyId, personIndex, assessment);
 

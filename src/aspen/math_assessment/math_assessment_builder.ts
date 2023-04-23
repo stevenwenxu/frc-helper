@@ -23,7 +23,7 @@ export class MathAssessmentBuilder {
         <div class="card-header">Configuration</div>
         <div class="card-body mb-2">
           ${this.buildDiagnosticTasksRow(assessment.diagnosticTasks)}
-          ${this.buildAssessmentTasksRow(assessment.gradeLevelOfExam, assessment.courseCode)}
+          ${this.buildCourseCodeRow(assessment.courseCode)}
           ${this.buildGradingTableRow(assessment)}
           ${this.buildOutcomeRow()}
         </div>
@@ -52,24 +52,22 @@ export class MathAssessmentBuilder {
     `;
   }
 
-  private static buildAssessmentTasksRow(examLevel: SecondaryMathExamLevel, courseCode: string) {
+  private static buildCourseCodeRow(selectedCourseCode: string) {
     return `
       <div class="row mb-2">
-        <div class="col-sm-6 form-floating g-2">
-          <select class="form-select" id="assessmentLevel">
-            ${Object.entries(SecondaryMathTasks.assessment).map(([gradeLevel, assessment]) => {
-              const selected = gradeLevel === examLevel ? "selected" : "";
-              return `<option value="${gradeLevel}" ${selected}>${assessment}</option>`;
-            }).join("")}
-          </select>
-          <label for="assessmentLevel" class="col-form-label">Assessment Level</label>
-        </div>
-        <div class="col-sm-6 form-floating g-2">
+        <div class="col-12 form-floating g-2">
           <select class="form-select" id="courseCode">
-            ${Object.keys(SecondaryMathExams[examLevel]).map((courseCodeOption) => {
-              const selected = courseCodeOption === courseCode ? "selected" : "";
-              return `<option value="${courseCodeOption}" ${selected}>${courseCodeOption}</option>`;
-            }).join("")}
+            ${ Object.entries(SecondaryMathExams).map(([gradeLevel, courses]) => {
+              if (gradeLevel === "8") return "";
+              return `
+                <optgroup label="Incoming Grade ${gradeLevel} Mathematics Assessment">
+                  ${Object.keys(courses).map((courseCode) => {
+                    const selected = courseCode === selectedCourseCode ? "selected" : "";
+                    return `<option value="${courseCode}" ${selected}>${courseCode}</option>`;
+                  }).join("")}
+                </optgroup>
+              `;
+             }).join("")}
           </select>
           <label for="courseCode" class="col-form-label">Course</label>
         </div>

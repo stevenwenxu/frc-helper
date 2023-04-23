@@ -1,23 +1,33 @@
-import { SecondaryMathExamAudience } from "./secondary_math_exams";
+import { SecondaryMathExamGradeLevel, SecondaryMathExams } from "./secondary_math_exams";
 
 type SecondaryMathAssessmentResult = Record<"P" | "S" | "L", string[]>;
 export type SecondaryMathExamLevel = "9" | "10" | "11" | "12";
 
 export class SecondaryMathAssessment {
   diagnosticTasks: string[];
-  // Grade level of the exam chosen for the student, not necessarily the student's current grade level
-  gradeLevelOfExam: SecondaryMathExamLevel;
   courseCode: string;
-  examAudience: SecondaryMathExamAudience;
   result: SecondaryMathAssessmentResult;
   passed: boolean;
 
-  constructor(gradeLevelOfExam: SecondaryMathExamLevel, courseCode: string, examAudience: SecondaryMathExamAudience) {
+  constructor(courseCode: string) {
     this.diagnosticTasks = [];
-    this.gradeLevelOfExam = gradeLevelOfExam;
     this.courseCode = courseCode;
-    this.examAudience = examAudience;
     this.result = { "P": [], "S": [], "L": [] };
     this.passed = false;
+  }
+
+  get gradeLevelOfExam() {
+    const gradeLevels = Object.keys(SecondaryMathExams) as SecondaryMathExamGradeLevel[];
+    return gradeLevels.find((gradeLevel) => {
+      const courseCodes = Object.keys(SecondaryMathExams[gradeLevel]);
+      return courseCodes.includes(this.courseCode);
+    })! as SecondaryMathExamLevel;
+  }
+
+  get examAudience() {
+    const courses = Object.values(SecondaryMathExams).find(course => {
+      return course[this.courseCode] != undefined;
+    })!;
+    return courses[this.courseCode].audience[0];
   }
 }
