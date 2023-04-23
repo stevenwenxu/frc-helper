@@ -21,6 +21,7 @@ export class MathAssessmentBuilder {
         <div class="card-body mb-2">
           ${this.buildDiagnosticTasksRow()}
           ${this.buildAssessmentTasksRow()}
+          ${this.buildGradingTableRow()}
           ${this.buildOutcomeRow()}
         </div>
       </div>
@@ -63,6 +64,45 @@ export class MathAssessmentBuilder {
             <option value="college">College</option>
           </select>
           <label for="school" class="col-form-label">Target school</label>
+        </div>
+      </div>
+    `;
+  }
+
+  private static buildGradingTableRow() {
+    return `
+      <div class="row">
+        <div class="col-12 g-2">
+          <table class="table table-bordered mb-0 text-center">
+            <caption>MCF3M</caption>
+            <thead class="table-light">
+              <tr>
+                <th scope="col">Topic</th>
+                <th scope="col">Questions</th>
+                <th scope="col">Proficiency</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>Algebra</th>
+                <td>15</td>
+                <td>
+                  <div class="form-check form-check-inline">
+                    <input class="form-check-input" type="radio" name="proficiencyTopic1" id="proficiencyTopic1P" value="P">
+                    <label class="form-check-label" for="proficiencyTopic1P">P</label>
+                  </div>
+                  <div class="form-check form-check-inline">
+                    <input class="form-check-input" type="radio" name="proficiencyTopic1" id="proficiencyTopic1S" value="S">
+                    <label class="form-check-label" for="proficiencyTopic1S">S</label>
+                  </div>
+                  <div class="form-check form-check-inline">
+                    <input class="form-check-input" type="radio" name="proficiencyTopic1" id="proficiencyTopic1L" value="L">
+                    <label class="form-check-label" for="proficiencyTopic1L">L</label>
+                  </div>
+                </td>
+              </tr>
+            </tbody>
+          </table>
         </div>
       </div>
     `;
