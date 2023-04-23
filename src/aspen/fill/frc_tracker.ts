@@ -4,6 +4,7 @@ import { SchoolCategory } from "../../common/models/school_category";
 import { FRCTrackerFields } from "../helpers/frc_tracker_fields";
 import { setValue } from "../fill";
 import { LanguageCategory } from "../../common/models/language_category";
+import { FRCTrackerMathFields } from "../helpers/frc_tracker_math_fields";
 
 export function fillFRCTracker(student: Student) {
   const elements = document.forms.namedItem("childDetailForm")!.elements;
@@ -40,12 +41,25 @@ export function fillFRCTracker(student: Student) {
     false
   );
 
+  // Math tasks
+  setValue(
+    elements.namedItem("propertyValue(pgmFieldD021)") as HTMLInputElement,
+    FRCTrackerMathFields.mathTasks(student),
+    false
+  );
+
+  // Math observations
+  setValue(
+    elements.namedItem("propertyValue(pgmFieldD005)") as HTMLInputElement,
+    FRCTrackerMathFields.mathObservations(student),
+    false
+  );
+
   // Start the observations with student's name
   [
     "propertyValue(pgmFieldD002)",
     "propertyValue(pgmFieldD003)",
-    "propertyValue(pgmFieldD004)",
-    "propertyValue(pgmFieldD005)"
+    "propertyValue(pgmFieldD004)"
   ].forEach(elementName => {
     setValue(
       elements.namedItem(elementName) as HTMLInputElement,
@@ -178,7 +192,6 @@ export async function saveFRCTrackerDetails(familyId: string, personIndex: numbe
   const dropdownValue = parseInt(recommendationElement.value);
 
   await FamilyRepository.updateStudent(familyId, personIndex, (student) => {
-    student.schoolCategory = FRCTrackerFields.schoolCategory(dropdownValue);
     student.languageCategory = FRCTrackerFields.languageCategory(dropdownValue);
     student.listeningStep = englishProficiencyOral.value;
     student.speakingStep = englishProficiencyOral.value;

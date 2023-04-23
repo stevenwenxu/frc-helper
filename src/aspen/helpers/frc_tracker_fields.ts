@@ -1,6 +1,7 @@
 import { LanguageCategory } from "../../common/models/language_category";
 import { Student } from "../../common/models/person";
 import { SchoolCategory } from "../../common/models/school_category";
+import { FRCTrackerMathFields } from "./frc_tracker_math_fields";
 
 export class FRCTrackerFields {
   static schoolCategory(dropdownValue: number) {
@@ -68,6 +69,10 @@ export class FRCTrackerFields {
     const languageCategory = this.languageCategory(dropdownValue);
     const overallCategory = this.overallCategory(dropdownValue);
     const secondaryEnglish = this.secondaryEnglishCourse(dropdownValue);
+    let secondaryMath = "MTH1W";
+    if (student.secondaryMathAssessment) {
+      secondaryMath = FRCTrackerMathFields.recommendedCourse(student.secondaryMathAssessment);
+    }
 
     let comment = "";
 
@@ -86,7 +91,7 @@ Writing ${languageCategory} STEP ${writing}.`;
     }
 
     if (schoolCategory === SchoolCategory.Secondary) {
-      comment += `\n\nBased on the initial assessment, ${secondaryEnglish} is recommended for English, and MTH1W is recommended for mathematics.`;
+      comment += `\n\nBased on the initial assessment, ${secondaryEnglish} is recommended for English, and ${secondaryMath} is recommended for mathematics.`;
     }
 
     return comment;

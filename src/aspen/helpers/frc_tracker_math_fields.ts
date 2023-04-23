@@ -57,7 +57,7 @@ export class FRCTrackerMathFields {
           return "";
         }
         const formatter = new Intl.ListFormat("en", { style: "long", type: "conjunction" });
-        let str = `${student.firstName} was assessed using the ${SecondaryMathTasks.assessment[assessment.gradeLevelOfExam]}.\n`;
+        let str = `${student.firstName} was assessed using the ${SecondaryMathTasks.assessment[assessment.gradeLevelOfExam]}. `;
         if (assessment.gradingTable.P.length > 0) {
           str += `\n${student.capitalizedPronoun} demonstrated proficiency in ${formatter.format(assessment.gradingTable.P)}.`;
         }
@@ -79,7 +79,7 @@ export class FRCTrackerMathFields {
     }
   }
 
-  private static recommendedCourse(assessment: SecondaryMathAssessment) {
+  static recommendedCourse(assessment: SecondaryMathAssessment) {
     if (assessment.passed) {
       return assessment.courseCode;
     }
