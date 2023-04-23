@@ -2,6 +2,7 @@ import { Student } from "../../common/models/person";
 import { SecondaryMathAssessment } from "../../common/models/secondary_math_assessment";
 import { SecondaryMathExams } from "../../common/models/secondary_math_exams";
 import { SecondaryMathTasks } from "../../common/models/secondary_math_tasks";
+import { FRCTrackerMathFields } from "../helpers/frc_tracker_math_fields";
 
 export class MathAssessmentBuilder {
   static build(student: Student) {
@@ -12,7 +13,7 @@ export class MathAssessmentBuilder {
       <form>
         <h4>Secondary Math Assessment: ${student.fullName}</h4>
         ${this.buildConfigurationCard(assessment)}
-        ${this.buildMathObservationsCard(assessment)}
+        ${this.buildMathObservationsCard(student)}
       </form>
     `;
   }
@@ -135,12 +136,12 @@ export class MathAssessmentBuilder {
     `;
   }
 
-  private static buildMathObservationsCard(assessment: SecondaryMathAssessment) {
+  private static buildMathObservationsCard(student: Student) {
     return `
       <div class="card">
         <div class="card-header">Math Observations</div>
         <div class="card-body">
-          <p class="card-text">What a great student!</p>
+          <p class="card-text">${FRCTrackerMathFields.mathObservations(student).replaceAll("\n", "<br>")}</p>
         </div>
       </div>
     `;

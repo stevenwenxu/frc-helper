@@ -7,6 +7,8 @@ import { Family } from "../../common/models/family";
 import { SecondaryMathAssessment, SecondaryMathAssessmentGrade, SecondaryMathExamLevel } from "../../common/models/secondary_math_assessment";
 import { SecondaryMathExams } from "../../common/models/secondary_math_exams";
 
+let currentSelectedPersonTabId = "";
+
 export function setupMathAssessmentButtons(familyId: string) {
   const buttons = document.querySelectorAll<HTMLButtonElement>(".tab-pane button[data-function='mathAssessment'");
   for (const button of Array.from(buttons)) {
@@ -19,6 +21,8 @@ export function setupMathAssessmentButtons(familyId: string) {
         if (await setupStudentIfNecessary(family, personIndex)) {
           family = await FamilyRepository.getFamilyWithUniqueId(familyId);
         }
+
+        currentSelectedPersonTabId = document.querySelector(".nav-link.active")!.id;
         renderMathAssessment(family!, personIndex);
       }
     });
@@ -49,17 +53,15 @@ async function updateStudentAssessment(familyId: string, personIndex: number, as
 
 // Note: Ensure `family` is up to date.
 function renderMathAssessment(family: Family, personIndex: number) {
-  // TODO: extract to global constant, then import it
-  const currentSelectedPersonTabId = document.querySelector(".nav-link.active")!.id;
   const familyDetails = document.getElementById("familyDetails")!;
   const student = family.people[personIndex] as Student;
   familyDetails.innerHTML = MathAssessmentBuilder.build(student);
 
-  setupCloseButton(currentSelectedPersonTabId);
+  setupCloseButton();
   setupForm(family, personIndex);
 }
 
-function setupCloseButton(currentSelectedPersonTabId: string) {
+function setupCloseButton() {
   const closeBtn = document.querySelector<HTMLButtonElement>("button[data-function='close-math-assessment'");
   closeBtn?.addEventListener("click", async () => {
     await renderFamilyDetails();
@@ -99,10 +101,14 @@ function setupCourseCode(familyId: string, personIndex: number, assessment: Seco
   const courseCode = document.getElementById("courseCode") as HTMLSelectElement;
   courseCode.addEventListener("change", async () => {
     assessment.courseCode = courseCode.value;
+    assessment.gradingTable.P = [];
+    assessment.gradingTable.S = [];
+    assessment.gradingTable.L = [];
 
     await updateStudentAssessment(familyId, personIndex, assessment);
 
-    // TODO: rerender form
+    const family = await FamilyRepository.getFamilyWithUniqueId(familyId);
+    renderMathAssessment(family!, personIndex);
   });
 }
 
@@ -124,6 +130,9 @@ function setupGradingTable(familyId: string, personIndex: number, assessment: Se
       assessment.gradingTable[value].push(radio.name);
 
       await updateStudentAssessment(familyId, personIndex, assessment);
+
+      const family = await FamilyRepository.getFamilyWithUniqueId(familyId);
+      renderMathAssessment(family!, personIndex);
     });
   }
 }
@@ -134,5 +143,8 @@ function setupOutcome(familyId: string, personIndex: number, assessment: Seconda
     assessment.passed = outcome.value === "1";
 
     await updateStudentAssessment(familyId, personIndex, assessment);
+
+    const family = await FamilyRepository.getFamilyWithUniqueId(familyId);
+    renderMathAssessment(family!, personIndex);
   });
 }

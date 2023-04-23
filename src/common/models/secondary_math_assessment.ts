@@ -15,7 +15,7 @@ export class SecondaryMathAssessment {
     this.diagnosticTasks = [];
     this.courseCode = courseCode;
     this.gradingTable = { "P": [], "S": [], "L": [] };
-    this.passed = false;
+    this.passed = true;
   }
 
   get gradeLevelOfExam(): SecondaryMathExamLevel {

@@ -57,7 +57,7 @@ export class FRCTrackerMathFields {
           return "";
         }
         const formatter = new Intl.ListFormat("en", { style: "long", type: "conjunction" });
-        let str = `${student.firstName} was assessed using the ${SecondaryMathTasks.assessment[assessment.gradeLevelOfExam]}.`;
+        let str = `${student.firstName} was assessed using the ${SecondaryMathTasks.assessment[assessment.gradeLevelOfExam]}.\n`;
         if (assessment.gradingTable.P.length > 0) {
           str += `\n${student.capitalizedPronoun} demonstrated proficiency in ${formatter.format(assessment.gradingTable.P)}.`;
         }
@@ -68,9 +68,9 @@ export class FRCTrackerMathFields {
           str += `\n${student.capitalizedPronoun} lacked proficiency in the aspects of ${formatter.format(assessment.gradingTable.L)}.`;
         }
         if (assessment.passed) {
-          str += `\nTherefore, ${this.recommendedCourse(assessment)} is recommended for mathematics.`;
+          str += `\n\nTherefore, ${this.recommendedCourse(assessment)} is recommended for mathematics.`;
         } else {
-          str += `\nBased on the math initial assessment, ${student.firstName} lacked proficiency in several topics, therefore the ${this.recommendedCourse(assessment)} course is recommended for mathematics.`;
+          str += `\n\nBased on the math initial assessment, ${student.firstName} lacked proficiency in several topics, therefore the ${this.recommendedCourse(assessment)} course is recommended for mathematics.`;
         }
         return str;
       }
