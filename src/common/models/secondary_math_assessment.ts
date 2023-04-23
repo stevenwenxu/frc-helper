@@ -1,26 +1,27 @@
 import { SecondaryMathExamGradeLevel, SecondaryMathExams } from "./secondary_math_exams";
 
-type SecondaryMathAssessmentResult = Record<"P" | "S" | "L", string[]>;
+export const SecondaryMathAssessmentGrade = ["P", "S", "L"] as const;
+export type SecondaryMathAssessmentGrade = typeof SecondaryMathAssessmentGrade[number];
+type SecondaryMathAssessmentGrading = Record<SecondaryMathAssessmentGrade, string[]>;
 export type SecondaryMathExamLevel = "9" | "10" | "11" | "12";
 
 export class SecondaryMathAssessment {
   diagnosticTasks: string[];
   courseCode: string;
-  result: SecondaryMathAssessmentResult;
+  gradingTable: SecondaryMathAssessmentGrading;
   passed: boolean;
 
   constructor(courseCode: string) {
     this.diagnosticTasks = [];
     this.courseCode = courseCode;
-    this.result = { "P": [], "S": [], "L": [] };
+    this.gradingTable = { "P": [], "S": [], "L": [] };
     this.passed = false;
   }
 
-  get gradeLevelOfExam() {
+  get gradeLevelOfExam(): SecondaryMathExamLevel {
     const gradeLevels = Object.keys(SecondaryMathExams) as SecondaryMathExamGradeLevel[];
-    return gradeLevels.find((gradeLevel) => {
-      const courseCodes = Object.keys(SecondaryMathExams[gradeLevel]);
-      return courseCodes.includes(this.courseCode);
+    return gradeLevels.find(grade => {
+      return SecondaryMathExams[grade][this.courseCode] != undefined
     })! as SecondaryMathExamLevel;
   }
 

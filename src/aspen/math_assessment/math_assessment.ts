@@ -4,7 +4,7 @@ import { Student } from "../../common/models/person";
 import { renderFamilyDetails } from "../popup";
 import { MathAssessmentBuilder } from "./math_assessment_builder";
 import { Family } from "../../common/models/family";
-import { SecondaryMathAssessment, SecondaryMathExamLevel } from "../../common/models/secondary_math_assessment";
+import { SecondaryMathAssessment, SecondaryMathAssessmentGrade, SecondaryMathExamLevel } from "../../common/models/secondary_math_assessment";
 import { SecondaryMathExams } from "../../common/models/secondary_math_exams";
 
 export function setupMathAssessmentButtons(familyId: string) {
@@ -73,6 +73,7 @@ function setupForm(family: Family, personIndex: number) {
 
   setupDiagnosticTasks(family.uniqueId, personIndex, assessment);
   setupCourseCode(family.uniqueId, personIndex, assessment);
+  setupGradingTable(family.uniqueId, personIndex, assessment);
 }
 
 function setupDiagnosticTasks(familyId: string, personIndex: number, assessment: SecondaryMathAssessment) {
@@ -102,4 +103,26 @@ function setupCourseCode(familyId: string, personIndex: number, assessment: Seco
 
     // TODO: rerender form
   });
+}
+
+function setupGradingTable(familyId: string, personIndex: number, assessment: SecondaryMathAssessment) {
+  const table = document.getElementById("gradingTable") as HTMLTableElement;
+  const radios = table.querySelectorAll<HTMLInputElement>("input[type='radio']");
+  for (const radio of Array.from(radios)) {
+    radio.addEventListener("change", async () => {
+      const value = radio.labels![0].textContent as SecondaryMathAssessmentGrade;
+
+      // Remove topic from old grades.
+      SecondaryMathAssessmentGrade.forEach((grade) => {
+        const index = assessment.gradingTable[grade].indexOf(radio.name);
+        if (index > -1) {
+          assessment.gradingTable[grade].splice(index, 1);
+        }
+      });
+      // Add topic to the new grade.
+      assessment.gradingTable[value].push(radio.name);
+
+      await updateStudentAssessment(familyId, personIndex, assessment);
+    });
+  }
 }

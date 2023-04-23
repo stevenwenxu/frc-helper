@@ -58,14 +58,14 @@ export class FRCTrackerMathFields {
         }
         const formatter = new Intl.ListFormat("en", { style: "long", type: "conjunction" });
         let str = `${student.firstName} was assessed using the ${SecondaryMathTasks.assessment[assessment.gradeLevelOfExam]}.`;
-        if (assessment.result.P.length > 0) {
-          str += `\n${student.capitalizedPronoun} demonstrated proficiency in ${formatter.format(assessment.result.P)}.`;
+        if (assessment.gradingTable.P.length > 0) {
+          str += `\n${student.capitalizedPronoun} demonstrated proficiency in ${formatter.format(assessment.gradingTable.P)}.`;
         }
-        if (assessment.result.S.length > 0) {
-          str += `\n${student.capitalizedPronoun} showed some proficiency in ${formatter.format(assessment.result.S)}.`;
+        if (assessment.gradingTable.S.length > 0) {
+          str += `\n${student.capitalizedPronoun} showed some proficiency in ${formatter.format(assessment.gradingTable.S)}.`;
         }
-        if (assessment.result.L.length > 0) {
-          str += `\n${student.capitalizedPronoun} lacked proficiency in the aspects of ${formatter.format(assessment.result.L)}.`;
+        if (assessment.gradingTable.L.length > 0) {
+          str += `\n${student.capitalizedPronoun} lacked proficiency in the aspects of ${formatter.format(assessment.gradingTable.L)}.`;
         }
         if (assessment.passed) {
           str += `\nTherefore, ${this.recommendedCourse(assessment)} is recommended for mathematics.`;

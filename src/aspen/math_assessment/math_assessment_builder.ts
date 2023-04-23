@@ -1,5 +1,5 @@
 import { Student } from "../../common/models/person";
-import { SecondaryMathAssessment, SecondaryMathExamLevel } from "../../common/models/secondary_math_assessment";
+import { SecondaryMathAssessment } from "../../common/models/secondary_math_assessment";
 import { SecondaryMathExams } from "../../common/models/secondary_math_exams";
 import { SecondaryMathTasks } from "../../common/models/secondary_math_tasks";
 
@@ -76,10 +76,12 @@ export class MathAssessmentBuilder {
   }
 
   private static buildGradingTableRow(assessment: SecondaryMathAssessment) {
+    const exam = SecondaryMathExams[assessment.gradeLevelOfExam][assessment.courseCode].exams[0].topicsAndQuestions;
+
     return `
       <div class="row">
         <div class="col-12 g-2">
-          <table class="table table-bordered text-center align-middle">
+          <table id="gradingTable" class="table table-bordered text-center align-middle">
             <thead class="table-light">
               <tr>
                 <th scope="col">Topic</th>
@@ -88,20 +90,27 @@ export class MathAssessmentBuilder {
               </tr>
             </thead>
             <tbody>
-              <tr>
-                <td>Algebra</th>
-                <td>15</td>
-                <td>
-                  <input type="radio" class="btn-check" name="proficiencyTopic1" id="proficiencyTopic1P" autocomplete="off">
-                  <label class="btn btn-outline-success" for="proficiencyTopic1P">Proficient</label>
+              ${Object.entries(exam).map(([topic, questions], index) => {
+                const pChecked = assessment.gradingTable["P"].includes(topic) ? "checked" : "";
+                const sChecked = assessment.gradingTable["S"].includes(topic) ? "checked" : "";
+                const lChecked = assessment.gradingTable["L"].includes(topic) ? "checked" : "";
+                return `
+                  <tr>
+                    <td>${topic}</td>
+                    <td>${questions.join(", ")}</td>
+                    <td>
+                      <input type="radio" class="btn-check" name="${topic}" id="topic${index}P" ${pChecked} autocomplete="off">
+                      <label class="btn btn-outline-success" for="topic${index}P">P</label>
 
-                  <input type="radio" class="btn-check" name="proficiencyTopic1" id="proficiencyTopic1S" autocomplete="off">
-                  <label class="btn btn-outline-warning" for="proficiencyTopic1S">Somewhat</label>
+                      <input type="radio" class="btn-check" name="${topic}" id="topic${index}S" ${sChecked} autocomplete="off">
+                      <label class="btn btn-outline-warning" for="topic${index}S">S</label>
 
-                  <input type="radio" class="btn-check" name="proficiencyTopic1" id="proficiencyTopic1L" autocomplete="off">
-                  <label class="btn btn-outline-danger" for="proficiencyTopic1L">Lacking</label>
-                </td>
-              </tr>
+                      <input type="radio" class="btn-check" name="${topic}" id="topic${index}L" ${lChecked} autocomplete="off">
+                      <label class="btn btn-outline-danger" for="topic${index}L">L</label>
+                    </td>
+                  </tr>
+                `;
+              }).join("")}
             </tbody>
           </table>
         </div>

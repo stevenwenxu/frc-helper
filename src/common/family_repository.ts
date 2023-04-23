@@ -1,5 +1,6 @@
 import { Family } from "./models/family";
 import { Parent, Student } from "./models/person";
+import { SecondaryMathAssessment } from "./models/secondary_math_assessment";
 
 export class FamilyRepository {
   static async getFamilyWithUniqueId(uniqueId: string) {
@@ -73,7 +74,16 @@ export class FamilyRepository {
   static familyFromStoredFamily(storedFamily: any) {
     const newFamily = new Family();
     newFamily.parents = storedFamily.parents.map((p: any) => Object.assign(new Parent(), p));
-    newFamily.students = storedFamily.students.map((s: any) => Object.assign(new Student(), s));
+    newFamily.students = storedFamily.students.map((s: any) => {
+      const studentObj = Object.assign(new Student(), s);
+      const secondaryMathAssessment = s["secondaryMathAssessment"];
+      if (secondaryMathAssessment) {
+        let newObj = new SecondaryMathAssessment("");
+        newObj = Object.assign(newObj, secondaryMathAssessment);
+        studentObj.secondaryMathAssessment = newObj;
+      }
+      return studentObj;
+    });
     newFamily.uniqueId = storedFamily.uniqueId;
     newFamily.visitDate = new Date(storedFamily._visitDate);
     return newFamily;
