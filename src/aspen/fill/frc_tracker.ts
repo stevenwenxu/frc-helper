@@ -49,11 +49,14 @@ export function fillFRCTracker(student: Student) {
   );
 
   // Math observations
+  const mathObservationsElement = elements.namedItem("propertyValue(pgmFieldD005)") as HTMLInputElement;
   setValue(
-    elements.namedItem("propertyValue(pgmFieldD005)") as HTMLInputElement,
+    mathObservationsElement,
     FRCTrackerMathFields.mathObservations(student),
     false
   );
+  mathObservationsElement.dispatchEvent(new Event("keyup"));
+  mathObservationsElement.style.height = "250px";
 
   // Start the observations with student's name
   [
@@ -73,6 +76,7 @@ export function setupFRCTrackerHooks(familyId: string, personIndex: number) {
   const elements = document.forms.namedItem("childDetailForm")!.elements;
   const recommendationElement = elements.namedItem("propertyValue(pgmFieldA006)") as HTMLSelectElement;
   const assessorSummaryLanguageAssessment = elements.namedItem("propertyValue(pgmFieldA011)") as HTMLInputElement;
+  const mathObservations = elements.namedItem("propertyValue(pgmFieldD005)") as HTMLInputElement;
   const englishProficiencyOral = elements.namedItem("propertyValue(pgmFieldA012)") as HTMLInputElement;
   const englishProficiencyReading = elements.namedItem("propertyValue(pgmFieldA013)") as HTMLInputElement;
   const englishProficiencyWriting = elements.namedItem("propertyValue(pgmFieldA014)") as HTMLInputElement;
@@ -143,6 +147,7 @@ export function setupFRCTrackerHooks(familyId: string, personIndex: number) {
     englishProficiencyOral,
     englishProficiencyReading,
     englishProficiencyWriting,
+    mathObservations,
   ].forEach(element => {
     element.addEventListener("change", updateAssessorComments);
   });

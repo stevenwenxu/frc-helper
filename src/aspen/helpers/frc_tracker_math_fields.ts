@@ -19,8 +19,14 @@ export class FRCTrackerMathFields {
       case "9":
       case "10":
       case "11":
-      case "12":
-        return student.secondaryMathAssessment?.diagnosticTasks.join("\n") || "";
+      case "12": {
+        const assessment = student.secondaryMathAssessment;
+        if (!assessment) {
+          return "";
+        }
+        const gradeExam = SecondaryMathTasks.assessment[assessment.gradeLevelOfExam];
+        return [...assessment.diagnosticTasks, gradeExam].join("\n");
+      }
       default:
         return "";
     }
@@ -57,7 +63,7 @@ export class FRCTrackerMathFields {
           return "";
         }
         const formatter = new Intl.ListFormat("en", { style: "long", type: "conjunction" });
-        let str = `${student.firstName} was assessed using the ${SecondaryMathTasks.assessment[assessment.gradeLevelOfExam]}. `;
+        let str = `${student.firstName} was assessed using the ${SecondaryMathTasks.assessment[assessment.gradeLevelOfExam]}.\n`;
         if (assessment.gradingTable.P.length > 0) {
           str += `\n${student.capitalizedPronoun} demonstrated proficiency in ${formatter.format(assessment.gradingTable.P)}.`;
         }
