@@ -58,17 +58,11 @@ export class MathAssessmentBuilder {
       <div class="row mb-2">
         <div class="col-12 form-floating g-2">
           <select class="form-select" id="courseCode">
-            ${ Object.entries(SecondaryMathExams).map(([gradeLevel, courses]) => {
-              if (gradeLevel === "8") return "";
-              return `
-                <optgroup label="Incoming Grade ${gradeLevel} Mathematics Assessment">
-                  ${Object.keys(courses).map((courseCode) => {
-                    const selected = courseCode === selectedCourseCode ? "selected" : "";
-                    return `<option value="${courseCode}" ${selected}>${courseCode}</option>`;
-                  }).join("")}
-                </optgroup>
-              `;
-             }).join("")}
+            ${ Object.entries(SecondaryMathExams).map(([courseCode, {gradeLevel}]) => {
+              if (gradeLevel === 8) return "";
+              const selected = courseCode === selectedCourseCode ? "selected" : "";
+              return `<option value="${courseCode}" ${selected}>Grade ${gradeLevel}: ${courseCode}</option>`;
+            }).join("")}
           </select>
           <label for="courseCode" class="col-form-label">Course</label>
         </div>
@@ -77,7 +71,7 @@ export class MathAssessmentBuilder {
   }
 
   private static buildGradingTableRow(assessment: SecondaryMathAssessment) {
-    const exam = SecondaryMathExams[assessment.gradeLevelOfExam][assessment.courseCode].exams[0].topicsAndQuestions;
+    const topicsAndQuestions = SecondaryMathExams[assessment.courseCode].exams[0].topicsAndQuestions;
 
     return `
       <div class="row">
@@ -91,7 +85,7 @@ export class MathAssessmentBuilder {
               </tr>
             </thead>
             <tbody>
-              ${Object.entries(exam).map(([topic, questions], index) => {
+              ${Object.entries(topicsAndQuestions).map(([topic, questions], index) => {
                 const pChecked = assessment.gradingTable["P"].includes(topic) ? "checked" : "";
                 const sChecked = assessment.gradingTable["S"].includes(topic) ? "checked" : "";
                 const lChecked = assessment.gradingTable["L"].includes(topic) ? "checked" : "";

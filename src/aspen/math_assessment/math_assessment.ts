@@ -4,8 +4,8 @@ import { Student } from "../../common/models/person";
 import { renderFamilyDetails } from "../popup";
 import { MathAssessmentBuilder } from "./math_assessment_builder";
 import { Family } from "../../common/models/family";
-import { SecondaryMathAssessment, SecondaryMathAssessmentGrade, SecondaryMathExamLevel } from "../../common/models/secondary_math_assessment";
-import { SecondaryMathExams } from "../../common/models/secondary_math_exams";
+import { SecondaryMathAssessment, SecondaryMathAssessmentGrade } from "../../common/models/secondary_math_assessment";
+import { defaultCourseCode } from "../../common/models/secondary_math_exams";
 
 let currentSelectedPersonTabId = "";
 
@@ -36,9 +36,8 @@ async function setupStudentIfNecessary(family: Family, personIndex: number) {
   if (assessment) {
     return false;
   } else {
-    const defaultLevel = student.grade as SecondaryMathExamLevel;
-    const [defaultCourseCode, _] = Object.entries(SecondaryMathExams[defaultLevel])[0];
-    assessment = new SecondaryMathAssessment(defaultCourseCode);
+    const courseCode = defaultCourseCode(parseInt(student.grade), "university");
+    assessment = new SecondaryMathAssessment(courseCode);
     await updateStudentAssessment(family.uniqueId, personIndex, assessment);
     return true;
   }

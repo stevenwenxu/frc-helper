@@ -1,6 +1,6 @@
 import { Student } from "../../common/models/person";
 import { SecondaryMathAssessment } from "../../common/models/secondary_math_assessment";
-import { SecondaryMathExamGradeLevel, SecondaryMathExams } from "../../common/models/secondary_math_exams";
+import { defaultCourseCode } from "../../common/models/secondary_math_exams";
 import { SecondaryMathTasks } from "../../common/models/secondary_math_tasks";
 
 export class FRCTrackerMathFields {
@@ -90,13 +90,6 @@ export class FRCTrackerMathFields {
       return assessment.courseCode;
     }
 
-    let grade: SecondaryMathExamGradeLevel = assessment.gradeLevelOfExam;
-    grade = `${parseInt(grade) - 1}` as SecondaryMathExamGradeLevel;
-    const courses = SecondaryMathExams[grade];
-
-    const result = Object.keys(courses).filter(courseCode => {
-      return courses[courseCode].audience.includes(assessment.examAudience);
-    }).at(0) || "UNKNOWN";
-    return result;
+    return defaultCourseCode(assessment.gradeLevelOfExam - 1, assessment.examAudience);
   }
 }
