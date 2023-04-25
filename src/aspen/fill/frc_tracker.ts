@@ -207,7 +207,7 @@ export async function saveFRCTrackerDetails(familyId: string, personIndex: numbe
     if (student.schoolCategory == SchoolCategory.Secondary) {
       student.secondaryCourseRecommendations = [
         assessorComments.value.match(/\b[EN][A-Z][A-Z][0-9A-E][A-Z]\b/)?.[0] || "",
-        assessorComments.value.match(/\bM[A-Z][A-Z][0-9][A-Z]\b/)?.[0] || ""
+        assessorComments.value.match(/\bM[A-Z][A-Z][0-9][A-Z](?:\/M[A-Z][A-Z][0-9][A-Z])?\b/)?.[0] || ""
       ].filter(str => str.length > 0).join(", ");
     } else {
       student.secondaryCourseRecommendations = "";
