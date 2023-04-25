@@ -13,24 +13,20 @@ export function setupMathAssessmentButtons(familyId: string) {
   const buttons = document.querySelectorAll<HTMLButtonElement>(".tab-pane button[data-function='mathAssessment'");
   for (const button of Array.from(buttons)) {
     button.addEventListener("click", async () => {
-      let family = await FamilyRepository.getFamilyWithUniqueId(familyId);
-      if (family) {
-        const personIndex = parseInt(button.dataset.personIndex!);
+      currentSelectedPersonTabId = document.querySelector(".nav-link.active")!.id;
 
-        // If student needs to be set up, set it up and refresh the family object.
-        if (await setupStudentIfNecessary(family, personIndex)) {
-          family = await FamilyRepository.getFamilyWithUniqueId(familyId);
-        }
-
-        currentSelectedPersonTabId = document.querySelector(".nav-link.active")!.id;
-        renderMathAssessment(family!, personIndex);
-      }
+      const personIndex = parseInt(button.dataset.personIndex!);
+      await setupStudentIfNecessary(familyId, personIndex)
+      await renderMathAssessment(familyId, personIndex);
     });
   }
 }
 
 // Returns true if the student was updated, false otherwise.
-async function setupStudentIfNecessary(family: Family, personIndex: number) {
+async function setupStudentIfNecessary(familyId: string, personIndex: number) {
+  const family = await FamilyRepository.getFamilyWithUniqueId(familyId);
+  if (!family) return false;
+
   const student = family.people[personIndex] as Student;
   let assessment = student.secondaryMathAssessment;
   if (assessment) {
@@ -51,7 +47,10 @@ async function updateStudentAssessment(familyId: string, personIndex: number, as
 }
 
 // Note: Ensure `family` is up to date.
-function renderMathAssessment(family: Family, personIndex: number) {
+async function renderMathAssessment(familyId: string, personIndex: number) {
+  const family = await FamilyRepository.getFamilyWithUniqueId(familyId);
+  if (!family) return;
+
   const familyDetails = document.getElementById("familyDetails")!;
   const student = family.people[personIndex] as Student;
   familyDetails.innerHTML = MathAssessmentBuilder.build(student);
@@ -105,9 +104,7 @@ function setupCourseCode(familyId: string, personIndex: number, assessment: Seco
     assessment.gradingTable.L = [];
 
     await updateStudentAssessment(familyId, personIndex, assessment);
-
-    const family = await FamilyRepository.getFamilyWithUniqueId(familyId);
-    renderMathAssessment(family!, personIndex);
+    await renderMathAssessment(familyId, personIndex);
   });
 }
 
@@ -129,9 +126,7 @@ function setupGradingTable(familyId: string, personIndex: number, assessment: Se
       assessment.gradingTable[value].push(radio.name);
 
       await updateStudentAssessment(familyId, personIndex, assessment);
-
-      const family = await FamilyRepository.getFamilyWithUniqueId(familyId);
-      renderMathAssessment(family!, personIndex);
+      await renderMathAssessment(familyId, personIndex);
     });
   }
 }
@@ -142,8 +137,6 @@ function setupOutcome(familyId: string, personIndex: number, assessment: Seconda
     assessment.passed = outcome.value === "1";
 
     await updateStudentAssessment(familyId, personIndex, assessment);
-
-    const family = await FamilyRepository.getFamilyWithUniqueId(familyId);
-    renderMathAssessment(family!, personIndex);
+    await renderMathAssessment(familyId, personIndex);
   });
 }
