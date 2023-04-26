@@ -12,6 +12,13 @@ export class Family {
     return [...this.students, ...this.parents];
   }
 
+  get displayName() {
+    return this.students.map((student) => {
+      const gradePrefix = student.grade.length > 0 ? `${student.grade}-` : "";
+      return `${gradePrefix}${student.lastName}, ${student.firstName}`;
+    }).join(" / ");
+  }
+
   get visitDate(): Date {
     return new Date(this._visitDate);
   }

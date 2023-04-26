@@ -33,6 +33,18 @@ function setupDeleteFamilyButton() {
   });
 }
 
+async function updateFamilyPickerDisplayName() {
+  const familyPicker = document.getElementById("familyPicker") as HTMLSelectElement;
+  if (familyPicker.selectedOptions.length !== 1) {
+    return;
+  }
+
+  const family = await FamilyRepository.getFamilyWithUniqueId(familyPicker.value);
+  if (family) {
+    familyPicker.selectedOptions[0].textContent = family.displayName;
+  }
+}
+
 export async function renderFamilyDetails() {
   const familyPicker = document.getElementById("familyPicker")! as HTMLSelectElement;
   const familyDetails = document.getElementById("familyDetails")!;
@@ -90,6 +102,7 @@ function setupFillButtons(family: Family) {
         console.log("Popup fill response:", fillResponse);
         if (fillResponse.type === "fillResponse" && fillResponse.message === "refreshRequired") {
           const currentSelectedPerson = document.querySelector(".nav-link.active")!;
+          await updateFamilyPickerDisplayName();
           await renderFamilyDetails();
           bootstrap.Tab.getOrCreateInstance(`#${currentSelectedPerson.id}`).show();
         }

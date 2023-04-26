@@ -39,11 +39,7 @@ export class PopupBuilder {
     for (const visitDate of Object.keys(familiesByVisitDate)) {
       innerHTML += `<optgroup label="${visitDate}">`;
       for (const family of familiesByVisitDate[visitDate]) {
-        const displayName = family.students.map((student) => {
-          const gradePrefix = student.grade.length > 0 ? `${student.grade}-` : "";
-          return `${gradePrefix}${student.lastName}, ${student.firstName}`;
-        }).join(" / ");
-        innerHTML += `<option value=${family.uniqueId}>${displayName}</option>`;
+        innerHTML += `<option value=${family.uniqueId}>${family.displayName}</option>`;
       }
       innerHTML += `</optgroup>`;
     }
