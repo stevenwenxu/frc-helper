@@ -1,7 +1,7 @@
 {
   "name": "frc-helper",
-  "version": "1.10.1",
-  "description": "Helps transfer data from School Interviews to Aspen",
+  "version": "1.11.0",
+  "description": "Boosts productivity at the Family Reception Centre, OCDSB",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/stevenwenxu/frc-helper.git"
