@@ -69,11 +69,11 @@ export const SecondaryMathExams: SecondaryMathExamsType = {
         "topicsAndQuestions": {
           "Algebra": [15],
           "Solving Equations": [16],
-          "Factoring Expressions": [17],
+          "Factoring Expressions": [3],
           "Systems of Equations": [4, 5],
           "Analytic Geometry": [18, 19],
           "Similar Triangles": [6],
-          "Trigonometry - Right": [20],
+          "Trigonometry - Right": [7, 8],
           "Trigonometry - Acute": [21],
           "Relations": [22],
           "Graphing Quadratics": [23, 24],
