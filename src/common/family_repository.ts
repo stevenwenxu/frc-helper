@@ -63,12 +63,15 @@ export class FamilyRepository {
       console.log("Clearing families older than", tenDaysAgo.toDateString());
       for (const family of families) {
         if (family.visitDate < tenDaysAgo) {
-          chrome.storage.local.remove(family.uniqueId, () => {
-            console.log(`Removed family with id ${family.uniqueId}`);
-          });
+          this.deleteFamily(family.uniqueId);
         }
       }
     });
+  }
+
+  static async deleteFamily(familyId: string) {
+    await chrome.storage.local.remove(familyId);
+    console.log(`Removed family with id ${familyId}`);
   }
 
   static familyFromStoredFamily(storedFamily: any) {

@@ -17,6 +17,22 @@ function setupFamilyPicker() {
   });
 }
 
+function setupDeleteFamilyButton() {
+  const deleteFamilyButton = document.getElementById("deleteFamily")!;
+  deleteFamilyButton.addEventListener("click", async () => {
+    const familyPicker = document.getElementById("familyPicker") as HTMLSelectElement;
+    const familyUniqueId = familyPicker.value;
+    if (familyPicker.selectedOptions.length !== 1) {
+      return;
+    }
+    if (!confirm(`Are you sure you want to delete ${familyPicker.selectedOptions[0].textContent}?`)) {
+      return;
+    }
+    await FamilyRepository.deleteFamily(familyUniqueId);
+    document.location.reload();
+  });
+}
+
 export async function renderFamilyDetails() {
   const familyPicker = document.getElementById("familyPicker")! as HTMLSelectElement;
   const familyDetails = document.getElementById("familyDetails")!;
@@ -101,6 +117,7 @@ document.addEventListener("DOMContentLoaded", function(event) {
   const _ = bootstrap;
 
   setupFamilyPicker();
+  setupDeleteFamilyButton();
 });
 
 chrome.runtime.onMessage.addListener(
