@@ -12,10 +12,6 @@ export class Family {
     return [...this.students, ...this.parents];
   }
 
-  get studentsNames() {
-    return this.students.map(student => `${student.firstName} ${student.lastName}`).join(" / ");
-  }
-
   get visitDate(): Date {
     return new Date(this._visitDate);
   }
