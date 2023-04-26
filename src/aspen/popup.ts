@@ -36,8 +36,12 @@ function setupDeleteFamilyButton() {
 export async function renderFamilyDetails() {
   const familyPicker = document.getElementById("familyPicker")! as HTMLSelectElement;
   const familyDetails = document.getElementById("familyDetails")!;
-  const familyUniqueId = familyPicker.value;
-  const family = await FamilyRepository.getFamilyWithUniqueId(familyUniqueId);
+  if (familyPicker.selectedOptions.length !== 1) {
+    familyDetails.innerHTML = PopupBuilder.buildEmptyState();
+    return;
+  }
+
+  const family = await FamilyRepository.getFamilyWithUniqueId(familyPicker.value);
   if (family) {
     familyDetails.innerHTML = PopupBuilder.generate(family);
     // TODO: this should probably pass the id as well

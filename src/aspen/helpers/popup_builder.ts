@@ -47,6 +47,17 @@ export class PopupBuilder {
     return innerHTML;
   }
 
+  static buildEmptyState() {
+    return `
+      <div class="alert alert-primary mt-4" role="alert">
+        <h4 class="alert-heading">No families here</h4>
+        <hr>
+        <p>You finished all your work today! 🎉</p>
+        <p class="mb-0">If not yet, load families from <a target="_blank" class="alert-link" href="https://www.schoolinterviews.com.au/">School Interviews</a>, and then <a class="alert-link" href="">reload this page</a>.</p>
+      </div>
+    `;
+  }
+
   private static generateNavItems(family: Family) {
     let parentIndex = 1;
 
