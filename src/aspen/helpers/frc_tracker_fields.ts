@@ -125,4 +125,23 @@ Writing ${languageCategory} STEP ${writing}.`;
       return "";
     }
   }
+
+  static oralObservations(student: Student, oral: string) {
+    switch (oral) {
+      case "1":
+        return `${student.firstName}'s first language is ${student.homeLanguage}. ${student.capitalizedPronoun} responded to simple personally relevant questions, using L1 and single English words. ${student.capitalizedPronoun} followed simple instructions using visual cues, and was able to talk about familiar events and personal information using L1 and single words in English.`;
+      case "2":
+        return `${student.firstName}'s first language is ${student.homeLanguage}. ${student.capitalizedPronoun} responded to simple questions using L1 and short sentences in English. ${student.capitalizedPronoun} followed simple instructions, and talked about familiar events and information using English phrases and short sentences.`;
+      case "3":
+        return `${student.firstName} responded to a variety of questions. ${student.capitalizedPronoun} followed multi-step instructions, and expressed meaning with some accuracy, using simple and compound sentences.`;
+      case "4":
+        return `${student.firstName} responded to questions that have linguistic complexity approaching grade level. ${student.capitalizedPronoun} expressed ideas and supported opinions with some fluency, using a variety of sentences.`;
+      case "5":
+        return `${student.firstName} listened and participated in conversations on abstract and complex grade-level topics. ${student.capitalizedPronoun} spoke with fluency about a variety of topics and abstract concepts.`;
+      case "6":
+        return `${student.firstName} listened and participated in conversations on a wide variety of complex and abstract grade-level topics. ${student.capitalizedPronoun} spoke with fluency and clarity on a variety of topics, using a range of grammatical structures.`;
+      default:
+        return "";
+    }
+  }
 }

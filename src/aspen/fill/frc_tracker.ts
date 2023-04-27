@@ -60,7 +60,6 @@ export function fillFRCTracker(student: Student) {
 
   // Start the observations with student's name
   [
-    "propertyValue(pgmFieldD002)",
     "propertyValue(pgmFieldD003)",
     "propertyValue(pgmFieldD004)"
   ].forEach(elementName => {
@@ -76,6 +75,7 @@ export function setupFRCTrackerHooks(familyId: string, personIndex: number) {
   const elements = document.forms.namedItem("childDetailForm")!.elements;
   const recommendationElement = elements.namedItem("propertyValue(pgmFieldA006)") as HTMLSelectElement;
   const assessorSummaryLanguageAssessment = elements.namedItem("propertyValue(pgmFieldA011)") as HTMLInputElement;
+  const oralCommunicationObservations = elements.namedItem("propertyValue(pgmFieldD002)") as HTMLInputElement;
   const mathObservations = elements.namedItem("propertyValue(pgmFieldD005)") as HTMLInputElement;
   const englishProficiencyOral = elements.namedItem("propertyValue(pgmFieldA012)") as HTMLInputElement;
   const englishProficiencyReading = elements.namedItem("propertyValue(pgmFieldA013)") as HTMLInputElement;
@@ -85,10 +85,15 @@ export function setupFRCTrackerHooks(familyId: string, personIndex: number) {
   const languageSupport = elements.namedItem("propertyValue(pgmFieldA016)") as HTMLInputElement;
   const recommendedSecondaryEnglishCourse = elements.namedItem("propertyValue(pgmFieldA017)") as HTMLInputElement;
 
-  const updateAssessorComments = async () => {
+  const getStudent = async () => {
     const family = await FamilyRepository.getFamilyWithUniqueId(familyId);
     if (!family) { return; }
-    const student = family.people[personIndex] as Student;
+    return family.people[personIndex] as Student;
+  }
+
+  const updateAssessorComments = async () => {
+    const student = await getStudent();
+    if (!student) { return; }
     setValue(
       assessorComments,
       FRCTrackerFields.assessorComments(
@@ -152,6 +157,16 @@ export function setupFRCTrackerHooks(familyId: string, personIndex: number) {
     element.addEventListener("change", updateAssessorComments);
   });
 
+  englishProficiencyOral.addEventListener("change", async () => {
+    const student = await getStudent();
+    if (!student) { return; }
+    setValue(
+      oralCommunicationObservations,
+      FRCTrackerFields.oralObservations(student, englishProficiencyOral.value)
+    );
+    oralCommunicationObservations.dispatchEvent(new Event("keyup"));
+  });
+
   [
     assessorComments,
     assessorSummaryLanguageAssessment,
@@ -183,6 +198,9 @@ export function setupFRCTrackerTooltips() {
 
   // assessor comments
   (elements.namedItem("propertyValue(pgmFieldD006)") as HTMLInputElement).insertAdjacentHTML("beforebegin", hintStep(3));
+
+  // oral communication observations
+  (elements.namedItem("propertyValue(pgmFieldD002)") as HTMLInputElement).insertAdjacentHTML("beforebegin", hintStep(3));
 }
 
 export async function saveFRCTrackerDetails(familyId: string, personIndex: number) {
