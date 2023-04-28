@@ -48,7 +48,6 @@ export function fillFRCTracker(student: Student) {
     FRCTrackerMathFields.mathObservations(student),
     false
   );
-  mathObservationsElement.dispatchEvent(new Event("keyup"));
   mathObservationsElement.style.height = "250px";
 
   // Start the observations with student's name
@@ -100,7 +99,6 @@ export function setupFRCTrackerHooks(familyId: string, personIndex: number) {
         englishProficiencyWriting.value
       )
     )
-    assessorComments.dispatchEvent(new Event("keyup"));
   };
 
   recommendationElement.addEventListener("change", async () => {
@@ -161,13 +159,11 @@ export function setupFRCTrackerHooks(familyId: string, personIndex: number) {
       oralCommunicationTasks,
       FRCTrackerFields.oralTasks(englishProficiencyOral.value)
     );
-    oralCommunicationTasks.dispatchEvent(new Event("keyup"));
 
     setValue(
       oralCommunicationObservations,
       FRCTrackerFields.oralObservations(student, englishProficiencyOral.value)
     );
-    oralCommunicationObservations.dispatchEvent(new Event("keyup"));
   });
 
   englishProficiencyReading.addEventListener("change", async () => {
@@ -178,7 +174,6 @@ export function setupFRCTrackerHooks(familyId: string, personIndex: number) {
       readingTasks,
       FRCTrackerFields.readingTasks(student, englishProficiencyReading.value)
     );
-    readingTasks.dispatchEvent(new Event("keyup"));
   });
 
   englishProficiencyWriting.addEventListener("change", async () => {
@@ -189,7 +184,6 @@ export function setupFRCTrackerHooks(familyId: string, personIndex: number) {
       writingTasks,
       FRCTrackerFields.writingTasks(student, englishProficiencyWriting.value)
     );
-    writingTasks.dispatchEvent(new Event("keyup"));
   });
 
   [

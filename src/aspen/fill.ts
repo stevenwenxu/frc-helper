@@ -100,6 +100,10 @@ export function setValue(element: HTMLInputElement | null, value: string, replac
   }
 
   element.value = value;
-  element.dispatchEvent(new Event("change"));
   element.style.borderColor = "green";
+
+  element.dispatchEvent(new Event("change"));
+  if (element.type === "textarea") {
+    element.dispatchEvent(new Event("keyup"));
+  }
 }
