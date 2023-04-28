@@ -34,13 +34,6 @@ export function fillFRCTracker(student: Student) {
     false
   );
 
-  // Oral communication: tasks
-  setValue(
-    elements.namedItem("propertyValue(pgmFieldD022)") as HTMLInputElement,
-    "Oral Interview\nStudent Portfolio",
-    false
-  );
-
   // Math tasks
   setValue(
     elements.namedItem("propertyValue(pgmFieldD021)") as HTMLInputElement,
@@ -75,6 +68,9 @@ export function setupFRCTrackerHooks(familyId: string, personIndex: number) {
   const elements = document.forms.namedItem("childDetailForm")!.elements;
   const recommendationElement = elements.namedItem("propertyValue(pgmFieldA006)") as HTMLSelectElement;
   const assessorSummaryLanguageAssessment = elements.namedItem("propertyValue(pgmFieldA011)") as HTMLInputElement;
+  const oralCommunicationTasks = elements.namedItem("propertyValue(pgmFieldD022)") as HTMLInputElement;
+  const readingTasks = elements.namedItem("propertyValue(pgmFieldD023)") as HTMLInputElement;
+  const writingTasks = elements.namedItem("propertyValue(pgmFieldD024)") as HTMLInputElement;
   const oralCommunicationObservations = elements.namedItem("propertyValue(pgmFieldD002)") as HTMLInputElement;
   const mathObservations = elements.namedItem("propertyValue(pgmFieldD005)") as HTMLInputElement;
   const englishProficiencyOral = elements.namedItem("propertyValue(pgmFieldA012)") as HTMLInputElement;
@@ -160,11 +156,40 @@ export function setupFRCTrackerHooks(familyId: string, personIndex: number) {
   englishProficiencyOral.addEventListener("change", async () => {
     const student = await getStudent();
     if (!student) { return; }
+
+    setValue(
+      oralCommunicationTasks,
+      FRCTrackerFields.oralTasks(englishProficiencyOral.value)
+    );
+    oralCommunicationTasks.dispatchEvent(new Event("keyup"));
+
     setValue(
       oralCommunicationObservations,
       FRCTrackerFields.oralObservations(student, englishProficiencyOral.value)
     );
     oralCommunicationObservations.dispatchEvent(new Event("keyup"));
+  });
+
+  englishProficiencyReading.addEventListener("change", async () => {
+    const student = await getStudent();
+    if (!student) { return; }
+
+    setValue(
+      readingTasks,
+      FRCTrackerFields.readingTasks(student, englishProficiencyReading.value)
+    );
+    readingTasks.dispatchEvent(new Event("keyup"));
+  });
+
+  englishProficiencyWriting.addEventListener("change", async () => {
+    const student = await getStudent();
+    if (!student) { return; }
+
+    setValue(
+      writingTasks,
+      FRCTrackerFields.writingTasks(student, englishProficiencyWriting.value)
+    );
+    writingTasks.dispatchEvent(new Event("keyup"));
   });
 
   [
@@ -198,9 +223,6 @@ export function setupFRCTrackerTooltips() {
 
   // assessor comments
   (elements.namedItem("propertyValue(pgmFieldD006)") as HTMLInputElement).insertAdjacentHTML("beforebegin", hintStep(3));
-
-  // oral communication observations
-  (elements.namedItem("propertyValue(pgmFieldD002)") as HTMLInputElement).insertAdjacentHTML("beforebegin", hintStep(3));
 }
 
 export async function saveFRCTrackerDetails(familyId: string, personIndex: number) {

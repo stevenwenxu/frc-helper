@@ -126,6 +126,14 @@ Writing ${languageCategory} STEP ${writing}.`;
     }
   }
 
+  static oralTasks(oral: string) {
+    switch (oral) {
+      case "1": case "2": return "Oral Interview";
+      case "3": case "4": case "5": case "6": return "Oral Interview\nStudent Portfolio";
+      default: return "";
+    }
+  }
+
   static oralObservations(student: Student, oral: string) {
     switch (oral) {
       case "1":
@@ -142,6 +150,106 @@ Writing ${languageCategory} STEP ${writing}.`;
         return `${student.firstName} listened and participated in conversations on a wide variety of complex and abstract grade-level topics. ${student.capitalizedPronoun} spoke with fluency and clarity on a variety of topics, using a range of grammatical structures.`;
       default:
         return "";
+    }
+  }
+
+  static readingTasks(student: Student, reading: string) {
+    switch (student.grade) {
+      case "1": case "2": case "3": {
+        switch (reading) {
+          case "1": return "FRC Early Literacy Task\nReading Comprehension-My Cat";
+          case "2": return "FRC Early Literacy Task\nReading Comprehension-The Night Sky";
+          case "3": return "Reading Diagnostic Test\nReading Comprehension-A Trip to the Market";
+          case "4": return "Reading Diagnostic Test\nReading Comprehension-A Day at the Market";
+          case "5":
+          case "6": return "Reading Diagnostic Test\nReading Comprehension-All About Koalas";
+          default: return "";
+        }
+      }
+      case "4": case "5": case "6": {
+        switch (reading) {
+          case "1": return "FRC Early Literacy Task\nReading Comprehension-Ali's Garden";
+          case "2": return "FRC Early Literacy Task\nReading Comprehension-The Bear and the Bees";
+          case "3": return "Reading Diagnostic Test\nReading Comprehension-The New Red Car";
+          case "4": return "Reading Diagnostic Test\nReading Comprehension-Bears";
+          case "5":
+          case "6": return "Reading Diagnostic Test\nReading Comprehension-Tsunamis";
+          default: return "";
+        }
+      }
+      case "7": case "8": {
+        switch (reading) {
+          case "1": return "FRC Early Literacy Task\nReading Comprehension-The Bear and the Bees";
+          case "2": return "FRC Early Literacy Task\nReading Comprehension-Everyone Uses Math";
+          case "3": return "Reading Diagnostic Test\nReading Comprehension-Texting and Driving is Dangerous";
+          case "4": return "Reading Diagnostic Test\nReading Comprehension-Wrestling Champion";
+          case "5":
+          case "6": return "Reading Diagnostic Test\nReading Comprehension-The Boatman and the Professor";
+          default: return "";
+        }
+      }
+      case "9": case "10": case "11": case "12": {
+        switch (reading) {
+          case "1": return "FRC Early Literacy Task\nReading Comprehension-I Want to Be a Teacher";
+          case "2": return "FRC Early Literacy Task\nReading Comprehension-Texting and Driving is Dangerous";
+          case "3": return "Reading Diagnostic Test\nReading Comprehension-Wrestling Champion";
+          case "4": return "Reading Diagnostic Test\nReading Comprehension-The Boatman and the Professor";
+          case "5":
+          case "6": return "Reading Diagnostic Test\nReading Comprehension-Our Dinner Table University";
+          default: return "";
+        }
+      }
+      default: return "";
+    }
+  }
+
+  static writingTasks(student: Student, reading: string) {
+    switch (student.grade) {
+      case "1": case "2": case "3": {
+        switch (reading) {
+          case "1":
+          case "2": return "Writing Alphabet\nFRC Early Literacy Task\nPrinting/Writing Assessment";
+          case "3":
+          case "4":
+          case "5":
+          case "6": return "Personal Narrative-My Best Friend";
+          default: return "";
+        }
+      }
+      case "4": case "5": case "6": {
+        switch (reading) {
+          case "1": return "Writing Alphabet\nFRC Early Literacy Task\nPrinting/Writing Assessment";
+          case "2": return "Writing Alphabet\nFRC Early Literacy Task\nPrinting/Writing Assessment\nPersonal Narrative-My Favorite Sport";
+          case "3":
+          case "4":
+          case "5":
+          case "6": return "Personal Narrative-A special person in your life";
+          default: return "";
+        }
+      }
+      case "7": case "8": {
+        switch (reading) {
+          case "1":
+          case "2": return "Writing Alphabet\nFRC Early Literacy Task\nPrinting/Writing Assessment\nFirst Language Assessment";
+          case "3":
+          case "4":
+          case "5":
+          case "6": return "Personal Narrative-Something you will never forget";
+          default: return "";
+        }
+      }
+      case "9": case "10": case "11": case "12": {
+        switch (reading) {
+          case "1":
+          case "2": return "Writing Alphabet\nFRC Early Literacy Task\nPrinting/Writing Assessment\nFirst Language Assessment";
+          case "3": return "Personal Narrative-Something you will never forget";
+          case "4":
+          case "5":
+          case "6": return "Five-paragraph Opinion Essay";
+          default: return "";
+        }
+      }
+      default: return "";
     }
   }
 }
