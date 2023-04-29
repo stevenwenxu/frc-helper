@@ -203,10 +203,50 @@ Writing ${languageCategory} STEP ${writing}.`;
     }
   }
 
-  static writingTasks(student: Student, reading: string) {
+  static readingObservations(student: Student, reading: string) {
     switch (student.grade) {
       case "1": case "2": case "3": {
         switch (reading) {
+          case "1":
+            return `${student.firstName} demonstrated understanding by responding to a highly visual text with simple language, using simple English words. ${student.capitalizedPronoun} read and followed simply worded instructions with visual support. ${student.capitalizedPronoun} identified most of the letters of the alphabet including upper cases and lower cases. ${student.capitalizedPronoun} read and understood some high-frequency words in highly visual text.`;
+          case "2":
+            return `${student.firstName} demonstrated understanding by responding to a simple text with visual support using drawings and high-frequency words. ${student.capitalizedPronoun} read and followed short, simply worded instructions. ${student.capitalizedPronoun} identified and used common text features to locate information in a text with visual support. ${student.capitalizedPronoun} read and understood high-frequency words in the text.`;
+          case "3":
+            return `${student.firstName} demonstrated understanding by responding to the adapted text supported by visuals. ${student.capitalizedPronoun} read and followed instructions consisting of a few simple steps. The reading comprehension showed ${student.capitalizedPronoun.toLowerCase()} could identify and use some text features to locate information. ${student.capitalizedPronoun} read and understood some academic words.`;
+          case "4":
+            return `${student.firstName} demonstrated understanding by responding to authentic texts with linguistic complexity approaching grade level. ${student.capitalizedPronoun} read and followed instructions for multi-step tasks. ${student.capitalizedPronoun} identified and used a variety of text features to locate information. ${student.capitalizedPronoun} showed that ${student.capitalizedPronoun.toLowerCase()} could read and understand some low-frequency words, academic words, and phrases.`;
+          case "5":
+            return `${student.firstName} demonstrated understanding by responding to authentic texts, with the linguistic complexity of early grade level. ${student.capitalizedPronoun} read and followed complex instructions. ${student.capitalizedPronoun} identified text features and explained how they help readers understand the text. ${student.capitalizedPronoun} read and understood academic words in early grade-level texts.`;
+          case "6":
+            return `${student.firstName} demonstrated understanding by responding to the grade-appropriate text. ${student.capitalizedPronoun} identified different text forms and features and explained how they help readers understand the text. ${student.capitalizedPronoun} read and understood most vocabulary in early grade-level texts.`;
+          default: return "";
+        }
+      }
+      case "4": case "5": case "6": case "7": case "8": case "9": case "10": case "11": case "12": {
+        switch (reading) {
+          case "1":
+            return `${student.firstName} demonstrated understanding by responding to a highly visual text with simple language, using simple English words. ${student.capitalizedPronoun} read and followed simply worded instructions with visual support. ${student.capitalizedPronoun} answered part of the reading comprehension questions with some accuracy. ${student.capitalizedPronoun} read and understood some high-frequency words in context.`;
+          case "2":
+            return `${student.firstName} demonstrated understanding by responding to a simple text with visual support using drawings and high-frequency words. ${student.capitalizedPronoun} read and followed short, simply worded instructions. ${student.capitalizedPronoun} identified and used common text features to locate information in a text with visual support. ${student.capitalizedPronoun} read and understood high-frequency words and phrases and some words with multiple meanings.`;
+          case "3":
+            return `${student.firstName} demonstrated understanding by responding to the adapted text. ${student.capitalizedPronoun} read and followed instructions consisting of a few steps. The reading comprehension showed she could identify and use some text features to locate information. ${student.capitalizedPronoun} read and understood some academic words.`;
+          case "4":
+            return `${student.firstName} demonstrated understanding by responding to authentic texts with linguistic complexity approaching grade level. ${student.capitalizedPronoun} read and followed instructions for multi-step tasks. ${student.capitalizedPronoun} identified and used a variety of text features to locate information. ${student.capitalizedPronoun} showed that she could read and understand some low-frequency words, academic words, and descriptive language.`;
+          case "5":
+            return `${student.firstName} demonstrated understanding by responding to authentic texts, with the linguistic complexity of grade level. ${student.capitalizedPronoun} read and followed complex instructions. ${student.capitalizedPronoun} identified and used text features in complex texts. ${student.capitalizedPronoun} read and understood low-frequency and academic vocabulary in grade-level texts.`;
+          case "6":
+            return `${student.firstName} demonstrated understanding by responding to the grade-appropriate texts. ${student.capitalizedPronoun} identified different text forms and features and explained how they help readers understand the text. ${student.capitalizedPronoun} read and understood most vocabulary in early grade-level texts.`;
+          default: return "";
+        }
+      }
+      default: return "";
+    }
+  }
+
+  static writingTasks(student: Student, writing: string) {
+    switch (student.grade) {
+      case "1": case "2": case "3": {
+        switch (writing) {
           case "1":
           case "2": return "Writing Alphabet\nFRC Early Literacy Task\nPrinting/Writing Assessment";
           case "3":
@@ -217,7 +257,7 @@ Writing ${languageCategory} STEP ${writing}.`;
         }
       }
       case "4": case "5": case "6": {
-        switch (reading) {
+        switch (writing) {
           case "1": return "Writing Alphabet\nFRC Early Literacy Task\nPrinting/Writing Assessment";
           case "2": return "Writing Alphabet\nFRC Early Literacy Task\nPrinting/Writing Assessment\nPersonal Narrative-My Favorite Sport";
           case "3":
@@ -228,7 +268,7 @@ Writing ${languageCategory} STEP ${writing}.`;
         }
       }
       case "7": case "8": {
-        switch (reading) {
+        switch (writing) {
           case "1":
           case "2": return "Writing Alphabet\nFRC Early Literacy Task\nPrinting/Writing Assessment\nFirst Language Assessment";
           case "3":
@@ -239,13 +279,53 @@ Writing ${languageCategory} STEP ${writing}.`;
         }
       }
       case "9": case "10": case "11": case "12": {
-        switch (reading) {
+        switch (writing) {
           case "1":
           case "2": return "Writing Alphabet\nFRC Early Literacy Task\nPrinting/Writing Assessment\nFirst Language Assessment";
           case "3": return "Personal Narrative-Something you will never forget";
           case "4":
           case "5":
           case "6": return "Five-paragraph Opinion Essay";
+          default: return "";
+        }
+      }
+      default: return "";
+    }
+  }
+
+  static writingObservations(student: Student, writing: string) {
+    switch (student.grade) {
+      case "1": case "2": case "3": {
+        switch (writing) {
+          case "1":
+            return `${student.firstName} demonstrated ${student.capitalizedPronoun.toLowerCase()} was able to write the English alphabet in the correct order. ${student.capitalizedPronoun} produced the English alphabet in legible form including upper cases and lower cases. ${student.capitalizedPronoun} copied English words to correctly label pictures and wrote some personally relevant words.`;
+          case "2":
+            return `${student.firstName} demonstrated ${student.capitalizedPronoun.toLowerCase()} was able to write the English alphabet in the correct order including upper cases and lower cases. ${student.capitalizedPronoun} copied English words to correctly label pictures. ${student.capitalizedPronoun} organized words in simple sentences. ${student.capitalizedPronoun} used common and personally relevant words.`;
+          case "3":
+            return `${student.firstName} organized words in simple and simple compound sentences. ${student.capitalizedPronoun} used vocabulary relevant to a familiar topic. ${student.capitalizedPronoun} properly applied basic punctuation rules such as capitalization and period usage.`;
+          case "4":
+            return `${student.firstName} organized ideas in a multi-sentence paragraph around a topic. ${student.capitalizedPronoun} used a variety of vocabulary and wrote a variety of simple and compound sentences.`;
+          case "5":
+            return `${student.firstName} organized ideas in a multi-sentence paragraph around a topic. ${student.capitalizedPronoun} wrote a variety of simple and compound sentences using a variety of vocabulary and low-frequency words.`;
+          case "6":
+            return `${student.firstName} organized ideas in a multi-sentence paragraph around a topic. ${student.capitalizedPronoun} selected vocabulary that is expressive and engages the reader to support the writing form and wrote a variety of sentence structures to elaborate ideas and enhance meaning.`;
+          default: return "";
+        }
+      }
+      case "4": case "5": case "6": case "7": case "8": case "9": case "10": case "11": case "12": {
+        switch (writing) {
+          case "1":
+            return `${student.firstName} demonstrated ${student.capitalizedPronoun.toLowerCase()} was able to write the English alphabet in the correct order. ${student.capitalizedPronoun} produced the English alphabet in legible form including upper cases and lower cases. ${student.capitalizedPronoun} copied English words to correctly label pictures. ${student.capitalizedPronoun} organized words in some simple sentences.`;
+          case "2":
+            return `${student.firstName} demonstrated ${student.capitalizedPronoun.toLowerCase()} was able to write the English alphabet in the correct order including upper cases and lower cases. ${student.capitalizedPronoun} copied English words to correctly label pictures. ${student.capitalizedPronoun} organized words in simple and simple compound sentences. ${student.capitalizedPronoun} used common and personally relevant words, and ${student.capitalizedPronoun.toLowerCase()} used subject-verb agreement with some accuracy.`;
+          case "3":
+            return `${student.firstName} organized ideas in a multi-sentence paragraph around a topic. ${student.capitalizedPronoun} used vocabulary relevant to the topic, and ${student.capitalizedPronoun.toLowerCase()} wrote a variety of simple and compound sentences. ${student.capitalizedPronoun} needs to work on including low-frequency words and academic vocabulary in writing.`;
+          case "4":
+            return `${student.firstName} organized ideas into three linked paragraphs. ${student.capitalizedPronoun} used a variety of vocabulary and wrote sentences of different structures and lengths, including complex sentences.`;
+          case "5":
+            return `${student.firstName} organized ideas into a multi-paragraph composition with a clear link from the introduction to the body to the conclusion. ${student.capitalizedPronoun} wrote a variety of linked simple, compound, and complex sentences of different purposes using a variety of vocabulary of low-frequency words.`;
+          case "6":
+            return `${student.firstName} organized ideas into a multi-paragraph composition stating an opinion with supporting evidence and a concluding paragraph. ${student.capitalizedPronoun} selected vocabulary that supports the writing form and wrote a variety of sentence structures to elaborate ideas and enhance meaning.`;
           default: return "";
         }
       }

@@ -49,18 +49,6 @@ export function fillFRCTracker(student: Student) {
     false
   );
   mathObservationsElement.style.height = "250px";
-
-  // Start the observations with student's name
-  [
-    "propertyValue(pgmFieldD003)",
-    "propertyValue(pgmFieldD004)"
-  ].forEach(elementName => {
-    setValue(
-      elements.namedItem(elementName) as HTMLInputElement,
-      student.firstName + " ",
-      false
-    )
-  });
 }
 
 export function setupFRCTrackerHooks(familyId: string, personIndex: number) {
@@ -71,6 +59,8 @@ export function setupFRCTrackerHooks(familyId: string, personIndex: number) {
   const readingTasks = elements.namedItem("propertyValue(pgmFieldD023)") as HTMLInputElement;
   const writingTasks = elements.namedItem("propertyValue(pgmFieldD024)") as HTMLInputElement;
   const oralCommunicationObservations = elements.namedItem("propertyValue(pgmFieldD002)") as HTMLInputElement;
+  const readingObservations = elements.namedItem("propertyValue(pgmFieldD003)") as HTMLInputElement;
+  const writingObservations = elements.namedItem("propertyValue(pgmFieldD004)") as HTMLInputElement;
   const mathObservations = elements.namedItem("propertyValue(pgmFieldD005)") as HTMLInputElement;
   const englishProficiencyOral = elements.namedItem("propertyValue(pgmFieldA012)") as HTMLInputElement;
   const englishProficiencyReading = elements.namedItem("propertyValue(pgmFieldA013)") as HTMLInputElement;
@@ -157,12 +147,14 @@ export function setupFRCTrackerHooks(familyId: string, personIndex: number) {
 
     setValue(
       oralCommunicationTasks,
-      FRCTrackerFields.oralTasks(englishProficiencyOral.value)
+      FRCTrackerFields.oralTasks(englishProficiencyOral.value),
+      false
     );
 
     setValue(
       oralCommunicationObservations,
-      FRCTrackerFields.oralObservations(student, englishProficiencyOral.value)
+      FRCTrackerFields.oralObservations(student, englishProficiencyOral.value),
+      false
     );
   });
 
@@ -172,7 +164,14 @@ export function setupFRCTrackerHooks(familyId: string, personIndex: number) {
 
     setValue(
       readingTasks,
-      FRCTrackerFields.readingTasks(student, englishProficiencyReading.value)
+      FRCTrackerFields.readingTasks(student, englishProficiencyReading.value),
+      false
+    );
+
+    setValue(
+      readingObservations,
+      FRCTrackerFields.readingObservations(student, englishProficiencyReading.value),
+      false
     );
   });
 
@@ -182,7 +181,14 @@ export function setupFRCTrackerHooks(familyId: string, personIndex: number) {
 
     setValue(
       writingTasks,
-      FRCTrackerFields.writingTasks(student, englishProficiencyWriting.value)
+      FRCTrackerFields.writingTasks(student, englishProficiencyWriting.value),
+      false
+    );
+
+    setValue(
+      writingObservations,
+      FRCTrackerFields.writingObservations(student, englishProficiencyWriting.value),
+      false
     );
   });
 
