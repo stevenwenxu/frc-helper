@@ -154,6 +154,26 @@ Writing ${languageCategory} STEP ${writing}.`;
   }
 
   static readingTasks(student: Student, reading: string) {
+    if (student.languageCategory === LanguageCategory.ELD) {
+      switch (student.grade) {
+        case "1": case "2": return "";
+        case "3": case "4": case "5": case "6": case "7": case "8": {
+          switch (reading) {
+            case "1": return "FRC Early Literacy Task";
+            case "2": return "FRC Early Literacy Task\nReading Comprehension-The Bear and the Bees";
+            default: return "";
+          }
+        }
+        case "9": case "10": case "11": case "12": {
+          switch (reading) {
+            case "1": return "FRC Early Literacy Task";
+            case "2": return "FRC Early Literacy Task\nReading Comprehension-I Want to Be a Teacher";
+            default: return "";
+          }
+        }
+        default: return "";
+      }
+    }
     switch (student.grade) {
       case "1": case "2": case "3": {
         switch (reading) {
@@ -204,6 +224,30 @@ Writing ${languageCategory} STEP ${writing}.`;
   }
 
   static readingObservations(student: Student, reading: string) {
+    if (student.languageCategory === LanguageCategory.ELD) {
+      switch (student.grade) {
+        case "1": case "2": return "";
+        case "3": case "4": case "5": case "6": case "7": case "8": {
+          switch (reading) {
+            case "1":
+              return `In English, ${student.firstName} was able to locate information in highly visual text with simple language, using simple English words. ${student.capitalizedPronoun} identified some of the letters of the alphabet including upper cases and lower cases. ${student.capitalizedPronoun} was able to name some everyday familiar objects; e.g. "book", "shoe", "baby", "airplane", "dog", "ball", "pencil", "bird", "tree", "banana", and "car".`;
+            case "2":
+              return `${student.firstName} demonstrated understanding by responding to a simple text with visual support using drawings, L1, and high-frequency words. ${student.capitalizedPronoun} responded with a combination of oral responses in the first language, and simple phrases and sentences in English. ${student.capitalizedPronoun} was able to locate some basic information or familiar words. ${student.capitalizedPronoun} read and understood high-frequency words and phrases and some words with multiple meanings.`;
+            default: return "";
+          }
+        }
+        case "9": case "10": case "11": case "12": {
+          switch (reading) {
+            case "1":
+              return `In English, ${student.firstName} was able to locate information in highly visual text with simple language, using simple English words. ${student.capitalizedPronoun} identified some of the letters of the alphabet including upper cases and lower cases. ${student.capitalizedPronoun} was able to name some everyday familiar objects; e.g. "book", "shoe", "baby", "airplane", "dog", "ball", "pencil", "bird", "tree", "banana", and "car".`;
+            case "2":
+              return `${student.firstName} demonstrated understanding by responding to a simple text with visual support using drawings, L1, and high-frequency words. ${student.capitalizedPronoun} read and followed short, simply worded instructions. ${student.capitalizedPronoun} identified and used common text features to locate information in a text with visual support. ${student.capitalizedPronoun} read and understood high-frequency words and phrases and some words with multiple meanings.`;
+            default: return "";
+          }
+        }
+        default: return "";
+      }
+    }
     switch (student.grade) {
       case "1": case "2": case "3": {
         switch (reading) {
@@ -244,6 +288,19 @@ Writing ${languageCategory} STEP ${writing}.`;
   }
 
   static writingTasks(student: Student, writing: string) {
+    if (student.languageCategory === LanguageCategory.ELD) {
+      switch (student.grade) {
+        case "1": case "2": return "";
+        case "3": case "4": case "5": case "6": case "7": case "8": case "9": case "10": case "11": case "12": {
+          switch (writing) {
+            case "1": return "Writing Alphabet\nFRC Early Literacy Task\nFirst Language Assessment";
+            case "2": return "Writing Alphabet\nFRC Early Literacy Task\nPrinting/Writing Assessment\nFirst Language Assessment";
+            default: return "";
+          }
+        }
+        default: return "";
+      }
+    }
     switch (student.grade) {
       case "1": case "2": case "3": {
         switch (writing) {
@@ -294,6 +351,30 @@ Writing ${languageCategory} STEP ${writing}.`;
   }
 
   static writingObservations(student: Student, writing: string) {
+    if (student.languageCategory === LanguageCategory.ELD) {
+      switch (student.grade) {
+        case "1": case "2": return "";
+        case "3": case "4": case "5": case "6": case "7": case "8": {
+          switch (writing) {
+            case "1":
+              return `In English, ${student.firstName} was able to write some letters from the English alphabet including upper cases and lower cases. ${student.capitalizedPronoun} copied a few of the English words to correctly label pictures and wrote some personally relevant words.\n\n${student.firstName} is not able to write in the first language ${student.homeLanguage}.`;
+            case "2":
+              return `In English, ${student.firstName} was able to write some letters from the English alphabet including upper cases and lower cases. ${student.capitalizedPronoun} copied a few of the English words to correctly label pictures and wrote some personally relevant words.\n\nIn ${student.firstName}'s first language, ${student.homeLanguage}, ${student.capitalizedPronoun.toLowerCase()} was able to organize words in some simple sentences. ${student.capitalizedPronoun} used common and personally relevant words.`;
+            default: return "";
+          }
+        }
+        case "9": case "10": case "11": case "12": {
+          switch (writing) {
+            case "1":
+              return `In English, ${student.firstName} was able to write some letters from the English alphabet including upper cases and lower cases. ${student.capitalizedPronoun} copied a few of the English words to correctly label pictures and wrote some personally relevant words.\n\nIn ${student.firstName}'s first language, ${student.homeLanguage}, ${student.capitalizedPronoun.toLowerCase()} demonstrated literacy skills that are approximately at the grade 3 level. ${student.capitalizedPronoun} organized ideas in a multi-sentence paragraph around a topic. ${student.capitalizedPronoun} used vocabulary relevant to the topic, and wrote some simple sentences.`;
+            case "2":
+              return `In English, ${student.firstName} was able to write some letters from the English alphabet including upper cases and lower cases. ${student.capitalizedPronoun} copied a few of the English words to correctly label pictures and wrote some personally relevant words.\n\nIn ${student.firstName}'s first language, ${student.homeLanguage}, ${student.capitalizedPronoun.toLowerCase()} demonstrated literacy skills that are approximately at the grade 3 level. ${student.capitalizedPronoun} organized ideas in a multi-sentence paragraph around a topic. ${student.capitalizedPronoun} used vocabulary relevant to the topic, and wrote a variety of simple sentences.`;
+            default: return "";
+          }
+        }
+        default: return "";
+      }
+    }
     switch (student.grade) {
       case "1": case "2": case "3": {
         switch (writing) {
