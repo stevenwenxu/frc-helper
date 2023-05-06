@@ -86,4 +86,8 @@ export class Student extends Person {
       default: return "They";
     }
   }
+
+  get displayName() {
+    return `${this.lastName}, ${this.firstName}`;
+  }
 }
