@@ -153,8 +153,9 @@ export class PopupBuilder {
         </table>
 
         ${person instanceof Student ? `
-        <div class="d-grid gap-2 mb-3">
-          <button type="button" class="btn btn-outline-success" data-person-index="${personIndex}" data-family-id="${familyUniqueId}" data-function="email">Generate email</button>
+        <div class="d-flex gap-3 mb-3">
+          <button type="button" class="btn btn-outline-primary flex-fill" data-person-index="${personIndex}" data-family-id="${familyUniqueId}" data-function="downloadStep">Download STEP</button>
+          <button type="button" class="btn btn-outline-secondary flex-fill" data-person-index="${personIndex}" data-family-id="${familyUniqueId}" data-function="email">Generate email</button>
         </div>
         ` : ""}
       </div>
