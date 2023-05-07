@@ -1,5 +1,5 @@
 import "../scss/styles.scss";
-import * as bootstrap from "bootstrap";
+import Tab from "bootstrap/js/dist/tab";
 import { FamilyRepository } from "../common/family_repository";
 import { PopupBuilder } from "./helpers/popup_builder";
 import { Family } from "../common/models/family";
@@ -106,7 +106,7 @@ function setupFillButtons(family: Family) {
           const currentSelectedPerson = document.querySelector(".nav-link.active")!;
           await updateFamilyPickerDisplayName();
           await renderFamilyDetails();
-          bootstrap.Tab.getOrCreateInstance(`#${currentSelectedPerson.id}`).show();
+          Tab.getOrCreateInstance(`#${currentSelectedPerson.id}`).show();
         }
       }
     });
@@ -132,9 +132,6 @@ function expectedPersonType(pathname: string) {
 }
 
 document.addEventListener("DOMContentLoaded", function(event) {
-  // this is needed to make bootstrap work
-  const _ = bootstrap;
-
   setupFamilyPicker();
   setupDeleteFamilyButton();
 });
