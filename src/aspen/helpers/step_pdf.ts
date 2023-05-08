@@ -23,7 +23,7 @@ async function download(student: Student) {
     doc.addPage(await readingWriting(student, doc));
   } catch (error) {
     console.log(error);
-    alert(`${student.grade} is not supported yet.`);
+    alert(error);
     return;
   }
   await generate(student, doc);
@@ -32,6 +32,8 @@ async function download(student: Student) {
 async function oral(student: Student, finalDoc: PDFDocument) {
   if (student.grade === "JK" || student.grade === "SK") {
     return Promise.reject("JK/SK not supported yet");
+  } else if (student.grade === "") {
+    return Promise.reject("Unknown grade. Fill from demographic page.");
   }
 
   const url = chrome.runtime.getURL("static/oral.pdf");
@@ -62,6 +64,8 @@ async function oral(student: Student, finalDoc: PDFDocument) {
 async function readingWriting(student: Student, finalDoc: PDFDocument) {
   let url = "";
   switch (student.grade) {
+    case "JK": case "SK":
+      return Promise.reject("JK/SK not supported yet");
     case "1": case "2": case "3":
       url = chrome.runtime.getURL("static/reading-writing-1-3.pdf");
       break;
@@ -69,7 +73,7 @@ async function readingWriting(student: Student, finalDoc: PDFDocument) {
       url = chrome.runtime.getURL("static/reading-writing-4-12.pdf");
       break;
     default:
-      return Promise.reject("JK/SK not supported yet");
+      return Promise.reject("Unknown grade. Fill from demographic page.");
   }
 
   const content = await (await fetch(url)).arrayBuffer();
