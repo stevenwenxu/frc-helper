@@ -1,4 +1,4 @@
-import Tab from "bootstrap/js/dist/tab";
+import * as bootstrap from "bootstrap";
 import { FamilyRepository } from "../../common/family_repository";
 import { Student } from "../../common/models/person";
 import { EmailBuilder } from "./email_builder";
@@ -27,7 +27,7 @@ function renderEmail(students: Student[]) {
   const closeBtn = document.querySelector<HTMLButtonElement>("button[data-function='close-email'");
   closeBtn?.addEventListener("click", async () => {
     await renderFamilyDetails();
-    Tab.getOrCreateInstance(`#${currentSelectedPersonId}`).show();
+    bootstrap.Tab.getOrCreateInstance(`#${currentSelectedPersonId}`).show();
   });
 
   const gmailBtn = document.querySelector<HTMLButtonElement>("button[data-function='gmail'");

@@ -1,4 +1,4 @@
-import Tab from "bootstrap/js/dist/tab";
+import * as bootstrap from "bootstrap";
 import { DetailsPageBuilder } from "./helpers/details_page_builder";
 import { FamilyRepository } from "../common/family_repository";
 import { Family } from "../common/models/family";
@@ -76,7 +76,7 @@ function setupNewPersonMenu(family: Family, container: HTMLElement, table: HTMLT
 
       FamilyRepository.saveFamily(family).then(() => {
         setupOffCanvasPage(container, table).then(() => {
-          Tab.getOrCreateInstance(`#person-${newPersonIndex}-tab`).show();
+          bootstrap.Tab.getOrCreateInstance(`#person-${newPersonIndex}-tab`).show();
         });
       });
     });

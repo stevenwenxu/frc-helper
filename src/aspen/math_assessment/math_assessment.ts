@@ -1,4 +1,4 @@
-import Tab from "bootstrap/js/dist/tab";
+import * as bootstrap from "bootstrap";
 import { FamilyRepository } from "../../common/family_repository";
 import { Student } from "../../common/models/person";
 import { renderFamilyDetails } from "../popup";
@@ -63,7 +63,7 @@ function setupCloseButton() {
   const closeBtn = document.querySelector<HTMLButtonElement>("button[data-function='close-math-assessment'");
   closeBtn?.addEventListener("click", async () => {
     await renderFamilyDetails();
-    Tab.getOrCreateInstance(`#${currentSelectedPersonTabId}`).show();
+    bootstrap.Tab.getOrCreateInstance(`#${currentSelectedPersonTabId}`).show();
   });
 }
 
