@@ -15,11 +15,11 @@ import { fillELL } from "./fill/programs_ell";
 chrome.runtime.onMessage.addListener(
   function(request, sender, sendResponse) {
     console.log("Aspen content script got message", request);
-    if (request.hasOwnProperty("family") &&
+    if (request.hasOwnProperty("familyId") &&
         request.hasOwnProperty("personIndex") &&
         request.hasOwnProperty("pathname") &&
         request.hasOwnProperty("context")) {
-      fill(request.family, request.personIndex, request.pathname, request.context).then((fillResponse) => {
+      fill(request.familyId, request.personIndex, request.pathname, request.context).then((fillResponse) => {
         sendResponse({ type: "fillResponse", message: fillResponse });
       });
     } else {
@@ -31,8 +31,12 @@ chrome.runtime.onMessage.addListener(
   }
 );
 
-async function fill(familySerialized: any, personIndex: number, pathname: string, context: string | null) {
-  const family = FamilyRepository.familyFromStoredFamily(familySerialized);
+async function fill(familyId: string, personIndex: number, pathname: string, context: string | null) {
+  const family = await FamilyRepository.getFamilyWithUniqueId(familyId);
+  if (!family) {
+    return "familyNotFound";
+  }
+
   const person = family.people[personIndex];
   let response = "ok";
 

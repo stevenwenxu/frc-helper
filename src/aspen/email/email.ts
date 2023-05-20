@@ -14,6 +14,8 @@ export function setupEmailButtons(familyId: string) {
         const students = family.studentsInSameSchool(family.people[personIndex] as Student);
 
         renderEmail(students);
+      } else {
+        alert("This family has been deleted. Please reload the page.");
       }
     });
   }

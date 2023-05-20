@@ -89,13 +89,31 @@ export class PopupBuilder {
     const active = personIndex === 0 ? "show active" : "";
     const isSecondaryStudent = person instanceof Student && person.schoolCategory === SchoolCategory.Secondary;
     const allGrades = ["JK", "SK"].concat([...Array(12).keys()].map(i => `${i + 1}`));
+    const personType = person instanceof Student ? "student" : "parent";
 
     return `
       <div class="tab-pane fade ${active}" id="person-${personIndex}" role="tabpanel" aria-labelledby="person-${personIndex}-tab" tabindex="0">
         <div class="d-flex gap-3 mb-3">
-          <button type="button" class="btn btn-outline-primary flex-fill" data-person-index="${personIndex}" data-family-id="${familyUniqueId}" data-function="fill">Fill</button>
+          <button
+            type="button"
+            class="btn btn-outline-primary flex-fill"
+            data-person-index="${personIndex}"
+            data-family-id="${familyUniqueId}"
+            data-person-type="${personType}"
+            data-function="fill"
+          >
+            Fill
+          </button>
           ${isSecondaryStudent ? `
-          <button type="button" class="btn btn-outline-secondary flex-fill" data-person-index="${personIndex}" data-family-id="${familyUniqueId}" data-function="mathAssessment">Math Assessment</button>
+          <button
+            type="button"
+            class="btn btn-outline-secondary flex-fill"
+            data-person-index="${personIndex}"
+            data-family-id="${familyUniqueId}"
+            data-function="mathAssessment"
+          >
+            Math Assessment
+          </button>
           ` : ""}
         </div>
         <table class="table">

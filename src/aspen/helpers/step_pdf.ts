@@ -11,6 +11,8 @@ export function setupStepButtons(familyId: string) {
         const personIndex = parseInt(stepButton.dataset.personIndex!);
 
         await download(family.people[personIndex] as Student);
+      } else {
+        alert("This family has been deleted. Please reload the page.");
       }
     });
   }

@@ -58,10 +58,9 @@ export async function renderFamilyDetails() {
   const family = await FamilyRepository.getFamilyWithUniqueId(familyPicker.value);
   if (family) {
     familyDetails.innerHTML = PopupBuilder.generate(family);
-    // TODO: this should probably pass the id as well
-    setupFillButtons(family);
     // Take familyId instead of Family because the family object (at the time of UI creation) could be stale after
     // picking up more fields from Aspen.
+    setupFillButtons(family.uniqueId);
     setupMathAssessmentButtons(family.uniqueId);
     setupGradeActions(family.uniqueId);
     setupEmailButtons(family.uniqueId);
@@ -76,7 +75,7 @@ export async function reRender() {
   bootstrap.Tab.getOrCreateInstance(`#${currentSelectedPerson.id}`).show();
 }
 
-function setupFillButtons(family: Family) {
+function setupFillButtons(familyId: string) {
   const fillButtons = document.querySelectorAll<HTMLButtonElement>(".tab-pane button[data-function='fill'");
   for (const fillButton of Array.from(fillButtons)) {
     fillButton.addEventListener("click", async () => {
@@ -93,26 +92,39 @@ function setupFillButtons(family: Family) {
         console.log("Filling tab: ", tab.url);
 
         const personIndex = parseInt(fillButton.dataset.personIndex!);
-        const person = family.people[personIndex];
+        const personType = fillButton.dataset.personType!;
         const url = new URL(tab.url!);
         const pathname = url.pathname;
         const context = url.searchParams.get("context");
         const expected = expectedPersonType(pathname);
-        const selection = person instanceof Student ? "student" : "parent";
-        if (!expected.includes(selection)) {
-          alert(`You selected a ${selection}, but the form is for a ${expected.join(" or ")}.`);
+        if (!expected.includes(personType)) {
+          alert(`You selected a ${personType}, but the form is for a ${expected.join(" or ")}.`);
           return;
         }
 
         const fillResponse = await chrome.tabs.sendMessage(tab.id!, {
-          family: family,
+          familyId: familyId,
           personIndex: personIndex,
           pathname: pathname,
           context: context
         });
         console.log("Popup fill response:", fillResponse);
-        if (fillResponse.type === "fillResponse" && fillResponse.message === "refreshRequired") {
-          await reRender();
+        if (fillResponse.type === "fillResponse") {
+          switch (fillResponse.message) {
+            case "familyNotFound":
+              alert("This family has been deleted. Please reload the page.");
+              break;
+            case "ok":
+              break;
+            case "refreshRequired":
+              await reRender();
+              break;
+            default:
+              console.error("Unknown fill response message:", fillResponse.message);
+              break;
+          }
+        } else {
+          console.error("Unknown fill response:", fillResponse);
         }
       }
     });

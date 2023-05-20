@@ -22,20 +22,19 @@ export function setupMathAssessmentButtons(familyId: string) {
   }
 }
 
-// Returns true if the student was updated, false otherwise.
 async function setupStudentIfNecessary(familyId: string, personIndex: number) {
   const family = await FamilyRepository.getFamilyWithUniqueId(familyId);
-  if (!family) return false;
+  if (!family) {
+    alert("This family has been deleted. Please reload the page.");
+    return;
+  };
 
   const student = family.people[personIndex] as Student;
   let assessment = student.secondaryMathAssessment;
-  if (assessment) {
-    return false;
-  } else {
+  if (!assessment) {
     const courseCode = defaultCourseCode(parseInt(student.grade), "university");
     assessment = new SecondaryMathAssessment(courseCode);
     await updateStudentAssessment(family.uniqueId, personIndex, assessment);
-    return true;
   }
 }
 
@@ -46,7 +45,6 @@ async function updateStudentAssessment(familyId: string, personIndex: number, as
   });
 }
 
-// Note: Ensure `family` is up to date.
 async function renderMathAssessment(familyId: string, personIndex: number) {
   const family = await FamilyRepository.getFamilyWithUniqueId(familyId);
   if (!family) return;
