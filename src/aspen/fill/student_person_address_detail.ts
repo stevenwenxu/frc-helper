@@ -1,7 +1,6 @@
 import { FamilyRepository } from "../../common/family_repository";
 import { Gender } from "../../common/models/gender";
 import { Student } from "../../common/models/person";
-import { schoolCategoryFromGrade } from "../../common/models/school_category";
 
 export async function saveStudentDetails(familyId: string, personIndex: number) {
   const elements = document.forms.namedItem("personAddressDetailForm")!.elements;
@@ -70,7 +69,6 @@ function updateStudentDetails(student: Student) {
   if (grade && !student.isGradeManuallySet) {
     const gradeNum = parseInt(grade.value);
     student.grade = isNaN(gradeNum) ? grade.value : `${gradeNum}`;
-    student.schoolCategory = schoolCategoryFromGrade(student.grade);
   }
   if (homeLanguage) {
     student.homeLanguage = homeLanguage.value;

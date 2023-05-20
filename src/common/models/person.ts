@@ -46,7 +46,6 @@ export class Student extends Person {
   isGradeManuallySet = false;
   isGradeForNewSchoolYear = false;
   secondaryCourseRecommendations = "";
-  schoolCategory = SchoolCategory.Unknown;
   languageCategory = LanguageCategory.Unknown;
   listeningStep = "";
   speakingStep = "";
@@ -93,5 +92,17 @@ export class Student extends Person {
 
   get displayName() {
     return `${this.lastName}, ${this.firstName}`;
+  }
+
+  get schoolCategory() {
+    if (this.grade === "JK" || this.grade === "SK") {
+      return SchoolCategory.Kindergarten;
+    }
+    const gradeNum = parseInt(this.grade);
+    if (isNaN(gradeNum)) {
+      return SchoolCategory.Unknown;
+    } else {
+      return gradeNum <= 8 ? SchoolCategory.Elementary : SchoolCategory.Secondary;
+    }
   }
 }

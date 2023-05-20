@@ -1,5 +1,4 @@
 import { FamilyRepository } from "../../common/family_repository";
-import { schoolCategoryFromGrade } from "../../common/models/school_category";
 import { reRender } from "../popup";
 
 export function setupGradeActions(familyId: string) {
@@ -14,7 +13,6 @@ function setupSetGradeDropdowns(familyId: string) {
       const personIndex = parseInt(setGradeElement.dataset.personIndex!);
       await FamilyRepository.updateStudent(familyId, personIndex, (student) => {
         student.grade = setGradeElement.value;
-        student.schoolCategory = schoolCategoryFromGrade(student.grade);
         student.secondaryMathAssessment = null;
         student.secondaryCourseRecommendations = "";
         student.isGradeManuallySet = student.grade !== "";
