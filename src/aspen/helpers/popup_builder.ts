@@ -113,38 +113,7 @@ export class PopupBuilder {
               <td>${person.lastName}</td>
             </tr>
 
-            ${person instanceof Parent ? `
-            <tr>
-              <th scope="row">Email</th>
-              <td>${person.email}</td>
-            </tr>
-            ` : ""}
-
-            <tr>
-              <th scope="row">Phone</th>
-              <td>${person.phone}</td>
-            </tr>
-            <tr>
-              <th scope="row">Address</th>
-              <td>${person.address}</td>
-            </tr>
-
-            ${person instanceof Parent ? `
-            <tr>
-              <th scope="row">Parent notes</th>
-              <td>${person.parentNotes.replaceAll("\n", "<br>")}</td>
-            </tr>
-            ` : ""}
-
             ${person instanceof Student ? `
-            <tr>
-              <th scope="row">Date of birth</th>
-              <td>${person.dateOfBirth}</td>
-            </tr>
-            <tr>
-              <th scope="row">Country of birth</th>
-              <td>${person.countryOfBirth}</td>
-            </tr>
             <tr>
               <th scope="row">
                 Grade
@@ -181,6 +150,40 @@ export class PopupBuilder {
                   </div>
                 </div>
               </td>
+            </tr>
+            ` : ""}
+
+            ${person instanceof Parent ? `
+            <tr>
+              <th scope="row">Email</th>
+              <td>${person.email}</td>
+            </tr>
+            ` : ""}
+
+            <tr>
+              <th scope="row">Phone</th>
+              <td>${person.phone}</td>
+            </tr>
+            <tr>
+              <th scope="row">Address</th>
+              <td>${person.address}</td>
+            </tr>
+
+            ${person instanceof Parent ? `
+            <tr>
+              <th scope="row">Parent notes</th>
+              <td>${person.parentNotes.replaceAll("\n", "<br>")}</td>
+            </tr>
+            ` : ""}
+
+            ${person instanceof Student ? `
+            <tr>
+              <th scope="row">Date of birth</th>
+              <td>${person.dateOfBirth}</td>
+            </tr>
+            <tr>
+              <th scope="row">Country of birth</th>
+              <td>${person.countryOfBirth}</td>
             </tr>
             <tr>
               <th scope="row">Student notes</th>
