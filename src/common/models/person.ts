@@ -42,6 +42,8 @@ export class Student extends Person {
   localId = "";
   // JK, SK, 1-12
   grade = "";
+  // If grade is manually set, grade in Aspen Demographics is ignored.
+  isGradeManuallySet = false;
   secondaryCourseRecommendations = "";
   schoolCategory = SchoolCategory.Unknown;
   languageCategory = LanguageCategory.Unknown;

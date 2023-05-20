@@ -8,6 +8,7 @@ import { Student } from "../common/models/person";
 import { setupMathAssessmentButtons } from "./math_assessment/math_assessment";
 import { setupEmailButtons } from "./email/email";
 import { setupStepButtons } from "./helpers/step_pdf";
+import { setupSetGradeDropdowns } from "./helpers/set_grade";
 
 function setupFamilyPicker() {
   const familyPicker = document.getElementById("familyPicker")!;
@@ -62,9 +63,17 @@ export async function renderFamilyDetails() {
     // Take familyId instead of Family because the family object (at the time of UI creation) could be stale after
     // picking up more fields from Aspen.
     setupMathAssessmentButtons(family.uniqueId);
+    setupSetGradeDropdowns(family.uniqueId);
     setupEmailButtons(family.uniqueId);
     setupStepButtons(family.uniqueId);
   }
+}
+
+export async function reRender() {
+  const currentSelectedPerson = document.querySelector(".nav-link.active")!;
+  await updateFamilyPickerDisplayName();
+  await renderFamilyDetails();
+  bootstrap.Tab.getOrCreateInstance(`#${currentSelectedPerson.id}`).show();
 }
 
 function setupFillButtons(family: Family) {
@@ -103,10 +112,7 @@ function setupFillButtons(family: Family) {
         });
         console.log("Popup fill response:", fillResponse);
         if (fillResponse.type === "fillResponse" && fillResponse.message === "refreshRequired") {
-          const currentSelectedPerson = document.querySelector(".nav-link.active")!;
-          await updateFamilyPickerDisplayName();
-          await renderFamilyDetails();
-          bootstrap.Tab.getOrCreateInstance(`#${currentSelectedPerson.id}`).show();
+          await reRender();
         }
       }
     });

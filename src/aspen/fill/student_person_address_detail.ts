@@ -67,7 +67,7 @@ function updateStudentDetails(student: Student) {
   if (localId) {
     student.localId = localId.value;
   }
-  if (grade) {
+  if (grade && !student.isGradeManuallySet) {
     const gradeNum = parseInt(grade.value);
     student.grade = isNaN(gradeNum) ? grade.value : `${gradeNum}`;
     student.schoolCategory = schoolCategoryFromGrade(student.grade);
