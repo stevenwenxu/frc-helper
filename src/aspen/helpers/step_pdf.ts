@@ -50,7 +50,7 @@ async function oral(student: Student, finalDoc: PDFDocument) {
   page.drawText(`Student Name: ${student.displayName}`);
 
   page.moveDown(20);
-  page.drawText(`Grade: ${student.grade}`);
+  page.drawText(student.gradeText);
 
   page.moveDown(20);
   page.drawText(`Local ID: ${student.localId}`);

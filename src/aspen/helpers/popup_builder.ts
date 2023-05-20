@@ -155,12 +155,31 @@ export class PopupBuilder {
                 ` : ""}
               </th>
               <td>
-                <select class="form-select" data-person-index="${personIndex}" data-family-id="${familyUniqueId}" data-function="setGrade">
-                  <option value="">Select</option>
-                  ${ allGrades.map(grade => `
-                    <option value="${grade}" ${grade === person.grade ? "selected" : ""}>${grade}</option>
-                  `).join("") }
-                </select>
+                <div class="row gx-3 align-items-center">
+                  <div class="col">
+                    <select class="form-select" name="grade" data-person-index="${personIndex}" data-family-id="${familyUniqueId}" data-function="setGrade">
+                      <option value="">Fill or select</option>
+                      ${ allGrades.map(grade => `
+                        <option value="${grade}" ${grade === person.grade ? "selected" : ""}>${grade}</option>
+                      `).join("") }
+                    </select>
+                  </div>
+
+                  <div class="col-auto">
+                    <div class="form-check">
+                      <input
+                        class="form-check-input"
+                        type="checkbox"
+                        id="newSchoolYear${personIndex}"
+                        data-person-index="${personIndex}"
+                        data-family-id="${familyUniqueId}"
+                        data-function="setIsGradeForNewSchoolYear"
+                        ${person.isGradeForNewSchoolYear ? "checked" : ""}
+                      >
+                      <label class="form-check-label" for="newSchoolYear${personIndex}">New school year</label>
+                    </div>
+                  </div>
+                </div>
               </td>
             </tr>
             <tr>

@@ -8,7 +8,7 @@ import { Student } from "../common/models/person";
 import { setupMathAssessmentButtons } from "./math_assessment/math_assessment";
 import { setupEmailButtons } from "./email/email";
 import { setupStepButtons } from "./helpers/step_pdf";
-import { setupSetGradeDropdowns } from "./helpers/set_grade";
+import { setupGradeActions } from "./helpers/set_grade";
 
 function setupFamilyPicker() {
   const familyPicker = document.getElementById("familyPicker")!;
@@ -63,7 +63,7 @@ export async function renderFamilyDetails() {
     // Take familyId instead of Family because the family object (at the time of UI creation) could be stale after
     // picking up more fields from Aspen.
     setupMathAssessmentButtons(family.uniqueId);
-    setupSetGradeDropdowns(family.uniqueId);
+    setupGradeActions(family.uniqueId);
     setupEmailButtons(family.uniqueId);
     setupStepButtons(family.uniqueId);
   }

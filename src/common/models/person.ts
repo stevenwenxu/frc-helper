@@ -44,6 +44,7 @@ export class Student extends Person {
   grade = "";
   // If grade is manually set, grade in Aspen Demographics is ignored.
   isGradeManuallySet = false;
+  isGradeForNewSchoolYear = false;
   secondaryCourseRecommendations = "";
   schoolCategory = SchoolCategory.Unknown;
   languageCategory = LanguageCategory.Unknown;
@@ -78,7 +79,8 @@ export class Student extends Person {
 
   get gradeText() {
     const gradeNum = parseInt(this.grade);
-    return isNaN(gradeNum) ? this.grade : `Grade ${gradeNum}`;
+    return (isNaN(gradeNum) ? this.grade : `Grade ${gradeNum}`)
+      + (this.isGradeForNewSchoolYear ? " (New School Year)" : "");
   }
 
   get capitalizedPronoun() {
