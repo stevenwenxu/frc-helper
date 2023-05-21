@@ -1,5 +1,5 @@
 if (/\/.*\/parents\/\d+\/details$/.test(location.pathname)) {
-  import("./details_page");
+  require("./details_page");
 } else if (/\/.*\/\d+/.test(location.pathname)) {
-  import("./schedule");
+  require("./schedule");
 }

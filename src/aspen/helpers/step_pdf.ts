@@ -1,6 +1,9 @@
 import { FamilyRepository } from "../../common/family_repository";
 import { Student } from "../../common/models/person";
-import { PDFDocument } from "pdf-lib";
+
+type PDFDocumentType = typeof import("pdf-lib").PDFDocument;
+type PDFDocument = import("pdf-lib").PDFDocument;
+let _PDFDocument: PDFDocumentType | null = null;
 
 export function setupStepButtons(familyId: string) {
   const stepButtons = document.querySelectorAll<HTMLButtonElement>(".tab-pane button[data-function='downloadStep'");
@@ -19,6 +22,7 @@ export function setupStepButtons(familyId: string) {
 }
 
 async function download(student: Student) {
+  const PDFDocument = await loadPDFLib();
   const doc = await PDFDocument.create();
   try {
     doc.addPage(await oral(student, doc));
@@ -40,6 +44,7 @@ async function oral(student: Student, finalDoc: PDFDocument) {
 
   const url = chrome.runtime.getURL("static/oral.pdf");
   const content = await (await fetch(url)).arrayBuffer();
+  const PDFDocument = await loadPDFLib();
   const pdfDoc = await PDFDocument.load(content);
   const page = pdfDoc.getPage(0);
 
@@ -79,6 +84,7 @@ async function readingWriting(student: Student, finalDoc: PDFDocument) {
   }
 
   const content = await (await fetch(url)).arrayBuffer();
+  const PDFDocument = await loadPDFLib();
   const pdfDoc = await PDFDocument.load(content);
 
   return (await finalDoc.copyPages(pdfDoc, [0]))[0];
@@ -99,4 +105,9 @@ async function generate(student: Student, pdfDocument: PDFDocument) {
   link.click();
 
   URL.revokeObjectURL(pdfUrl);
+}
+
+async function loadPDFLib() {
+  _PDFDocument = _PDFDocument ?? (await import("pdf-lib")).PDFDocument;
+  return _PDFDocument;
 }
