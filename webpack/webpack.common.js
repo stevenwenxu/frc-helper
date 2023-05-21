@@ -1,5 +1,6 @@
 const path = require("path");
 const CopyPlugin = require("copy-webpack-plugin");
+const HtmlWebpackPlugin = require('html-webpack-plugin');
 
 const srcDir = path.join(__dirname, "..", "src");
 
@@ -60,6 +61,16 @@ module.exports = {
         context: "public",
         noErrorOnMissing: true
       }]
+    }),
+    new HtmlWebpackPlugin({
+      filename: "../html/popup.html",
+      template: "src/templates/popup.html",
+      chunks: ["popup"],
+    }),
+    new HtmlWebpackPlugin({
+      filename: "../html/options.html",
+      template: "src/templates/options.html",
+      chunks: ["options"],
     }),
   ],
 };
