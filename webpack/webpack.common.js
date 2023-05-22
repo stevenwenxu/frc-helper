@@ -1,6 +1,7 @@
 const path = require("path");
 const CopyPlugin = require("copy-webpack-plugin");
 const HtmlWebpackPlugin = require('html-webpack-plugin');
+const BundleAnalyzerPlugin = require('webpack-bundle-analyzer').BundleAnalyzerPlugin;
 
 const srcDir = path.join(__dirname, "..", "src");
 
@@ -72,5 +73,6 @@ module.exports = {
       template: "src/templates/options.html",
       chunks: ["options"],
     }),
+    // new BundleAnalyzerPlugin(),
   ],
 };
