@@ -14,6 +14,12 @@
       ]
     },
     {
+      "css": ["css/school_interviews.css"],
+      "matches": [
+        "https://www.schoolinterviews.com.au/*/parents/*/details"
+      ]
+    },
+    {
       "js": ["js/aspen_fill.js"],
       "matches": [
         "https://ocdsb.myontarioedu.ca/aspen/*"
