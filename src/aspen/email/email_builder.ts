@@ -83,8 +83,6 @@ export class EmailBuilder {
           ${ student.isNewRegistration ? `
           <p class="bold" style="color: blue">The family has completed a hard-copy registration form, attached.</p>
 
-          <p class="bold" style="color: blue">The family has been instructed to complete the online registration and supporting documents form. They may require support in completing these forms.</p>
-
           ${ nonEnglish ? `
           <p>The family speaks ${this.emptyGuard(languagesText)}. It is recommended that you invite an MLO who speaks ${languages.length > 1 ? "these languages" : "this language"} to support your conversations. If your school does not have an MLO, please request one here: <a href="https://forms.office.com/Pages/ResponsePage.aspx?id=BtVrYC9iWEK_-fzRubyWjjLYbNjq7tRCuw6D_vq-mF5UQ0FVVFI3WkNVQUNVRzJWUDRYVElOTEVIOS4u">Multicultural Liaison Officer (MLO) Request Form</a></p>
           ` : ""}
