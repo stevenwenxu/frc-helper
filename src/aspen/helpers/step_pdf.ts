@@ -96,10 +96,9 @@ async function generate(student: Student, pdfDocument: PDFDocument) {
   const pdfUrl = URL.createObjectURL(pdfBlob);
   // chrome.tabs.create({ url: pdfUrl });
 
-  const dateStr = new Date().toLocaleDateString().replaceAll("/", "-");
   const link = document.createElement("a");
   link.href = pdfUrl;
-  link.setAttribute("download", `${student.displayName}_${dateStr}.pdf`);
+  link.setAttribute("download", `G${student.grade}_${student.firstName} ${student.lastName}_STEP.pdf`);
   link.style.display = "none";
   document.body.appendChild(link);
   link.click();
