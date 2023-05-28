@@ -33,7 +33,7 @@
     "page": "html/options.html",
     "open_in_tab": false
   },
-  "permissions": ["storage", "alarms", "tabs"],
+  "permissions": ["storage", "alarms", "tabs", "contextMenus"],
   "icons": {
     "16": "images/icon-16.png",
     "32": "images/icon-32.png",

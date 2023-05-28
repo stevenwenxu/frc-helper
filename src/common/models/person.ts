@@ -94,6 +94,11 @@ export class Student extends Person {
     return `${this.lastName}, ${this.firstName}`;
   }
 
+  get firstNameWithGrade() {
+    const gradePrefix = this.grade.length > 0 ? `${this.grade}-` : "";
+    return `${gradePrefix}${this.firstName}`;
+  }
+
   get schoolCategory() {
     if (this.grade === "JK" || this.grade === "SK") {
       return SchoolCategory.Kindergarten;

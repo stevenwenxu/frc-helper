@@ -64,8 +64,7 @@ export class PopupBuilder {
     const listItems = family.people.map((person, index) => {
       const active = index === 0 ? "active" : "";
       const selected = index === 0 ? "true" : "false";
-      const gradePrefix = person instanceof Student && person.grade.length > 0 ? `${person.grade}-` : "";
-      const displayName = person instanceof Student ? `${gradePrefix}${person.firstName}` : `Parent ${parentIndex++}`;
+      const displayName = person instanceof Student ? person.firstNameWithGrade : `Parent ${parentIndex++}`;
 
       return `
         <li class="nav-item" role="presentation">
