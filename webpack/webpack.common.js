@@ -13,6 +13,7 @@ module.exports = {
     school_interviews: path.join(srcDir, "school_interviews/entry.ts"),
     popup: path.join(srcDir, "aspen/popup.ts"),
     aspen_fill: path.join(srcDir, "aspen/fill.ts"),
+    laserfische_fill: path.join(srcDir, "laserfische/fill.ts"),
     options: path.join(srcDir, "options.ts"),
   },
   output: {

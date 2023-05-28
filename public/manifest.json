@@ -24,6 +24,12 @@
       "matches": [
         "https://ocdsb.myontarioedu.ca/aspen/*"
       ]
+    },
+    {
+      "js": ["js/laserfische_fill.js"],
+      "matches": [
+        "https://ecm.ocdsb.ca/laserfiche/*"
+      ]
     }
   ],
   "background": {

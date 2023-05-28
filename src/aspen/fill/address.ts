@@ -1,6 +1,6 @@
 import { Parent, Student } from "../../common/models/person";
 import { AddressSanitizer } from "../helpers/address_sanitizer";
-import { setValue } from "../fill";
+import { setValue } from "../../common/helpers/fill_helper";
 
 export function fillAddress(person: Parent | Student) {
   const elements = document.forms.namedItem("multiplePersonAddressChildDetailForm")!.elements;

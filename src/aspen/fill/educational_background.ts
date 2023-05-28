@@ -1,7 +1,7 @@
 import { Student } from "../../common/models/person";
 import { FamilyRepository } from "../../common/family_repository";
 import { EducationalBackgroundFields } from "../helpers/educational_background_fields";
-import { setValue } from "../fill";
+import { setValue } from "../../common/helpers/fill_helper";
 
 export function fillEducationalBackground(student: Student) {
   const elements = document.forms.namedItem("childDetailForm")!.elements;

@@ -2,7 +2,7 @@ import { Student } from "../../common/models/person";
 import { FamilyRepository } from "../../common/family_repository";
 import { SchoolCategory } from "../../common/models/school_category";
 import { FRCTrackerFields } from "../helpers/frc_tracker_fields";
-import { setValue } from "../fill";
+import { setValue } from "../../common/helpers/fill_helper";
 import { LanguageCategory } from "../../common/models/language_category";
 import { FRCTrackerMathFields } from "../helpers/frc_tracker_math_fields";
 

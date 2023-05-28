@@ -1,5 +1,5 @@
 import { Parent } from "../../common/models/person";
-import { setValue } from "../fill";
+import { setValue } from "../../common/helpers/fill_helper";
 
 export function fillParent(parent: Parent) {
   const elements = document.forms.namedItem("personAddressDetailForm")!.elements;

@@ -110,4 +110,13 @@ export class Student extends Person {
       return gradeNum <= 8 ? SchoolCategory.Elementary : SchoolCategory.Secondary;
     }
   }
+
+  get schoolYear() {
+    const today = new Date();
+    let startYear = today.getMonth() < 9 ? today.getFullYear() - 1 : today.getFullYear();
+    if (this.isGradeForNewSchoolYear) {
+      startYear += 1;
+    }
+    return `${startYear}-${startYear + 1}`;
+  }
 }

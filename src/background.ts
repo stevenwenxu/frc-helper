@@ -22,13 +22,13 @@ chrome.action.onClicked.addListener(async (tab) => {
 });
 
 chrome.contextMenus.onClicked.addListener(async (info, tab) => {
-  const [familyId, studentIndex] = String(info.menuItemId).split("-");
-  const family = await FamilyRepository.getFamilyWithUniqueId(familyId);
-  if (!family) {
+  if (!tab || !tab.id) {
+    console.error("Context menu clicked without tab");
     return;
   }
-  const student = family.students[Number(studentIndex)];
-  console.log("student", student);
+
+  const [familyId, studentIndex] = String(info.menuItemId).split("-");
+  await fillStudentInTab(tab.id, familyId, Number(studentIndex));
 });
 
 chrome.storage.onChanged.addListener(async (changes, namespace) => {
@@ -93,5 +93,30 @@ async function setupContextMenu() {
         parentId: familyItem,
       });
     };
+  }
+}
+
+async function fillStudentInTab(tabId: number, familyId: string, studentIndex: number) {
+  const fillResponse = await chrome.tabs.sendMessage(tabId, {
+    familyId: familyId,
+    studentIndex: studentIndex,
+  });
+
+  if (fillResponse.type === "fillResponse") {
+    switch (fillResponse.message) {
+      case "familyNotFound":
+        console.error("This family has been deleted. Please reopen the context menu.");
+        break;
+      case "unknownFillDestination":
+        console.log("Unknown fill destination");
+        break;
+      case "ok":
+        break;
+      default:
+        console.error("Unknown fill response message:", fillResponse.message);
+        break;
+    }
+  } else {
+    console.error("Unknown fill response:", fillResponse);
   }
 }

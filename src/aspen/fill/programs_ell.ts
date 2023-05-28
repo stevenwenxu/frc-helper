@@ -1,6 +1,6 @@
 import { LanguageCategory } from "../../common/models/language_category";
 import { Student } from "../../common/models/person";
-import { setValue } from "../fill";
+import { setValue } from "../../common/helpers/fill_helper";
 
 export function fillELL(student: Student) {
   const elements = document.forms.namedItem("childDetailForm")!.elements;

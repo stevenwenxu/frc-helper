@@ -1,5 +1,5 @@
 import { Student } from "../../common/models/person";
-import { setValue } from "../fill";
+import { setValue } from "../../common/helpers/fill_helper";
 
 export function fillStudentRegistration0(student: Student) {
   const elements = document.forms.namedItem("registrationSourceForm")!.elements;
