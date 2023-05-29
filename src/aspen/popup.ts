@@ -142,6 +142,7 @@ function expectedPersonType(pathname: string) {
     case SupportedPath.MultiplePersonAddressChildDetail:
       return ["student", "parent"];
     case SupportedPath.AddRecord:
+    case SupportedPath.ContactDetail:
       return ["parent"];
     default:
       console.log("Unknown path:", pathname);

@@ -16,3 +16,15 @@ export function setValue(element: HTMLInputElement | null, value: string, replac
     element.dispatchEvent(new Event("keyup"));
   }
 }
+
+export function checkCheckbox(element: HTMLInputElement | null, on: boolean) {
+  if (!element) {
+    console.log("Checkbox not found", on);
+    return;
+  }
+
+  element.checked = on;
+  element.style.borderColor = "green";
+
+  element.dispatchEvent(new Event("click"));
+}

@@ -61,6 +61,7 @@ async function fill(familyId: string, personIndex: number, pathname: string, con
       }
       break;
     case SupportedPath.AddRecord:
+    case SupportedPath.ContactDetail:
       fillParent(person as Parent);
       break;
     case SupportedPath.ChildDetail:
