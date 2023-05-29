@@ -34,6 +34,20 @@ export function fillFRCTracker(student: Student) {
     false
   );
 
+  // Exposure to English
+  setValue(
+    elements.namedItem("propertyValue(pgmFieldC003)") as HTMLInputElement,
+    "Learned as a subject",
+    false
+  )
+
+  // Exposure to other languages
+  setValue(
+    elements.namedItem("propertyValue(pgmFieldC004)") as HTMLInputElement,
+    "No",
+    false
+  )
+
   // Math tasks
   setValue(
     elements.namedItem("propertyValue(pgmFieldD021)") as HTMLInputElement,
