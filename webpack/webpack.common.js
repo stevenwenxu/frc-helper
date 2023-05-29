@@ -71,6 +71,7 @@ module.exports = {
     new HtmlWebpackPlugin({
       filename: "../html/popup.html",
       template: "src/templates/popup.html",
+      version: require("../package.json").version,
       chunks: ["popup"],
     }),
     new HtmlWebpackPlugin({
