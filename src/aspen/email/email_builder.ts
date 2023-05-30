@@ -75,7 +75,7 @@ export class EmailBuilder {
           <p>Dear ${this.emptyGuard(student.targetSchool)} Team,</p>
 
           ${ student.isNewRegistration ? `
-          <p>We had the pleasure of meeting the ${this.emptyGuard(lastNames)} family recently at the Family Reception Centre. Based on the home address provided during the intake meeting, their ${moreThanOneStudent ? "children have" : "child has"} been activated in Aspen in the "FRC Holding School" and ${moreThanOneStudent ? "are" : "is"} ${pendingTransferChecked ? "ready to transfer" : "<span class=\"error\">ready to transfer</span>"} to your school.</p>
+          <p>We had the pleasure of meeting the ${this.emptyGuard(lastNames)} family recently at the Family Reception Centre. Based on the home address provided during the intake meeting, their ${moreThanOneStudent ? "children have" : "child has"} been ${student.isGradeForNewSchoolYear ? `<span class="bold">pre-registered</span>` : "activated" } in Aspen in the "FRC Holding School" and ${moreThanOneStudent ? "are" : "is"} ${pendingTransferChecked ? "ready to transfer" : "<span class=\"error\">ready to transfer</span>"} to your school.</p>
           ` : `
           <p>We had the pleasure of meeting the ${this.emptyGuard(lastNames)} family recently at the Family Reception Centre. ${moreThanOneStudent ? "These students are" : "This student is" } already enrolled at your school.</p>
           `}
