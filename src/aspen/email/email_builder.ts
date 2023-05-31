@@ -23,7 +23,9 @@ export class EmailBuilder {
     const formatter = new Intl.ListFormat("en", { style: "long", type: "conjunction" });
     const initials = formatter.format(students.map(s => s.initials));
     const student = students[0];
-    if (student.isNewRegistration) {
+    if (student.isGradeForNewSchoolYear) {
+      return `New Pre-registration ${initials} ${student.targetSchool}`;
+    } else if (student.isNewRegistration) {
       return `New Registration ${initials} ${student.targetSchool}`;
     } else {
       return `FRC Student Assessment in Aspen ${initials} ${student.targetSchool}`;
