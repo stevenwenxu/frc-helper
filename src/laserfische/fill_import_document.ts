@@ -20,7 +20,7 @@ export function fillImportDocument(student: Student) {
   setValue(lastName, student.lastName);
   setValue(
     dateOfBirth,
-    new Date(student.dateOfBirth).toLocaleDateString(undefined, { year: "numeric", month: "2-digit", day: "2-digit" })
+    new Date(student.dateOfBirth).toLocaleDateString("en-CA", { year: "numeric", month: "2-digit", day: "2-digit" })
   );
   setValue(studentNumber, student.localId.replace(/^(\d{3})(\d{3})(\d{3})$/, "$1-$2-$3"));
   setValue(assessor, "Kate Cao");
