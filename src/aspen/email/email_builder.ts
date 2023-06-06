@@ -41,6 +41,7 @@ export class EmailBuilder {
     const student = students[0];
     const moreThanOneStudent = students.length > 1;
     const pendingTransferChecked = students.map(s => s.pendingTransferChecked).every(Boolean);
+    const validatedReadyToTransfer = (pendingTransferChecked ? "ready to transfer" : "<span class=\"error\">ready to transfer</span>") + " to your school";
 
     return `
       <html>
@@ -77,7 +78,7 @@ export class EmailBuilder {
           <p>Dear ${this.emptyGuard(student.targetSchool)} Team,</p>
 
           ${ student.isNewRegistration ? `
-          <p>We had the pleasure of meeting the ${this.emptyGuard(lastNames)} family recently at the Family Reception Centre. Based on the home address provided during the intake meeting, their ${moreThanOneStudent ? "children have" : "child has"} been ${student.isGradeForNewSchoolYear ? `<span class="bold">pre-registered</span>` : "activated" } in Aspen in the "FRC Holding School" and ${moreThanOneStudent ? "are" : "is"} ${pendingTransferChecked ? "ready to transfer" : "<span class=\"error\">ready to transfer</span>"} to your school.</p>
+          <p>We had the pleasure of meeting the ${this.emptyGuard(lastNames)} family recently at the Family Reception Centre. Based on the home address provided during the intake meeting, their ${moreThanOneStudent ? "children have" : "child has"} been ${student.isGradeForNewSchoolYear ? "pre-registered" : "activated" } in Aspen in the "FRC Holding School" and ${moreThanOneStudent ? "are" : "is"} ${student.isGradeForNewSchoolYear ? "now found at your school as Pre-Reg" : validatedReadyToTransfer }.</p>
           ` : `
           <p>We had the pleasure of meeting the ${this.emptyGuard(lastNames)} family recently at the Family Reception Centre. ${moreThanOneStudent ? "These students are" : "This student is" } already enrolled at your school.</p>
           `}
@@ -86,7 +87,7 @@ export class EmailBuilder {
           <p class="bold" style="color: blue">The family has completed a hard-copy registration form, attached.</p>
 
           ${ nonEnglish ? `
-          <p>The family speaks ${this.emptyGuard(languagesText)}. It is recommended that you invite an MLO who speaks ${languages.length > 1 ? "these languages" : "this language"} to support your conversations. If your school does not have an MLO, please request one here: <a href="https://forms.office.com/Pages/ResponsePage.aspx?id=BtVrYC9iWEK_-fzRubyWjjLYbNjq7tRCuw6D_vq-mF5UQ0FVVFI3WkNVQUNVRzJWUDRYVElOTEVIOS4u">Multicultural Liaison Officer (MLO) Request Form</a></p>
+          <p>The family speaks ${this.emptyGuard(languagesText)} and some English. It is recommended that you invite an MLO who speaks ${languages.length > 1 ? "these languages" : "this language"} to support your conversations. If your school does not have an MLO, please request one here: <a href="https://forms.office.com/Pages/ResponsePage.aspx?id=BtVrYC9iWEK_-fzRubyWjjLYbNjq7tRCuw6D_vq-mF5UQ0FVVFI3WkNVQUNVRzJWUDRYVElOTEVIOS4u">Multicultural Liaison Officer (MLO) Request Form</a></p>
           ` : ""}
 
           ` : ""}
