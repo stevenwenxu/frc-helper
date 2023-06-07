@@ -41,7 +41,9 @@ export class EmailBuilder {
     const student = students[0];
     const moreThanOneStudent = students.length > 1;
     const pendingTransferChecked = students.map(s => s.pendingTransferChecked).every(Boolean);
-    const validatedReadyToTransfer = (pendingTransferChecked ? "ready to transfer" : "<span class=\"error\">ready to transfer</span>") + " to your school";
+    const validatedReadyToTransfer = (moreThanOneStudent ? "are " : "is ") +
+      (pendingTransferChecked ? "ready to transfer" : "<span class=\"error\">ready to transfer</span>") +
+      " to your school";
 
     return `
       <html>
@@ -78,7 +80,7 @@ export class EmailBuilder {
           <p>Dear ${this.emptyGuard(student.targetSchool)} Team,</p>
 
           ${ student.isNewRegistration ? `
-          <p>We had the pleasure of meeting the ${this.emptyGuard(lastNames)} family recently at the Family Reception Centre. Based on the home address provided during the intake meeting, their ${moreThanOneStudent ? "children have" : "child has"} been ${student.isGradeForNewSchoolYear ? "pre-registered" : "activated" } in Aspen in the "FRC Holding School" and ${moreThanOneStudent ? "are" : "is"} ${student.isGradeForNewSchoolYear ? "now found at your school as Pre-Reg" : validatedReadyToTransfer }.</p>
+          <p>We had the pleasure of meeting the ${this.emptyGuard(lastNames)} family recently at the Family Reception Centre. Based on the home address provided during the intake meeting, their ${moreThanOneStudent ? "children have" : "child has"} been ${student.isGradeForNewSchoolYear ? "pre-registered" : "activated" } in Aspen in the "FRC Holding School" and ${student.isGradeForNewSchoolYear ? "can be located in your school&apos;s Aspen as Pre-Reg for next year" : validatedReadyToTransfer }.</p>
           ` : `
           <p>We had the pleasure of meeting the ${this.emptyGuard(lastNames)} family recently at the Family Reception Centre. ${moreThanOneStudent ? "These students are" : "This student is" } already enrolled at your school.</p>
           `}
