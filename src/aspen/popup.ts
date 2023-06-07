@@ -2,13 +2,10 @@ import "../scss/styles.scss";
 import * as bootstrap from "bootstrap";
 import { FamilyRepository } from "../common/family_repository";
 import { PopupBuilder } from "./helpers/popup_builder";
-import { Family } from "../common/models/family";
 import { SupportedPath } from "./helpers/supported_path";
-import { Student } from "../common/models/person";
 import { setupMathAssessmentButtons } from "./math_assessment/math_assessment";
 import { setupEmailButtons } from "./email/email";
 import { setupStepButtons } from "./helpers/step_pdf";
-import { setupGradeActions } from "./helpers/set_grade";
 
 function setupFamilyPicker() {
   const familyPicker = document.getElementById("familyPicker")!;
@@ -62,7 +59,6 @@ export async function renderFamilyDetails() {
     // picking up more fields from Aspen.
     setupFillButtons(family.uniqueId);
     setupMathAssessmentButtons(family.uniqueId);
-    setupGradeActions(family.uniqueId);
     setupEmailButtons(family.uniqueId);
     setupStepButtons(family.uniqueId);
   }

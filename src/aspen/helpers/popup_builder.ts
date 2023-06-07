@@ -87,7 +87,6 @@ export class PopupBuilder {
   private static tabPaneForPerson(person: Person, personIndex: number, familyUniqueId: string) {
     const active = personIndex === 0 ? "show active" : "";
     const isSecondaryStudent = person instanceof Student && person.schoolCategory === SchoolCategory.Secondary;
-    const allGrades = ["JK", "SK"].concat([...Array(12).keys()].map(i => `${i + 1}`));
     const personType = person instanceof Student ? "student" : "parent";
 
     return `
@@ -129,46 +128,6 @@ export class PopupBuilder {
               <th scope="row">Last Name</th>
               <td>${person.lastName}</td>
             </tr>
-
-            ${person instanceof Student ? `
-            <tr>
-              <th scope="row">
-                Grade
-                ${person.isGradeManuallySet ? `
-                  <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-pin-fill" viewBox="0 0 16 16">
-                    <path d="M4.146.146A.5.5 0 0 1 4.5 0h7a.5.5 0 0 1 .5.5c0 .68-.342 1.174-.646 1.479-.126.125-.25.224-.354.298v4.431l.078.048c.203.127.476.314.751.555C12.36 7.775 13 8.527 13 9.5a.5.5 0 0 1-.5.5h-4v4.5c0 .276-.224 1.5-.5 1.5s-.5-1.224-.5-1.5V10h-4a.5.5 0 0 1-.5-.5c0-.973.64-1.725 1.17-2.189A5.921 5.921 0 0 1 5 6.708V2.277a2.77 2.77 0 0 1-.354-.298C4.342 1.674 4 1.179 4 .5a.5.5 0 0 1 .146-.354z"/>
-                  </svg>
-                ` : ""}
-              </th>
-              <td>
-                <div class="row gx-3 align-items-center">
-                  <div class="col">
-                    <select class="form-select" name="grade" data-person-index="${personIndex}" data-family-id="${familyUniqueId}" data-function="setGrade">
-                      <option value="">Fill or select</option>
-                      ${ allGrades.map(grade => `
-                        <option value="${grade}" ${grade === person.grade ? "selected" : ""}>${grade}</option>
-                      `).join("") }
-                    </select>
-                  </div>
-
-                  <div class="col-auto">
-                    <div class="form-check">
-                      <input
-                        class="form-check-input"
-                        type="checkbox"
-                        id="newSchoolYear${personIndex}"
-                        data-person-index="${personIndex}"
-                        data-family-id="${familyUniqueId}"
-                        data-function="setIsGradeForNewSchoolYear"
-                        ${person.isGradeForNewSchoolYear ? "checked" : ""}
-                      >
-                      <label class="form-check-label" for="newSchoolYear${personIndex}">New school year</label>
-                    </div>
-                  </div>
-                </div>
-              </td>
-            </tr>
-            ` : ""}
 
             ${person instanceof Parent ? `
             <tr>

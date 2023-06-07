@@ -23,7 +23,7 @@ export class EmailBuilder {
     const formatter = new Intl.ListFormat("en", { style: "long", type: "conjunction" });
     const initials = formatter.format(students.map(s => s.initials));
     const student = students[0];
-    if (student.isGradeForNewSchoolYear) {
+    if (student.isPreRegistration) {
       return `New Pre-registration ${initials} ${student.targetSchool}`;
     } else if (student.isNewRegistration) {
       return `New Registration ${initials} ${student.targetSchool}`;
@@ -41,9 +41,6 @@ export class EmailBuilder {
     const student = students[0];
     const moreThanOneStudent = students.length > 1;
     const pendingTransferChecked = students.map(s => s.pendingTransferChecked).every(Boolean);
-    const validatedReadyToTransfer = (moreThanOneStudent ? "are " : "is ") +
-      (pendingTransferChecked ? "ready to transfer" : "<span class=\"error\">ready to transfer</span>") +
-      " to your school";
 
     return `
       <html>
@@ -79,13 +76,18 @@ export class EmailBuilder {
         <body>
           <p>Dear ${this.emptyGuard(student.targetSchool)} Team,</p>
 
-          ${ student.isNewRegistration ? `
-          <p>We had the pleasure of meeting the ${this.emptyGuard(lastNames)} family recently at the Family Reception Centre. Based on the home address provided during the intake meeting, their ${moreThanOneStudent ? "children have" : "child has"} been ${student.isGradeForNewSchoolYear ? "pre-registered" : "activated" } in Aspen in the "FRC Holding School" and ${student.isGradeForNewSchoolYear ? "can be located in your school&apos;s Aspen as Pre-Reg for next year" : validatedReadyToTransfer }.</p>
+          <p>We had the pleasure of meeting the ${this.emptyGuard(lastNames)} family recently at the Family Reception Centre.
+          ${ student.isPreRegistration ? `
+          Based on the home address provided during the intake meeting, their ${moreThanOneStudent ? "children have" : "child has"} been pre-registered in Aspen in the "FRC Holding School" and can be located in your school&apos;s Aspen as Pre-Reg for next year.
+          ` : student.isNewRegistration ? `
+          Based on the home address provided during the intake meeting, their ${moreThanOneStudent ? "children have" : "child has"} been activated in Aspen in the "FRC Holding School" and ${moreThanOneStudent ? "are" : "is"} ${ pendingTransferChecked ? "ready to transfer" : "<span class=\"error\">ready to transfer</span>" } to your school.
           ` : `
-          <p>We had the pleasure of meeting the ${this.emptyGuard(lastNames)} family recently at the Family Reception Centre. ${moreThanOneStudent ? "These students are" : "This student is" } already enrolled at your school.</p>
-          `}
+          ${ moreThanOneStudent ? "These students are" : "This student is" } already enrolled at your school.
+          `
+          }
+          </p>
 
-          ${ student.isNewRegistration ? `
+          ${ student.isNewRegistration || student.isPreRegistration ? `
           <p class="bold" style="color: blue">The family has completed a hard-copy registration form, attached.</p>
 
           ${ nonEnglish ? `
@@ -130,7 +132,7 @@ export class EmailBuilder {
 
           <p class="bold">The Student Profile in Aspen will include:</p>
           <ul>
-            ${student.isNewRegistration ? `
+            ${student.isNewRegistration || student.isPreRegistration ? `
             <li>Family contact information</li>
             ` : ""}
             <li>ESL/ELD Report and Step levels in FRC Tracker</li>
@@ -139,7 +141,7 @@ export class EmailBuilder {
             ` : "" }
           </ul>
 
-          ${student.isNewRegistration ? `
+          ${student.isNewRegistration || student.isPreRegistration ? `
           <p class="bold">Please find attached the following forms:</p>
           <ul>
             <li>Hard-copy Application for Admission Registration Form</li>

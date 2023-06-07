@@ -46,6 +46,7 @@ function updateStudentDetails(student: Student) {
   const currentSchool = elements.namedItem("propertyValue(relStdSklOid_sklSchoolName)") as HTMLInputElement | null;
   const transferSchool = elements.namedItem("#propertyValue(stdSklOIDTrans)") as HTMLInputElement | null;
   const transferPending = elements.namedItem("prefixpropertyValue(stdTransferInd)") as HTMLInputElement | null;
+  const nextYearSchool = elements.namedItem("#propertyValue(stdSklOIDNext)") as HTMLInputElement | null;
 
   if (preferredFirstName) {
     student.firstName = preferredFirstName.value;
@@ -66,9 +67,9 @@ function updateStudentDetails(student: Student) {
   if (localId) {
     student.localId = localId.value;
   }
-  if (grade && !student.isGradeManuallySet) {
+  if (grade) {
     const gradeNum = parseInt(grade.value);
-    student.grade = isNaN(gradeNum) ? grade.value : `${gradeNum}`;
+    student.demographicsGrade = isNaN(gradeNum) ? grade.value : `${gradeNum}`;
   }
   if (homeLanguage) {
     student.homeLanguage = homeLanguage.value;
@@ -81,6 +82,9 @@ function updateStudentDetails(student: Student) {
   }
   if (transferPending) {
     student.pendingTransferChecked = transferPending.checked;
+  }
+  if (nextYearSchool) {
+    student.nextYearSchool = nextYearSchool.value;
   }
 
   return student;

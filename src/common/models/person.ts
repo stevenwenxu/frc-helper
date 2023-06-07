@@ -37,14 +37,11 @@ export class Student extends Person {
   countryOfBirth = "";
   studentNotes = "";
 
-  // Fields below are captured from Aspen, they are used to generate email.
+  // Fields below are captured from Aspen Demographics.
   gender = Gender.PreferNotToDisclose;
   localId = "";
-  // JK, SK, 1-12
-  grade = "";
-  // If grade is manually set, grade in Aspen Demographics is ignored.
-  isGradeManuallySet = false;
-  isGradeForNewSchoolYear = false;
+  // Grade from Aspen Demographics. The actual `grade` is incremented if the student is pre-registered to next year.
+  demographicsGrade = "";
   secondaryCourseRecommendations = "";
   languageCategory = LanguageCategory.Unknown;
   listeningStep = "";
@@ -57,6 +54,7 @@ export class Student extends Person {
   currentSchool = "";
   transferSchool = "";
   pendingTransferChecked = true;
+  nextYearSchool = "";
   secondaryMathAssessment: SecondaryMathAssessment | null = null;
 
   get overallStepLevelForEmail() {
@@ -69,17 +67,35 @@ export class Student extends Person {
   }
 
   get targetSchool() {
-    return this.transferSchool || this.currentSchool;
+    return this.nextYearSchool || this.transferSchool || this.currentSchool;
   }
 
   get isNewRegistration() {
     return this.transferSchool.length > 0;
   }
 
+  get isPreRegistration() {
+    return this.nextYearSchool.length > 0;
+  }
+
+  // Actual grade of the student used for assessments, comments, worksheets, etc.
+  get grade() {
+    if (this.isPreRegistration) {
+      switch (this.demographicsGrade) {
+        case "JK": return "SK";
+        case "SK": return "1";
+        case "12": return "12";
+        default: return `${parseInt(this.demographicsGrade) + 1}`;
+      }
+    } else {
+      return this.demographicsGrade;
+    }
+  }
+
   get gradeText() {
     const gradeNum = parseInt(this.grade);
     return (isNaN(gradeNum) ? this.grade : `Grade ${gradeNum}`)
-      + (this.isGradeForNewSchoolYear ? " (New School Year)" : "");
+      + (this.isPreRegistration ? " (New School Year)" : "");
   }
 
   get capitalizedPronoun() {
@@ -114,7 +130,7 @@ export class Student extends Person {
   get schoolYear() {
     const today = new Date();
     let startYear = today.getMonth() < 9 ? today.getFullYear() - 1 : today.getFullYear();
-    if (this.isGradeForNewSchoolYear) {
+    if (this.isPreRegistration) {
       startYear += 1;
     }
     return `${startYear}-${startYear + 1}`;
