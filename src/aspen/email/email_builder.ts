@@ -35,9 +35,6 @@ export class EmailBuilder {
   static emailBody(students: Student[]) {
     const formatter = new Intl.ListFormat("en", { style: "long", type: "conjunction" });
     const lastNames = formatter.format([...new Set(students.map(s => s.lastName))]);
-    const languages = [...new Set(students.map(s => s.homeLanguage))];
-    const languagesText = formatter.format(languages);
-    const nonEnglish = languagesText.toLowerCase() !== "english";
     const student = students[0];
     const moreThanOneStudent = students.length > 1;
     const pendingTransferChecked = students.map(s => s.pendingTransferChecked).every(Boolean);
@@ -78,7 +75,7 @@ export class EmailBuilder {
 
           <p>We had the pleasure of meeting the ${this.emptyGuard(lastNames)} family recently at the Family Reception Centre.
           ${ student.isPreRegistration ? `
-          Based on the home address provided during the intake meeting, their ${moreThanOneStudent ? "children have" : "child has"} been pre-registered in Aspen in the "FRC Holding School" and can be located in your school&apos;s Aspen as Pre-Reg for next year.
+          Based on the home address provided during the intake meeting, their ${moreThanOneStudent ? "children have" : "child has"} been pre-registered in Aspen to your school. You will find them in Aspen in your "All Pre-reg Students" list.
           ` : student.isNewRegistration ? `
           Based on the home address provided during the intake meeting, their ${moreThanOneStudent ? "children have" : "child has"} been activated in Aspen in the "FRC Holding School" and ${moreThanOneStudent ? "are" : "is"} ${ pendingTransferChecked ? "ready to transfer" : "<span class=\"error\">ready to transfer</span>" } to your school.
           ` : `
@@ -86,15 +83,6 @@ export class EmailBuilder {
           `
           }
           </p>
-
-          ${ student.isNewRegistration || student.isPreRegistration ? `
-          <p class="bold" style="color: blue">The family has completed a hard-copy registration form, attached.</p>
-
-          ${ nonEnglish ? `
-          <p>The family speaks ${this.emptyGuard(languagesText)} and some English. It is recommended that you invite an MLO who speaks ${languages.length > 1 ? "these languages" : "this language"} to support your conversations. If your school does not have an MLO, please request one here: <a href="https://forms.office.com/Pages/ResponsePage.aspx?id=BtVrYC9iWEK_-fzRubyWjjLYbNjq7tRCuw6D_vq-mF5UQ0FVVFI3WkNVQUNVRzJWUDRYVElOTEVIOS4u">Multicultural Liaison Officer (MLO) Request Form</a></p>
-          ` : ""}
-
-          ` : ""}
 
           ${ students.map( student => `
           <table>
@@ -116,7 +104,14 @@ export class EmailBuilder {
                   <td>Course Recommendations</td>
                   <td>${this.emptyGuard(student.secondaryCourseRecommendations)}</td>
                 </tr>
-                ` : "" }
+                ` : `
+                ${ student.isNewRegistration || student.isPreRegistration ? `
+                <tr>
+                  <td>Program</td>
+                  <td>REG</td>
+                </tr>
+                ` : ""}
+                ` }
                 <tr>
                   <td>Overall STEP Level</td>
                   <td>${this.emptyGuard(student.overallStepLevelForEmail)}</td>
@@ -130,19 +125,24 @@ export class EmailBuilder {
           `).join("<br>") }
           <br>
 
+          ${ student.isNewRegistration || student.isPreRegistration ? `
+          <p class="bold" style="color: blue">The family has completed a hard-copy registration form, attached.</p>
+          ` : ""}
+
           <p class="bold">The Student Profile in Aspen will include:</p>
           <ul>
             ${student.isNewRegistration || student.isPreRegistration ? `
             <li>Family contact information</li>
             ` : ""}
-            <li>ESL/ELD Report and Step levels in FRC Tracker</li>
+            <li>ESL/ELD Report and Step levels in the ELL Tracker tab</li>
             ${ student.schoolCategory === SchoolCategory.Secondary ? `
             <li>Secondary school course recommendations for English and Math</li>
             ` : "" }
+            <li>Educational background can be found within the ELL tracker, in the "Educational Background" box.</li>
           </ul>
 
           ${student.isNewRegistration || student.isPreRegistration ? `
-          <p class="bold">Please find attached the following forms:</p>
+          <p class="bold">Please see the Family Reception Centre folder in your school&apos;s Laserfiche repository for the following:</p>
           <ul>
             <li>Hard-copy Application for Admission Registration Form</li>
             <li>OCDSB 031</li>

@@ -59,7 +59,7 @@ export class Student extends Person {
 
   get overallStepLevelForEmail() {
     switch (this.languageCategory) {
-      case LanguageCategory.Native: return "No ESL";
+      case LanguageCategory.Native: return "No placement on ESL/ELD STEP Continuum needed";
       case LanguageCategory.ESL: return `ESL STEP ${this.overallStep}`;
       case LanguageCategory.ELD: return `ELD STEP ${this.overallStep}`;
       case LanguageCategory.Unknown: return "";
