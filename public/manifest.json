@@ -2,7 +2,7 @@
   "manifest_version": 3,
   "name": "FRC Helper",
   "description": "Boosts productivity at the Family Reception Centre, OCDSB",
-  "version": "1.19",
+  "version": "1.20",
   "action": {
 
   },
