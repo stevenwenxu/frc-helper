@@ -130,7 +130,7 @@ export class EmailBuilder {
           ` : ""}
 
           ${student.isNewRegistration || student.isPreRegistration ? `
-          <p class="bold">Please see the Family Reception Centre folder in your school&apos;s Laserfiche repository for the following:</p>
+          <p class="bold">Please see the Family Reception Centre folder in your school's Laserfiche repository for the following:</p>
           <ul>
             <li>Hard-copy Application for Admission Registration Form</li>
             <li>OCDSB 031</li>
@@ -161,7 +161,7 @@ export class EmailBuilder {
           ` : ""}
         </body>
       </html>
-    `;
+    `.replaceAll("'", "&apos;");
   }
 
   private static emptyGuard(value: string) {
