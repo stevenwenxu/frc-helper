@@ -12,6 +12,6 @@ export class EducationalBackgroundFields {
     const gradeNum = parseInt(rawGrade);
     const grade = isNaN(gradeNum) ? rawGrade : `grade ${gradeNum}`;
 
-    return `According to the family, ${student.firstName} ${completeText} ${grade} in ${country} in the school year ${schoolYear}. The teaching language was English. Please find the report cards attached. / No official school document was provided to FRC.`;
+    return `According to the family, ${student.firstName} ${completeText} ${grade} in ${country} in the school year ${schoolYear}. The teaching language was English. Please see the report cards in your school's Laserfiche repository. / No official school document was provided to FRC.`;
   }
 }

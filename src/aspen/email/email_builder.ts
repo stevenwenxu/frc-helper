@@ -126,7 +126,17 @@ export class EmailBuilder {
           <br>
 
           ${ student.isNewRegistration || student.isPreRegistration ? `
-          <p class="bold" style="color: blue">The family has completed a hard-copy registration form, attached.</p>
+          <p class="bold" style="color: blue">The family has completed a hard-copy registration form.</p>
+          ` : ""}
+
+          ${student.isNewRegistration || student.isPreRegistration ? `
+          <p class="bold">Please see the Family Reception Centre folder in your school&apos;s Laserfiche repository for the following:</p>
+          <ul>
+            <li>Hard-copy Application for Admission Registration Form</li>
+            <li>OCDSB 031</li>
+            <li>Previous school reports</li>
+            <li>Initial Assessment STEP sheets highlighted with STEP levels.</li>
+          </ul>
           ` : ""}
 
           <p class="bold">The Student Profile in Aspen will include:</p>
@@ -142,14 +152,6 @@ export class EmailBuilder {
           </ul>
 
           ${student.isNewRegistration || student.isPreRegistration ? `
-          <p class="bold">Please see the Family Reception Centre folder in your school&apos;s Laserfiche repository for the following:</p>
-          <ul>
-            <li>Hard-copy Application for Admission Registration Form</li>
-            <li>OCDSB 031</li>
-            <li>Previous school reports</li>
-            <li>Initial Assessment STEP sheets highlighted with STEP levels.</li>
-          </ul>
-
           <p class="bold">Next steps:</p>
           <ul>
             <li>Please share this important information with the appropriate staff, such as the classroom teacher(s), VP, LST, Guidance, ESL Lead / ESL/ELD Itinerant Teacher, etc.</li>

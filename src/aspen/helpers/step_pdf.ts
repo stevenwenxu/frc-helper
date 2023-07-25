@@ -51,19 +51,10 @@ async function oral(student: Student, finalDoc: PDFDocument) {
   page.setFontSize(12);
 
   page.moveTo(320, 250);
-  page.drawText(`School: ${student.targetSchool}`);
-
-  page.moveDown(20);
   page.drawText(`Student Name: ${student.displayName}`);
 
   page.moveDown(20);
-  page.drawText(student.gradeText);
-
-  page.moveDown(20);
   page.drawText(`Local ID: ${student.localId}`);
-
-  page.moveDown(20);
-  page.drawText("FRC Assessor: Kate Cao");
 
   return (await finalDoc.copyPages(pdfDoc, [0]))[0];
 }
@@ -98,7 +89,7 @@ async function generate(student: Student, pdfDocument: PDFDocument) {
 
   const link = document.createElement("a");
   link.href = pdfUrl;
-  link.setAttribute("download", `G${student.grade}_${student.firstName} ${student.lastName}_STEP.pdf`);
+  link.setAttribute("download", `STEP_${student.firstName} ${student.lastName}.pdf`);
   link.style.display = "none";
   document.body.appendChild(link);
   link.click();
