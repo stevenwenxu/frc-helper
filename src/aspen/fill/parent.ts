@@ -3,6 +3,7 @@ import { checkCheckbox, setValue } from "../../common/helpers/fill_helper";
 
 export function fillParent(parent: Parent) {
   const elements = document.forms.namedItem("personAddressDetailForm")!.elements;
+  const email = elements.namedItem("propertyValue(relCtjCntOid_relCntPsnOid_psnEmail01)") as HTMLInputElement;
 
   setValue(
     elements.namedItem("propertyValue(relCtjCntOid_relCntPsnOid_psnNameFirst)") as HTMLInputElement,
@@ -13,22 +14,24 @@ export function fillParent(parent: Parent) {
     elements.namedItem("propertyValue(relCtjCntOid_relCntPsnOid_psnNameMiddle)") as HTMLInputElement,
     parent.middleName,
     false
-  )
+  );
   setValue(
     elements.namedItem("relCtjCntOid.relCntPsnOid.psnNameLast") as HTMLInputElement,
     parent.lastName,
     false
   );
   setValue(
-    elements.namedItem("propertyValue(relCtjCntOid_relCntPsnOid_psnEmail01)") as HTMLInputElement,
+    email,
     parent.email,
     false
   );
-  setValue(
-    elements.namedItem("propertyValue(relCtjCntOid_relCntPsnOid_psnFieldA011)") as HTMLInputElement,
-    "S",
-    false
-  );
+  if (email.value !== "") {
+    setValue(
+      elements.namedItem("propertyValue(relCtjCntOid_relCntPsnOid_psnFieldA011)") as HTMLInputElement,
+      "S",
+      false
+    );
+  }
 
   fillCheckboxes();
 }
@@ -49,20 +52,17 @@ function fillCheckboxes() {
 
   const allCheckboxes = [livesWithStudent, pickupAccess, guardian, legalCustody, accessToRecords, receiveMarkMailing, receiveIncidentsMailing, receiveOtherMailing, receiveEmail];
 
-  // Do not set anything if any of the checkboxes are already checked.
-  if (allCheckboxes.some(checkbox => checkbox.checked)) {
-    return;
+  const check = () => {
+    if (relationship.value === "Mother" || relationship.value === "Father") {
+      allCheckboxes.forEach(checkbox => checkCheckbox(checkbox, true));
+    } else {
+      allCheckboxes.forEach(checkbox => checkCheckbox(checkbox, false));
+      if (relationship.value !== "") {
+        checkCheckbox(pickupAccess, true);
+      }
+    }
   }
 
-  // If the relationship is not set, setup hooks to set the checkboxes when it is.
-  if (relationship.value === "") {
-    relationship.addEventListener("change", () => fillCheckboxes());
-    return;
-  }
-
-  if (relationship.value === "Mother" || relationship.value === "Father") {
-    allCheckboxes.forEach(checkbox => checkCheckbox(checkbox, true));
-  } else {
-    checkCheckbox(pickupAccess, true);
-  }
+  check();
+  relationship.addEventListener("change", check);
 }
