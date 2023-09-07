@@ -129,7 +129,9 @@ export class Student extends Person {
 
   get schoolYear() {
     const today = new Date();
-    let startYear = today.getMonth() < 9 ? today.getFullYear() - 1 : today.getFullYear();
+    const month = today.getMonth() + 1;
+    // Jan-Aug: lastYear-thisYear, Sep-Dec: thisYear-nextYear
+    let startYear = month < 9 ? today.getFullYear() - 1 : today.getFullYear();
     if (this.isPreRegistration) {
       startYear += 1;
     }

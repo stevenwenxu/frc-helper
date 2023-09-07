@@ -3,7 +3,9 @@ import { Student } from "../../common/models/person";
 export class EducationalBackgroundFields {
   static schoolYear() {
     const today = new Date();
-    const schoolYearStart = today.getMonth() <= 10 ? today.getFullYear() - 1 : today.getFullYear();
+    const month = today.getMonth() + 1;
+    // Jan-Nov: lastYear-thisYear, Dec: thisYear-nextYear
+    const schoolYearStart = month < 12 ? today.getFullYear() - 1 : today.getFullYear();
     return `${schoolYearStart}-${schoolYearStart + 1}`;
   }
 
