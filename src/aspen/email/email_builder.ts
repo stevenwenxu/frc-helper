@@ -129,15 +129,15 @@ export class EmailBuilder {
           <p class="bold" style="color: blue">The family has completed a hard-copy registration form.</p>
           ` : ""}
 
-          ${student.isNewRegistration || student.isPreRegistration ? `
           <p class="bold">Please see the Family Reception Centre folder in your school's Laserfiche repository for the following:</p>
           <ul>
+            ${student.isNewRegistration || student.isPreRegistration ? `
             <li>Hard-copy Application for Admission Registration Form</li>
             <li>OCDSB 031</li>
+            ` : ""}
             <li>Previous school reports</li>
             <li>Initial Assessment STEP sheets highlighted with STEP levels.</li>
           </ul>
-          ` : ""}
 
           <p class="bold">The Student Profile in Aspen will include:</p>
           <ul>
