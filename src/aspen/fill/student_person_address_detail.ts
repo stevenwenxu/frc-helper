@@ -35,6 +35,9 @@ function updateStudentDetails(student: Student) {
 
   const elements = document.forms.namedItem("personAddressDetailForm")!.elements;
 
+  const legalFirstName = elements.namedItem("propertyValue(relStdPsnOid_psnFieldC022)") as HTMLInputElement | null;
+  const legalMiddleName = elements.namedItem("propertyValue(relStdPsnOid_psnFieldC023)") as HTMLInputElement | null;
+  const legalLastName = elements.namedItem("propertyValue(relStdPsnOid_psnFieldC001)") as HTMLInputElement | null;
   const preferredFirstName = elements.namedItem("propertyValue(relStdPsnOid_psnNameFirst)") as HTMLInputElement | null;
   const preferredMiddleName = elements.namedItem("propertyValue(relStdPsnOid_psnNameMiddle)") as HTMLInputElement | null;
   const preferredLastName = elements.namedItem("propertyValue(relStdPsnOid_psnNameLast)") as HTMLInputElement | null;
@@ -48,6 +51,15 @@ function updateStudentDetails(student: Student) {
   const transferPending = elements.namedItem("prefixpropertyValue(stdTransferInd)") as HTMLInputElement | null;
   const nextYearSchool = elements.namedItem("#propertyValue(stdSklOIDNext)") as HTMLInputElement | null;
 
+  if (legalFirstName) {
+    student.legalFirstName = legalFirstName.value;
+  }
+  if (legalMiddleName) {
+    student.legalMiddleName = legalMiddleName.value;
+  }
+  if (legalLastName) {
+    student.legalLastName = legalLastName.value;
+  }
   if (preferredFirstName) {
     student.firstName = preferredFirstName.value;
   }

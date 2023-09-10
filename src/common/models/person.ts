@@ -38,6 +38,9 @@ export class Student extends Person {
   studentNotes = "";
 
   // Fields below are captured from Aspen Demographics.
+  legalFirstName = "";
+  legalMiddleName = "";
+  legalLastName = "";
   gender = Gender.PreferNotToDisclose;
   localId = "";
   // Grade from Aspen Demographics. The actual `grade` is incremented if the student is pre-registered to next year.
