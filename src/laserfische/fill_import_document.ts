@@ -23,7 +23,7 @@ export function fillImportDocument(student: Student) {
     new Date(student.dateOfBirth).toLocaleDateString("en-CA", { year: "numeric", month: "2-digit", day: "2-digit" })
   );
   // Allows the form to run formatting on the date
-  dateOfBirth?.dispatchEvent(new Event("click"));
+  dateOfBirth?.dispatchEvent(new Event("blur"));
   setValue(studentNumber, student.localId.replace(/^(\d{3})(\d{3})(\d{3})$/, "$1-$2-$3"));
   setValue(assessor, "Kate Cao");
 
