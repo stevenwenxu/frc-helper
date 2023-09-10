@@ -10,6 +10,7 @@ export function fillImportDocument(student: Student) {
   const dateOfBirth = formElements.querySelector("div:nth-child(3) > div:nth-child(2) > div > div.fieldInput > form > div > input") as HTMLInputElement | null;
   const schoolYear = formElements.querySelector("div:nth-child(4) > div:nth-child(2) > div > div > form > div:nth-child(1) > select") as HTMLInputElement | null;
   const grade = formElements.querySelector("div:nth-child(5) > div:nth-child(2) > div > div > form > div:nth-child(1) > select") as HTMLInputElement | null;
+  const legalName = formElements.querySelector("div:nth-child(6) > div.textarea > div > div.fieldInput > div > textarea") as HTMLInputElement | null;
   const schoolName = formElements.querySelector("div:nth-child(7) > div:nth-child(2) > div > div > form > div:nth-child(1) > select") as HTMLInputElement | null;
   const aspenProfileCreated = formElements.querySelector("div:nth-child(8) > div:nth-child(2) > div > div > form > div:nth-child(1) > select") as HTMLInputElement | null;
   const studentNumber = formElements.querySelector("div:nth-child(9) > div:nth-child(2) > div > div.fieldInput > div > input") as HTMLInputElement | null;
@@ -24,6 +25,9 @@ export function fillImportDocument(student: Student) {
   );
   // Allows the form to run formatting on the date
   dateOfBirth?.dispatchEvent(new Event("blur"));
+  if (shouldFillLegalName(student)) {
+    setValue(legalName, student.legalFullName);
+  }
   setValue(studentNumber, student.localId.replace(/^(\d{3})(\d{3})(\d{3})$/, "$1-$2-$3"));
   setValue(assessor, "Kate Cao");
 
@@ -53,4 +57,9 @@ export function fillImportDocument(student: Student) {
   setTimeout(() => {
     setValue(permitCreated, "string:Yes");
   }, 1000);
+}
+
+function shouldFillLegalName(student: Student) {
+  // Ignore middle name
+  return student.legalFirstName !== student.firstName || student.legalLastName !== student.lastName;
 }
