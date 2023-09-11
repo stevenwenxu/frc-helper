@@ -3,6 +3,7 @@ import { NameHelper } from "../helpers/name_helper";
 import { Gender } from "./gender";
 import { LanguageCategory } from "./language_category";
 import { SchoolCategory } from "./school_category";
+import { StatusInCanada } from "./status_in_canada";
 
 export abstract class Person {
   firstName = "";
@@ -43,8 +44,20 @@ export class Student extends Person {
   legalLastName = "";
   gender = Gender.PreferNotToDisclose;
   localId = "";
-  // Grade from Aspen Demographics. The actual `grade` is incremented if the student is pre-registered to next year.
+  // Grade on the page. The actual `grade` is incremented if the student is pre-registered to next year.
   demographicsGrade = "";
+  homeLanguage = "";
+  currentSchool = "";
+  transferSchool = "";
+  pendingTransferChecked = true;
+  nextYearSchool = "";
+
+  // Fields below are captured from Aspen Citizenship.
+  statusInCanada = StatusInCanada.NotApplicable;
+  countryOfLastResidence = "";
+  dateOfEntryToCanada = "";
+
+  // Fields below are captured from Aspen FRC Tracker.
   secondaryCourseRecommendations = "";
   languageCategory = LanguageCategory.Unknown;
   listeningStep = "";
@@ -53,11 +66,6 @@ export class Student extends Person {
   writingStep = "";
   overallStep = "";
   educationComments = "";
-  homeLanguage = "";
-  currentSchool = "";
-  transferSchool = "";
-  pendingTransferChecked = true;
-  nextYearSchool = "";
   secondaryMathAssessment: SecondaryMathAssessment | null = null;
 
   get overallStepLevelForEmail() {

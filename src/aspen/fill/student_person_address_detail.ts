@@ -1,6 +1,7 @@
 import { FamilyRepository } from "../../common/family_repository";
 import { Gender } from "../../common/models/gender";
 import { Student } from "../../common/models/person";
+import { StatusInCanada } from "../../common/models/status_in_canada";
 
 export async function saveStudentDetails(familyId: string, personIndex: number) {
   const elements = document.forms.namedItem("personAddressDetailForm")!.elements;
@@ -35,6 +36,7 @@ function updateStudentDetails(student: Student) {
 
   const elements = document.forms.namedItem("personAddressDetailForm")!.elements;
 
+  // Demographics
   const legalFirstName = elements.namedItem("propertyValue(relStdPsnOid_psnFieldC022)") as HTMLInputElement | null;
   const legalMiddleName = elements.namedItem("propertyValue(relStdPsnOid_psnFieldC023)") as HTMLInputElement | null;
   const legalLastName = elements.namedItem("propertyValue(relStdPsnOid_psnFieldC001)") as HTMLInputElement | null;
@@ -50,6 +52,12 @@ function updateStudentDetails(student: Student) {
   const transferSchool = elements.namedItem("#propertyValue(stdSklOIDTrans)") as HTMLInputElement | null;
   const transferPending = elements.namedItem("prefixpropertyValue(stdTransferInd)") as HTMLInputElement | null;
   const nextYearSchool = elements.namedItem("#propertyValue(stdSklOIDNext)") as HTMLInputElement | null;
+
+  // Citizenship
+  const statusInCanada = elements.namedItem("propertyValue(relStdPsnOid_psnFieldA012)") as HTMLSelectElement | null;
+  const countryOfBirth = elements.namedItem("propertyValue(relStdPsnOid_psnFieldB001)") as HTMLSelectElement | null;
+  const countryOfLastResidence = elements.namedItem("propertyValue(relStdPsnOid_psnFieldB005)") as HTMLSelectElement | null;
+  const dateOfEntryToCanada = elements.namedItem("propertyValue(relStdPsnOid_psnFieldA013)") as HTMLInputElement | null;
 
   if (legalFirstName) {
     student.legalFirstName = legalFirstName.value;
@@ -97,6 +105,18 @@ function updateStudentDetails(student: Student) {
   }
   if (nextYearSchool) {
     student.nextYearSchool = nextYearSchool.value;
+  }
+  if (statusInCanada) {
+    student.statusInCanada = statusInCanada.value as StatusInCanada;
+  }
+  if (countryOfBirth) {
+    student.countryOfBirth = countryOfBirth.value;
+  }
+  if (countryOfLastResidence) {
+    student.countryOfLastResidence = countryOfLastResidence.value;
+  }
+  if (dateOfEntryToCanada) {
+    student.dateOfEntryToCanada = dateOfEntryToCanada.value;
   }
 
   return student;
