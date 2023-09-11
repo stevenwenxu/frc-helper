@@ -6,6 +6,7 @@ import { SupportedPath } from "./helpers/supported_path";
 import { setupMathAssessmentButtons } from "./math_assessment/math_assessment";
 import { setupEmailButtons } from "./email/email";
 import { setupStepButtons } from "./helpers/step_pdf";
+import { setup031Buttons } from "./helpers/ocdsb_031";
 
 function setupFamilyPicker() {
   const familyPicker = document.getElementById("familyPicker")!;
@@ -59,8 +60,9 @@ export async function renderFamilyDetails() {
     // picking up more fields from Aspen.
     setupFillButtons(family.uniqueId);
     setupMathAssessmentButtons(family.uniqueId);
-    setupEmailButtons(family.uniqueId);
+    setup031Buttons(family.uniqueId);
     setupStepButtons(family.uniqueId);
+    setupEmailButtons(family.uniqueId);
   }
 }
 

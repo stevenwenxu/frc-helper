@@ -8,6 +8,10 @@ export class NameHelper {
     ].map(s => NameHelper.toTitleCase(s));
   }
 
+  static fullNameFromParts(firstName: string, middleName: string, lastName: string) {
+    return [firstName, middleName, lastName].filter(s => s.trim().length > 0).join(" ");
+  }
+
   static toTitleCase(str: string) {
     return str.replace(
       /\w\S*/g,

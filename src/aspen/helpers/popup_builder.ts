@@ -171,8 +171,39 @@ export class PopupBuilder {
 
         ${person instanceof Student ? `
         <div class="d-flex gap-3 mb-3">
-          <button type="button" class="btn btn-outline-primary flex-fill" data-person-index="${personIndex}" data-family-id="${familyUniqueId}" data-function="downloadStep">Download STEP</button>
-          <button type="button" class="btn btn-outline-secondary flex-fill" data-person-index="${personIndex}" data-family-id="${familyUniqueId}" data-function="email">Generate email</button>
+          <button
+            type="button"
+            class="btn btn-outline-primary flex-fill"
+            data-person-index="${personIndex}"
+            data-family-id="${familyUniqueId}"
+            data-function="download031"
+          >
+            <svg width="16" height="16" fill="currentColor">
+              <use href="/images/download.svg#download-svg"/>
+            </svg>
+            OCDSB 031
+          </button>
+          <button
+            type="button"
+            class="btn btn-outline-primary flex-fill"
+            data-person-index="${personIndex}"
+            data-family-id="${familyUniqueId}"
+            data-function="downloadStep"
+          >
+            <svg width="16" height="16" fill="currentColor">
+              <use href="/images/download.svg#download-svg"/>
+            </svg>
+            STEP
+          </button>
+          <button
+            type="button"
+            class="btn btn-outline-primary flex-fill"
+            data-person-index="${personIndex}"
+            data-family-id="${familyUniqueId}"
+            data-function="email"
+          >
+            Generate email
+          </button>
         </div>
         ` : ""}
       </div>
