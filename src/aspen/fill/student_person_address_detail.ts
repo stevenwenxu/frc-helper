@@ -110,10 +110,12 @@ function updateStudentDetails(student: Student) {
     student.statusInCanada = statusInCanada.value as StatusInCanada;
   }
   if (countryOfBirth) {
-    student.countryOfBirth = countryOfBirth.value;
+    // `value` sometimes doesn't use the full country name
+    student.countryOfBirth = countryOfBirth.selectedOptions[0].title;
   }
   if (countryOfLastResidence) {
-    student.countryOfLastResidence = countryOfLastResidence.value;
+    // `value` sometimes doesn't use the full country name
+    student.countryOfLastResidence = countryOfLastResidence.selectedOptions[0].title;
   }
   if (dateOfEntryToCanada) {
     student.dateOfEntryToCanada = dateOfEntryToCanada.value;
