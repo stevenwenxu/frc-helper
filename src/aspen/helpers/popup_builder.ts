@@ -1,6 +1,7 @@
 import { Family } from '../../common/models/family';
 import { Student, Parent, Person } from '../../common/models/person';
 import { SchoolCategory } from '../../common/models/school_category';
+import { StatusInCanada } from '../../common/models/status_in_canada';
 
 export class PopupBuilder {
   static generate(family: Family) {
@@ -88,6 +89,10 @@ export class PopupBuilder {
     const active = personIndex === 0 ? "show active" : "";
     const isSecondaryStudent = person instanceof Student && person.schoolCategory === SchoolCategory.Secondary;
     const personType = person instanceof Student ? "student" : "parent";
+    const isOCDSB031Available = person instanceof Student && (
+      person.statusInCanada === StatusInCanada.CanadianCitizen ||
+      person.statusInCanada === StatusInCanada.PermanentResident
+    );
 
     return `
       <div class="tab-pane fade ${active}" id="person-${personIndex}" role="tabpanel" aria-labelledby="person-${personIndex}-tab" tabindex="0">
@@ -171,6 +176,7 @@ export class PopupBuilder {
 
         ${person instanceof Student ? `
         <div class="d-flex gap-3 mb-3">
+          ${isOCDSB031Available ? `
           <button
             type="button"
             class="btn btn-outline-primary flex-fill"
@@ -183,6 +189,7 @@ export class PopupBuilder {
             </svg>
             OCDSB 031
           </button>
+          ` : ""}
           <button
             type="button"
             class="btn btn-outline-primary flex-fill"

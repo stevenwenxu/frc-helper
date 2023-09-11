@@ -69,6 +69,13 @@ async function download(student: Student, parent: Parent) {
 
   form.getTextField("Name Please Print_2").setText(parent.fullName);
 
+  const page = pdfDoc.getPage(0);
+  page.setFontSize(12);
+  page.moveTo(430, 730);
+  page.drawText(`${student.targetSchool}-G${student.grade}`);
+  page.moveDown(20);
+  page.drawText(`Local ID: ${student.localId.replace(/^(\d{3})(\d{3})(\d{3})$/, "$1-$2-$3")}`);
+
   await generate(student, pdfDoc);
 }
 
@@ -76,14 +83,7 @@ async function generate(student: Student, pdfDocument: PDFDocument) {
   const pdfBytes = await pdfDocument.save();
   const pdfBlob = new Blob([pdfBytes], { type: "application/pdf" });
   const pdfUrl = URL.createObjectURL(pdfBlob);
-  // chrome.tabs.create({ url: pdfUrl });
-
-  const link = document.createElement("a");
-  link.href = pdfUrl;
-  link.setAttribute("download", `OCDSB 031_${student.firstName} ${student.lastName}.pdf`);
-  link.style.display = "none";
-  document.body.appendChild(link);
-  link.click();
+  chrome.tabs.create({ url: pdfUrl });
 
   URL.revokeObjectURL(pdfUrl);
 }
