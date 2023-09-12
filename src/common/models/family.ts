@@ -15,7 +15,7 @@ export class Family {
   get displayName() {
     return this.students.map((student) => {
       const gradePrefix = student.grade.length > 0 ? `${student.grade}-` : "";
-      return `${gradePrefix}${student.lastName}, ${student.firstName}`;
+      return `${gradePrefix}${student.displayName}`;
     }).join(" / ");
   }
 

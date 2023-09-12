@@ -85,7 +85,7 @@ function updateStudentDetails(student: Student) {
     student.gender = gender.value as Gender;
   }
   if (localId) {
-    student.localId = localId.value;
+    student.localId = localId.value.replace(/^(\d{3})(\d{3})(\d{3})$/, "$1-$2-$3");
   }
   if (grade) {
     const gradeNum = parseInt(grade.value);

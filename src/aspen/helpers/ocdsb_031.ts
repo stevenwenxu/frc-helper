@@ -72,9 +72,9 @@ async function download(student: Student, parent: Parent) {
   const page = pdfDoc.getPage(0);
   page.setFontSize(12);
   page.moveTo(430, 730);
-  page.drawText(`${student.targetSchool}-G${student.grade}`);
+  page.drawText(`${student.targetSchool}-${isNaN(parseInt(student.grade)) ? "" : "G"}${student.grade}`);
   page.moveDown(20);
-  page.drawText(`Local ID: ${student.localId.replace(/^(\d{3})(\d{3})(\d{3})$/, "$1-$2-$3")}`);
+  page.drawText(`Local ID: ${student.localId}`);
 
   await generate(student, pdfDoc);
 }

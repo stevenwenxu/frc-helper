@@ -26,6 +26,10 @@ export abstract class Person {
   get initials() {
     return `${this.lastName[0]}.${this.firstName[0]}.`;
   }
+
+  get displayName() {
+    return `${this.lastName}, ${this.firstName}`;
+  }
 }
 
 export class Parent extends Person {
@@ -68,15 +72,6 @@ export class Student extends Person {
   educationComments = "";
   secondaryMathAssessment: SecondaryMathAssessment | null = null;
 
-  get overallStepLevelForEmail() {
-    switch (this.languageCategory) {
-      case LanguageCategory.Native: return "No placement on ESL/ELD STEP Continuum needed";
-      case LanguageCategory.ESL: return `ESL STEP ${this.overallStep}`;
-      case LanguageCategory.ELD: return `ELD STEP ${this.overallStep}`;
-      case LanguageCategory.Unknown: return "";
-    }
-  }
-
   get targetSchool() {
     return this.nextYearSchool || this.transferSchool || this.currentSchool;
   }
@@ -103,22 +98,12 @@ export class Student extends Person {
     }
   }
 
-  get gradeText() {
-    const gradeNum = parseInt(this.grade);
-    return (isNaN(gradeNum) ? this.grade : `Grade ${gradeNum}`)
-      + (this.isPreRegistration ? " (New School Year)" : "");
-  }
-
   get capitalizedPronoun() {
     switch (this.gender) {
       case Gender.Female: return "She";
       case Gender.Male: return "He";
       default: return "They";
     }
-  }
-
-  get displayName() {
-    return `${this.lastName}, ${this.firstName}`;
   }
 
   get legalFullName() {

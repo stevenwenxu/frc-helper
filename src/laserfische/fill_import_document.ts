@@ -28,7 +28,7 @@ export function fillImportDocument(student: Student) {
   if (shouldFillLegalName(student)) {
     setValue(legalName, student.legalFullName);
   }
-  setValue(studentNumber, student.localId.replace(/^(\d{3})(\d{3})(\d{3})$/, "$1-$2-$3"));
+  setValue(studentNumber, student.localId);
   setValue(assessor, "Kate Cao");
 
   // The following fields need a mouseover event to trigger an XHR request to populate the select options

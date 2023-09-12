@@ -1,5 +1,6 @@
 import { Student } from "../../common/models/person";
 import { SchoolCategory } from "../../common/models/school_category";
+import { LanguageCategory } from "../../common/models/language_category";
 
 export class EmailBuilder {
   static generateEmail(students: Student[]) {
@@ -97,7 +98,7 @@ export class EmailBuilder {
                 </tr>
                 <tr>
                   <td>Grade</td>
-                  <td>${this.emptyGuard(student.gradeText)}</td>
+                  <td>${this.emptyGuard(this.grade(student))}</td>
                 </tr>
                 ${ student.schoolCategory === SchoolCategory.Secondary ? `
                 <tr>
@@ -114,7 +115,7 @@ export class EmailBuilder {
                 ` }
                 <tr>
                   <td>Overall STEP Level</td>
-                  <td>${this.emptyGuard(student.overallStepLevelForEmail)}</td>
+                  <td>${this.emptyGuard(this.overallStepLevel(student))}</td>
                 </tr>
                 <tr>
                   <td>Notes</td>
@@ -162,6 +163,21 @@ export class EmailBuilder {
         </body>
       </html>
     `.replaceAll("'", "&apos;");
+  }
+
+  private static grade(student: Student) {
+    const gradeNum = parseInt(student.grade);
+    return (isNaN(gradeNum) ? student.grade : `Grade ${gradeNum}`)
+      + (student.isPreRegistration ? " (New School Year)" : "");
+  }
+
+  private static overallStepLevel(student: Student) {
+    switch (student.languageCategory) {
+      case LanguageCategory.Native: return "No placement on ESL/ELD STEP Continuum needed";
+      case LanguageCategory.ESL: return `ESL STEP ${student.overallStep}`;
+      case LanguageCategory.ELD: return `ELD STEP ${student.overallStep}`;
+      case LanguageCategory.Unknown: return "";
+    }
   }
 
   private static emptyGuard(value: string) {
