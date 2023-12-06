@@ -137,7 +137,7 @@ Writing ${languageCategory} STEP ${writing}.`;
   static oralObservations(student: Student, oral: string) {
     switch (oral) {
       case "1":
-        return `${student.firstName}'s first language is ${student.homeLanguage}. ${student.capitalizedPronoun} responded to simple personally relevant questions, using L1 and single English words. ${student.capitalizedPronoun} followed simple instructions using visual cues, and was able to talk about familiar events and personal information using L1 and single words in English.`;
+        return `${student.firstName}'s first language is ${student.homeLanguage}. ${student.capitalizedPronoun} was able to answer questions like name and age using single English words. ${student.capitalizedPronoun} followed simple instructions using visual cues. ${student.capitalizedPronoun} was able to name the animals and identify some of the basic colors.`;
       case "2":
         return `${student.firstName}'s first language is ${student.homeLanguage}. ${student.capitalizedPronoun} responded to simple questions using L1 and short sentences in English. ${student.capitalizedPronoun} followed simple instructions, and talked about familiar events and information using English phrases and short sentences.`;
       case "3":
@@ -202,7 +202,7 @@ Writing ${languageCategory} STEP ${writing}.`;
           case "1": return "FRC Early Literacy Task\nReading Comprehension-The Bear and the Bees";
           case "2": return "FRC Early Literacy Task\nReading Comprehension-Everyone Uses Math";
           case "3": return "Reading Diagnostic Test\nReading Comprehension-Texting and Driving is Dangerous";
-          case "4": return "Reading Diagnostic Test\nReading Comprehension-Wrestling Champion";
+          case "4": return "Reading Diagnostic Test\nReading Comprehension-The History of Jeans";
           case "5":
           case "6": return "Reading Diagnostic Test\nReading Comprehension-The Boatman and the Professor";
           default: return "";
@@ -211,8 +211,8 @@ Writing ${languageCategory} STEP ${writing}.`;
       case "9": case "10": case "11": case "12": {
         switch (reading) {
           case "1": return "FRC Early Literacy Task\nReading Comprehension-I Want to Be a Teacher";
-          case "2": return "FRC Early Literacy Task\nReading Comprehension-Texting and Driving is Dangerous";
-          case "3": return "Reading Diagnostic Test\nReading Comprehension-Wrestling Champion";
+          case "2": return "FRC Early Literacy Task\nReading Comprehension-An Honest Man";
+          case "3": return "Reading Diagnostic Test\nReading Comprehension-The History of Jeans";
           case "4": return "Reading Diagnostic Test\nReading Comprehension-The Boatman and the Professor";
           case "5":
           case "6": return "Reading Diagnostic Test\nReading Comprehension-Our Dinner Table University";
@@ -230,7 +230,7 @@ Writing ${languageCategory} STEP ${writing}.`;
         case "3": case "4": case "5": case "6": case "7": case "8": {
           switch (reading) {
             case "1":
-              return `In English, ${student.firstName} was able to locate information in highly visual text with simple language, using simple English words. ${student.capitalizedPronoun} identified some of the letters of the alphabet including upper cases and lower cases. ${student.capitalizedPronoun} was able to name some everyday familiar objects; e.g. "book", "shoe", "baby", "airplane", "dog", "ball", "pencil", "bird", "tree", "banana", and "car".`;
+              return `${student.firstName} was able to locate information in highly visual text with simple language, using simple English words. ${student.capitalizedPronoun} identified some of the letters of the alphabet including upper cases and lower cases. ${student.capitalizedPronoun} was able to name some everyday familiar objects; e.g. "book", "shoe", "baby", "airplane", "dog", "ball", "pencil", "bird", "tree", "banana", and "car".`;
             case "2":
               return `${student.firstName} demonstrated understanding by responding to a simple text with visual support using drawings, L1, and high-frequency words. ${student.capitalizedPronoun} responded with a combination of oral responses in the first language, and simple phrases and sentences in English. ${student.capitalizedPronoun} was able to locate some basic information or familiar words. ${student.capitalizedPronoun} read and understood high-frequency words and phrases and some words with multiple meanings.`;
             default: return "";
@@ -239,7 +239,7 @@ Writing ${languageCategory} STEP ${writing}.`;
         case "9": case "10": case "11": case "12": {
           switch (reading) {
             case "1":
-              return `In English, ${student.firstName} was able to locate information in highly visual text with simple language, using simple English words. ${student.capitalizedPronoun} identified some of the letters of the alphabet including upper cases and lower cases. ${student.capitalizedPronoun} was able to name some everyday familiar objects; e.g. "book", "shoe", "baby", "airplane", "dog", "ball", "pencil", "bird", "tree", "banana", and "car".`;
+              return `${student.firstName} was able to locate information in highly visual text with simple language, using simple English words. ${student.capitalizedPronoun} identified some of the letters of the alphabet including upper cases and lower cases. ${student.capitalizedPronoun} was able to name some everyday familiar objects; e.g. "book", "shoe", "baby", "airplane", "dog", "ball", "pencil", "bird", "tree", "banana", and "car".`;
             case "2":
               return `${student.firstName} demonstrated understanding by responding to a simple text with visual support using drawings, L1, and high-frequency words. ${student.capitalizedPronoun} read and followed short, simply worded instructions. ${student.capitalizedPronoun} identified and used common text features to locate information in a text with visual support. ${student.capitalizedPronoun} read and understood high-frequency words and phrases and some words with multiple meanings.`;
             default: return "";
@@ -252,7 +252,7 @@ Writing ${languageCategory} STEP ${writing}.`;
       case "1": case "2": case "3": {
         switch (reading) {
           case "1":
-            return `${student.firstName} demonstrated understanding by responding to a highly visual text with simple language, using simple English words. ${student.capitalizedPronoun} read and followed simply worded instructions with visual support. ${student.capitalizedPronoun} identified most of the letters of the alphabet including upper cases and lower cases. ${student.capitalizedPronoun} read and understood some high-frequency words in highly visual text.`;
+            return `${student.firstName} was able to locate information in a highly-visual text, using visual cues. ${student.capitalizedPronoun} identified some of the letters of the alphabet including upper cases and lower cases. ${student.capitalizedPronoun} was able to name some everyday familiar objects; e.g. "book", "shoe", "baby", "airplane", "dog", "ball", "pencil", "hand", "bird", ‘tree", "banana", and "car".`;
           case "2":
             return `${student.firstName} demonstrated understanding by responding to a simple text with visual support using drawings and high-frequency words. ${student.capitalizedPronoun} read and followed short, simply worded instructions. ${student.capitalizedPronoun} identified and used common text features to locate information in a text with visual support. ${student.capitalizedPronoun} read and understood high-frequency words in the text.`;
           case "3":
@@ -400,9 +400,9 @@ Writing ${languageCategory} STEP ${writing}.`;
           case "2":
             return `${student.firstName} demonstrated ${student.capitalizedPronoun.toLowerCase()} was able to write the English alphabet in the correct order including upper cases and lower cases. ${student.capitalizedPronoun} copied English words to correctly label pictures. ${student.capitalizedPronoun} organized words in simple and simple compound sentences. ${student.capitalizedPronoun} used common and personally relevant words, and ${student.capitalizedPronoun.toLowerCase()} used subject-verb agreement with some accuracy.`;
           case "3":
-            return `${student.firstName} organized ideas in a multi-sentence paragraph around a topic. ${student.capitalizedPronoun} used vocabulary relevant to the topic, and ${student.capitalizedPronoun.toLowerCase()} wrote a variety of simple and compound sentences. ${student.capitalizedPronoun} needs to work on including low-frequency words and academic vocabulary in writing.`;
+            return `${student.firstName} organized ideas into a multi-paragraph composition with a clear link from the introduction to the body to the conclusion. ${student.capitalizedPronoun} used vocabulary relevant to the topic, and ${student.capitalizedPronoun.toLowerCase()} wrote a variety of simple and compound sentences. ${student.capitalizedPronoun} needs to work on including low-frequency words and academic vocabulary in writing.`;
           case "4":
-            return `${student.firstName} organized ideas into three linked paragraphs. ${student.capitalizedPronoun} used a variety of vocabulary and wrote sentences of different structures and lengths, including complex sentences.`;
+            return `${student.firstName} organized ideas into a multi-paragraph composition with a clear link from the introduction to the body to the conclusion. ${student.capitalizedPronoun} used a variety of vocabulary and wrote sentences of different structures and lengths, including complex sentences.`;
           case "5":
             return `${student.firstName} organized ideas into a multi-paragraph composition with a clear link from the introduction to the body to the conclusion. ${student.capitalizedPronoun} wrote a variety of linked simple, compound, and complex sentences of different purposes using a variety of vocabulary of low-frequency words.`;
           case "6":
