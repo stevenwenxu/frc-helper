@@ -45,7 +45,7 @@ export function fillImportDocument(student: Student) {
 
   schoolName?.dispatchEvent(new Event("mouseover"));
   setTimeout(() => {
-    setValue(schoolName, `string:${SchoolHelper.fullSchoolName(student.targetSchool)}`);
+    setValue(schoolName, `string:${SchoolHelper.aspenNameToLaserfischeName(student.targetSchool)}`);
   }, 1000);
 
   aspenProfileCreated?.dispatchEvent(new Event("mouseover"));
