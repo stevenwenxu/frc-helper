@@ -65,6 +65,12 @@ npm run watch
 
 Load `dist` directory
 
+#### Lint
+
+```
+npx eslint .
+```
+
 #### Credit
 
 Project setup inspiration: https://github.com/chibat/chrome-extension-typescript-starter
