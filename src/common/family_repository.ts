@@ -19,7 +19,7 @@ export class FamilyRepository {
     const families = await chrome.storage.local.get(null);
     const newFamilies: Family[] = [];
     for (const key in families) {
-      if (families.hasOwnProperty(key)) {
+      if (Object.hasOwn(families, key)) {
         const family = families[key];
         newFamilies.push(FamilyRepository.familyFromStoredFamily(family));
       }
@@ -74,6 +74,7 @@ export class FamilyRepository {
     console.log(`Removed family with id ${familyId}`);
   }
 
+  /* eslint-disable @typescript-eslint/no-explicit-any */
   static familyFromStoredFamily(storedFamily: any) {
     const newFamily = new Family();
     newFamily.parents = storedFamily.parents.map((p: any) => Object.assign(new Parent(), p));
@@ -91,4 +92,5 @@ export class FamilyRepository {
     newFamily.visitDate = new Date(storedFamily._visitDate);
     return newFamily;
   }
+  /* eslint-enable @typescript-eslint/no-explicit-any */
 }

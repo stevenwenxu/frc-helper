@@ -25,7 +25,7 @@ function setupDeleteFamilyButton() {
     if (familyPicker.selectedOptions.length !== 1) {
       return;
     }
-    if (!confirm(`Are you sure you want to delete ${familyPicker.selectedOptions[0].textContent}?`)) {
+    if (!window.confirm(`Are you sure you want to delete ${familyPicker.selectedOptions[0].textContent}?`)) {
       return;
     }
     await FamilyRepository.deleteFamily(familyUniqueId);
@@ -86,7 +86,7 @@ function setupFillButtons(familyId: string) {
       if (tabs.length === 0) {
         alert("You don't have any active Aspen page to fill.");
       } else {
-        let tab = tabs.at(-1)!;
+        const tab = tabs.at(-1)!;
         console.log("Filling tab: ", tab.url);
 
         const personIndex = parseInt(fillButton.dataset.personIndex!);
@@ -150,6 +150,7 @@ function expectedPersonType(pathname: string) {
 
 document.addEventListener("DOMContentLoaded", function(event) {
   // this is needed to make bootstrap work
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const _ = bootstrap;
 
   setupFamilyPicker();
@@ -159,12 +160,13 @@ document.addEventListener("DOMContentLoaded", function(event) {
 chrome.runtime.onMessage.addListener(
   function(request, sender, sendResponse) {
     console.log("Popup got message:", request);
-    if (request.hasOwnProperty("type")) {
+    if (Object.hasOwn(request, "type")) {
       switch (request.type) {
-        case "confirmUpdateStudentName":
-          const response = confirm(`Do you want to update ${request.oldName} to ${request.newName}?`);
+        case "confirmUpdateStudentName": {
+          const response = window.confirm(`Do you want to update ${request.oldName} to ${request.newName}?`);
           sendResponse({ confirmUpdateStudentName: response });
           break;
+        }
         default:
           sendResponse({ message: `Popup didn't understand request: ${request}` });
           break;

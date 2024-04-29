@@ -108,8 +108,8 @@ function updateFamilyWithFormData(form: HTMLFormElement, family: Family) {
 }
 
 function getFamilyIdFromURL() {
-  const pathnames = location.pathname.split("/");
-  if (pathnames.length == 5) {
+  const pathnames = window.location.pathname.split("/");
+  if (pathnames.length === 5) {
     return pathnames[3];
   }
 

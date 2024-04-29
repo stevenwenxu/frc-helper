@@ -11,7 +11,7 @@ export async function saveStudentDetails(familyId: string, personIndex: number) 
 
   await FamilyRepository.updateStudent(familyId, personIndex, async (student) => {
     if (needsToConfirmChange(student)) {
-      const response = await chrome.runtime.sendMessage<Object, {confirmUpdateStudentName: boolean}>(
+      const response = await chrome.runtime.sendMessage<object, {confirmUpdateStudentName: boolean}>(
         {
           type: "confirmUpdateStudentName",
           oldName: student.fullName,

@@ -48,7 +48,7 @@ export class RawData {
   }
 
   parse(): Family {
-    let family = new Family();
+    const family = new Family();
     const commonNotes = `${this.immigrationStatusFirstLanguage}\n${this.notes}`;
 
     this.parentsName.split("/")

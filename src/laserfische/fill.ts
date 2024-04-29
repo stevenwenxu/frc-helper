@@ -4,8 +4,7 @@ import { fillImportDocument } from "./fill_import_document";
 chrome.runtime.onMessage.addListener(
   function(request, sender, sendResponse) {
     console.log("Laserfische content script got message", request);
-    if (request.hasOwnProperty("familyId") &&
-        request.hasOwnProperty("studentIndex")) {
+    if (Object.hasOwn(request, "familyId") && Object.hasOwn(request, "studentIndex")) {
       fill(request.familyId, request.studentIndex).then((fillResponse) => {
         sendResponse({ type: "fillResponse", message: fillResponse });
       });

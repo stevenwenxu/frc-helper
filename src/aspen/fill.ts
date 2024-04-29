@@ -15,10 +15,10 @@ import { fillELL } from "./fill/programs_ell";
 chrome.runtime.onMessage.addListener(
   function(request, sender, sendResponse) {
     console.log("Aspen content script got message", request);
-    if (request.hasOwnProperty("familyId") &&
-        request.hasOwnProperty("personIndex") &&
-        request.hasOwnProperty("pathname") &&
-        request.hasOwnProperty("context")) {
+    if (Object.hasOwn(request, "familyId") &&
+        Object.hasOwn(request, "personIndex") &&
+        Object.hasOwn(request, "pathname") &&
+        Object.hasOwn(request, "context")) {
       fill(request.familyId, request.personIndex, request.pathname, request.context).then((fillResponse) => {
         sendResponse({ type: "fillResponse", message: fillResponse });
       });

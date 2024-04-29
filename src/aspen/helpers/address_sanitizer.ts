@@ -4,7 +4,7 @@ export class AddressSanitizer {
       .replace(/,|\./g, "")
       .replace(/ottawa|nepean|kanata|stittsville|manotick|barrhaven|orleans|ontario|canada/gi, "")
       .replace(/ ON /i, "")
-      .replace(/[A-Za-z]\d[A-Za-z][ \-]?\d[A-Za-z]\d/i, "")
+      .replace(/[A-Za-z]\d[A-Za-z][ -]?\d[A-Za-z]\d/i, "")
       .replace(/north|south|east|west/i, "")
       .replace(/crescent/i, "cres")
       .replace(/street/i, "st")
@@ -34,7 +34,7 @@ export class AddressSanitizer {
     const typeMatch = address.match(/(\bapt\b|\bunit\b)/i);
 
     if (typeMatch) {
-      return typeMatch[1].toLowerCase() == "apt" ? "Apt." : "Unit";
+      return typeMatch[1].toLowerCase() === "apt" ? "Apt." : "Unit";
     }
 
     return "";
@@ -58,6 +58,6 @@ export class AddressSanitizer {
   }
 
   static postalCode(address: string) {
-    return address.match(/[A-Za-z]\d[A-Za-z][ \-]?\d[A-Za-z]\d/i)?.[0] || "";
+    return address.match(/[A-Za-z]\d[A-Za-z][ -]?\d[A-Za-z]\d/i)?.[0] || "";
   }
 }
