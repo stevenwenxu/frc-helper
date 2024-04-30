@@ -1,8 +1,8 @@
 const path = require("path");
 const CopyPlugin = require("copy-webpack-plugin");
-const HtmlWebpackPlugin = require('html-webpack-plugin');
-const BundleAnalyzerPlugin = require('webpack-bundle-analyzer').BundleAnalyzerPlugin;
-const MiniCssExtractPlugin = require('mini-css-extract-plugin')
+const HtmlWebpackPlugin = require("html-webpack-plugin");
+const BundleAnalyzerPlugin = require("webpack-bundle-analyzer").BundleAnalyzerPlugin;
+const MiniCssExtractPlugin = require("mini-css-extract-plugin")
 
 const srcDir = path.join(__dirname, "..", "src");
 
@@ -14,7 +14,7 @@ module.exports = {
     popup: path.join(srcDir, "aspen/popup.ts"),
     aspen_fill: path.join(srcDir, "aspen/fill.ts"),
     laserfische_fill: path.join(srcDir, "laserfische/fill.ts"),
-    options: path.join(srcDir, "options.tsx"),
+    options: path.join(srcDir, "options/entry.tsx"),
   },
   output: {
     path: path.join(__dirname, "../dist/js"),
@@ -22,6 +22,23 @@ module.exports = {
   },
   resolve: {
     extensions: [".ts", ".tsx", ".js"],
+  },
+  optimization: {
+    splitChunks: {
+      cacheGroups: {
+        react: {
+          name: "react",
+          test: /[\\/]node_modules[\\/](react|react-dom|react-bootstrap)[\\/]/,
+          chunks: "all",
+        },
+        bootstrap: {
+          name: "bootstrap",
+          test: /[\\/]node_modules[\\/](bootstrap)[\\/]/,
+          type: "css/mini-extract",
+          chunks: "all",
+        },
+      },
+    },
   },
   module: {
     rules: [
@@ -31,34 +48,21 @@ module.exports = {
         exclude: /node_modules/,
       },
       {
-        test: /\.(scss)$/,
+        test: /\.css$/i,
         use: [
           {
             loader: MiniCssExtractPlugin.loader
           },
           {
-            loader: 'css-loader'
-          },
-          {
-            loader: 'postcss-loader',
-            options: {
-              postcssOptions: {
-                plugins: () => [
-                  require('autoprefixer')
-                ]
-              }
-            }
-          },
-          {
-            loader: 'sass-loader'
+            loader: "css-loader"
           }
         ]
-      }
+      },
     ],
   },
   plugins: [
     new MiniCssExtractPlugin({
-      filename: "../css/[name].css"
+      filename: "../css/[name].css",
     }),
     new CopyPlugin({
       patterns: [{

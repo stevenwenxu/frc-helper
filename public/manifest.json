@@ -14,7 +14,7 @@
       ]
     },
     {
-      "css": ["css/school_interviews.css"],
+      "css": ["css/bootstrap.css"],
       "matches": [
         "https://www.schoolinterviews.com.au/*/parents/*/details"
       ]

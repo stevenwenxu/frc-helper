@@ -4,7 +4,7 @@ import { FamilyRepository } from "../common/family_repository";
 import { Family } from "../common/models/family";
 import { Parent, Student } from "../common/models/person";
 import { RawData } from "./models/raw_data";
-import "../scss/styles.scss";
+import 'bootstrap/dist/css/bootstrap.min.css';
 
 function patchDetailsPage(table: HTMLTableElement) {
   fetch(chrome.runtime.getURL('/html/details_page.html')).then(r => r.text()).then(html => {

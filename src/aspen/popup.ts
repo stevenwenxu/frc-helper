@@ -1,4 +1,4 @@
-import "../scss/styles.scss";
+import 'bootstrap/dist/css/bootstrap.min.css';
 import * as bootstrap from "bootstrap";
 import { FamilyRepository } from "../common/family_repository";
 import { PopupBuilder } from "./helpers/popup_builder";

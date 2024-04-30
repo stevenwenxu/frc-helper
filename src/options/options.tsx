@@ -1,11 +1,9 @@
-import "./scss/styles.scss";
-import React, { useEffect, useState } from "react";
-import { createRoot } from "react-dom/client";
+import { useEffect, useState } from "react";
 import Form from 'react-bootstrap/Form';
 import Container from 'react-bootstrap/Container';
-import { OptionsRepository } from "./common/options_repository";
+import { OptionsRepository } from "../common/options_repository";
 
-function Options() {
+export default function Options() {
   const [saveStatus, setSaveStatus] = useState("");
   const [displayMode, setDisplayMode] = useState("tab");
 
@@ -43,11 +41,3 @@ function Options() {
     </>
   )
 }
-
-const root = createRoot(document.getElementById("root")!);
-
-root.render(
-  <React.StrictMode>
-    <Options />
-  </React.StrictMode>
-);
