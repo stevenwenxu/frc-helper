@@ -8,7 +8,7 @@
   },
   "content_scripts": [
     {
-      "js": ["js/school_interviews.js"],
+      "js": ["js/school_interviews.js", "js/react.js"],
       "matches": [
         "https://www.schoolinterviews.com.au/*"
       ]

@@ -1,5 +1,8 @@
-if (/\/.*\/parents\/\d+\/details$/.test(location.pathname)) {
-  require("./details_page");
-} else if (/\/.*\/\d+/.test(location.pathname)) {
-  require("./schedule");
+import { setupDetailsPage } from "./details_page_entry";
+import { setupSchedule } from "./schedule";
+
+if (/\/.*\/parents\/\d+\/details$/.test(window.location.pathname)) {
+  setupDetailsPage();
+} else if (/\/.*\/\d+/.test(window.location.pathname)) {
+  setupSchedule();
 }

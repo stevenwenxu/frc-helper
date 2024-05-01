@@ -19,22 +19,21 @@ function nextBusinessDay() {
   return today;
 }
 
-const table = document.querySelector<HTMLTableElement>("table.data");
-if (table) {
-  const headers = Array.from(table.querySelectorAll("tr:has(th)"));
-  const todayHeader = headers.filter(tr => tr.textContent!.startsWith(formatDate(nextBusinessDay())))[0];
-  if (todayHeader) {
-    todayHeader.scrollIntoView({ behavior: "smooth", block: "center" });
+export function setupSchedule() {
+  const table = document.querySelector<HTMLTableElement>("table.data");
+  if (table) {
+    const headers = Array.from(table.querySelectorAll("tr:has(th)"));
+    const todayHeader = headers.filter(tr => tr.textContent!.startsWith(formatDate(nextBusinessDay())))[0];
+    if (todayHeader) {
+      todayHeader.scrollIntoView({ behavior: "smooth", block: "center" });
 
-    let sibling = todayHeader.nextElementSibling;
-    while (sibling && !sibling.matches("tr:has(th)")) {
-      (sibling as HTMLElement).style.backgroundColor = "lightyellow";
-      sibling = sibling.nextElementSibling;
+      let sibling = todayHeader.nextElementSibling;
+      while (sibling && !sibling.matches("tr:has(th)")) {
+        (sibling as HTMLElement).style.backgroundColor = "lightyellow";
+        sibling = sibling.nextElementSibling;
+      }
+    } else {
+      console.log("No schedule found for today.");
     }
-  } else {
-    console.log("No schedule found for today.");
   }
 }
-
-// This is to make this file a module.
-export {};
