@@ -1,8 +1,8 @@
-import { setupDetailsPage } from "./details_page_entry";
+import { setupSidePanel } from "./side_panel_entry";
 import { setupSchedule } from "./schedule";
 
 if (/\/.*\/parents\/\d+\/details$/.test(window.location.pathname)) {
-  setupDetailsPage();
+  setupSidePanel();
 } else if (/\/.*\/\d+/.test(window.location.pathname)) {
   setupSchedule();
 }
