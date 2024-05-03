@@ -11,6 +11,10 @@ export function setupDetailsPage() {
 
   table.insertAdjacentElement("beforebegin", app);
 
+  if (process.env.NODE_ENV === "development") {
+    setupReactDebugging();
+  }
+
   const root = createRoot(document.getElementById("react-root")!);
   const familyId = getFamilyIdFromURL();
   root.render(
@@ -31,4 +35,10 @@ function getFamilyIdFromURL() {
 
 function parseNewFamily(table: HTMLTableElement, familyId: string) {
   return new RawData(table).parse().withUniqueId(familyId).withVisitDate(new Date())
+}
+
+function setupReactDebugging() {
+  const script = document.createElement("script");
+  script.src = "http://localhost:8097";
+  // document.head.prepend(script);
 }

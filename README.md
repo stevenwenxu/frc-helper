@@ -71,6 +71,12 @@ Load `dist` directory
 npx eslint .
 ```
 
+#### Debug React views
+
+```
+npx react-devtools
+```
+
 #### Credit
 
 Project setup inspiration: https://github.com/chibat/chrome-extension-typescript-starter
