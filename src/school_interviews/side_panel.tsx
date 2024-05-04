@@ -16,6 +16,7 @@ export default function SidePanel({familyId, parseNewFamily}: SidePanelProps) {
   const [showSidePanel, setShowSidePanel] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
   const [family, setFamily] = useState<Family | null>(null);
+  const [activePersonkey, setActivePersonKey] = useState("student_1");
 
   useEffect(() => {
     let ignore = false;
@@ -42,6 +43,15 @@ export default function SidePanel({familyId, parseNewFamily}: SidePanelProps) {
     }
   }
 
+  const didUpdateFamily = (updatedFamily: Family, newActivePersonKey: string) => {
+    setFamily(updatedFamily);
+    setActivePersonKey(newActivePersonKey);
+  }
+
+  const onSelectTab = (eventKey: string | null, e: React.SyntheticEvent<unknown>) => {
+    setActivePersonKey(eventKey ?? "student_1");
+  }
+
   return (
     <>
       <Button variant="primary" onClick={onButtonClick} disabled={isLoading}>
@@ -55,8 +65,8 @@ export default function SidePanel({familyId, parseNewFamily}: SidePanelProps) {
         <Offcanvas.Body>
           {
             family
-              ? <Tab.Container id="family-container" defaultActiveKey="student_1">
-                  <SidePanelNav family={family}/>
+              ? <Tab.Container id="family-container" activeKey={activePersonkey} onSelect={onSelectTab}>
+                  <SidePanelNav family={family} didUpdateFamily={didUpdateFamily} />
                   <SidePanelTabContent family={family}/>
                 </Tab.Container>
               : "Oops, something is wrong... Please refresh the page."
