@@ -128,7 +128,20 @@ function PersonForm({family, peopleIndex, personKey, didUpdateAddress}: PersonFo
       </FloatingLabel>
 
       <Row className="mb-2 align-items-center">
-        <Col md="auto" style={{paddingRight: 0}}>
+        <Col>
+          <FloatingLabel label="Address" controlId={`${personKey}_address`}>
+            <Form.Control
+              type="text"
+              placeholder="address"
+              name="address"
+              value={person.address}
+              onChange={(e) => { updateAddress(family, peopleIndex, e.target.value, didUpdateAddress) } }
+              onBlur={() => { FamilyRepository.saveFamily(family) }}
+              style={inputStyle}
+            />
+          </FloatingLabel>
+        </Col>
+        <Col md="auto" style={{paddingLeft: 0}}>
           <Form.Check id={`${personKey}_unique`} type="checkbox">
             <Form.Check.Input
               type="checkbox"
@@ -139,19 +152,6 @@ function PersonForm({family, peopleIndex, personKey, didUpdateAddress}: PersonFo
             />
             <Form.Check.Label>Unique</Form.Check.Label>
           </Form.Check>
-        </Col>
-        <Col>
-          <FloatingLabel label="Address" controlId={`${personKey}_address`}>
-            <Form.Control
-              type="text"
-              placeholder="address"
-              name="address"
-              value={person.address}
-              onChange={(e) => { updateAddress(family, peopleIndex, e.target.value, didUpdateAddress) } }
-              onBlur={(e) => { FamilyRepository.saveFamily(family) }}
-              style={inputStyle}
-            />
-          </FloatingLabel>
         </Col>
       </Row>
 

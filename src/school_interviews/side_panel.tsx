@@ -50,7 +50,7 @@ export default function SidePanel({familyId, parseNewFamily}: SidePanelProps) {
     }
   }
 
-  const onSelectTab = (eventKey: string | null, e: React.SyntheticEvent<unknown>) => {
+  const onSelectTab = (eventKey: string | null) => {
     setActivePersonKey(eventKey ?? "student_1");
   }
 

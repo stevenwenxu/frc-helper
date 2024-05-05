@@ -13,8 +13,8 @@ export default function SidePanelNav({family, didUpdateFamily}: SidePanelNavProp
   let parentIndex = 1;
   let studentIndex = 1;
 
-  let navItems: JSX.Element[] = [];
-  let dropdownItems: JSX.Element[] = [];
+  const navItems: JSX.Element[] = [];
+  const dropdownItems: JSX.Element[] = [];
 
   family.people.forEach((person, peopleIndex) => {
     const individualIndex = person instanceof Student ? studentIndex++ : parentIndex++;
