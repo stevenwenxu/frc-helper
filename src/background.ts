@@ -63,6 +63,12 @@ async function setupOpenPopup() {
         width: 600,
         height: 900,
       });
+      chrome.windows.create({
+        url: chrome.runtime.getURL("/html/popup2.html"),
+        type: "popup",
+        width: 600,
+        height: 900,
+      });
       break;
   }
 }
