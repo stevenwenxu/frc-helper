@@ -43,9 +43,11 @@ export default function SidePanel({familyId, parseNewFamily}: SidePanelProps) {
     }
   }
 
-  const didUpdateFamily = (updatedFamily: Family, newActivePersonKey: string) => {
+  const didUpdateFamily = (updatedFamily: Family, newActivePersonKey?: string) => {
     setFamily(updatedFamily);
-    setActivePersonKey(newActivePersonKey);
+    if (newActivePersonKey) {
+      setActivePersonKey(newActivePersonKey);
+    }
   }
 
   const onSelectTab = (eventKey: string | null, e: React.SyntheticEvent<unknown>) => {
@@ -67,7 +69,7 @@ export default function SidePanel({familyId, parseNewFamily}: SidePanelProps) {
             family
               ? <Tab.Container id="family-container" activeKey={activePersonkey} onSelect={onSelectTab}>
                   <SidePanelNav family={family} didUpdateFamily={didUpdateFamily} />
-                  <SidePanelTabContent family={family}/>
+                  <SidePanelTabContent family={family} didUpdateFamily={didUpdateFamily} />
                 </Tab.Container>
               : "Oops, something is wrong... Please refresh the page."
           }

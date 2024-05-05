@@ -11,6 +11,8 @@ export abstract class Person {
   lastName = "";
   phone = "";
   address = "";
+  // Address edits are synced across all family members unless this is set to true.
+  isAddressUnique = false;
 
   set name(name: string) {
     const [firstName, middleName, lastName] = NameHelper.nameToParts(name);

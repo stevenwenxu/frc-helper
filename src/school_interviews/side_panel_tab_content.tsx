@@ -7,17 +7,24 @@ import { FamilyRepository } from "../common/family_repository";
 
 interface SidePanelTabContentProps {
   family: Family;
+  didUpdateFamily: (updatedFamily: Family) => void;
 }
 
 interface PersonFormProps {
   family: Family;
   peopleIndex: number;
   personKey: string;
+  didUpdateAddress: () => void;
 }
 
-export default function SidePanelTabContent({family}: SidePanelTabContentProps) {
+export default function SidePanelTabContent({family, didUpdateFamily}: SidePanelTabContentProps) {
   let parentIndex = 1;
   let studentIndex = 1;
+
+  const didUpdateAddress = () => {
+    // pass back a copy of family, as we shouldn't mutate the original family object (state)
+    didUpdateFamily(FamilyRepository.familyFromStoredFamily(family));
+  }
 
   return (
     <Tab.Content>
@@ -26,7 +33,12 @@ export default function SidePanelTabContent({family}: SidePanelTabContentProps) 
 
         return (
           <Tab.Pane key={eventKey} eventKey={eventKey}>
-            <PersonForm family={family} peopleIndex={peopleIndex} personKey={eventKey} />
+            <PersonForm
+              family={family}
+              peopleIndex={peopleIndex}
+              personKey={eventKey}
+              didUpdateAddress={didUpdateAddress}
+            />
           </Tab.Pane>
         )
       })}
@@ -34,7 +46,7 @@ export default function SidePanelTabContent({family}: SidePanelTabContentProps) 
   )
 }
 
-function PersonForm({family, peopleIndex, personKey}: PersonFormProps) {
+function PersonForm({family, peopleIndex, personKey, didUpdateAddress}: PersonFormProps) {
   const person = family.people[peopleIndex];
   const inputStyle = {
     backgroundColor: "var(--bs-form-control-bg)",
@@ -115,8 +127,9 @@ function PersonForm({family, peopleIndex, personKey}: PersonFormProps) {
           type="text"
           placeholder="address"
           name="address"
-          defaultValue={person.address}
-          onBlur={(e) => { updatePerson(family, peopleIndex, e.target.name, e.target.value) }}
+          value={person.address}
+          onChange={(e) => { updateAddress(family, peopleIndex, e.target.value, didUpdateAddress) } }
+          onBlur={(e) => { FamilyRepository.saveFamily(family) }}
           style={inputStyle}
         />
       </FloatingLabel>
@@ -178,15 +191,19 @@ function PersonForm({family, peopleIndex, personKey}: PersonFormProps) {
   )
 }
 
-function updatePerson(family: Family, peopleIndex: number, fieldName: string, value: string) {
+function updatePerson(
+  family: Family,
+  peopleIndex: number,
+  fieldName: string,
+  value: string
+) {
   const person = family.people[peopleIndex];
 
   switch (fieldName) {
     case "firstName":
     case "middleName":
     case "lastName":
-    case "phone":
-    case "address": {
+    case "phone": {
       person[fieldName] = value;
       break;
     }
@@ -211,6 +228,22 @@ function updatePerson(family: Family, peopleIndex: number, fieldName: string, va
       throw new Error(`Unknown input name: ${fieldName}`);
   }
 
-  family.people[peopleIndex] = person;
   FamilyRepository.saveFamily(family);
+}
+
+function updateAddress(
+  family: Family,
+  peopleIndex: number,
+  newAddress: string,
+  didUpdateAddress: () => void
+) {
+  family.people[peopleIndex].address = newAddress;
+  if (!family.people[peopleIndex].isAddressUnique) {
+    family.people.forEach((person) => {
+      if (!person.isAddressUnique) {
+        person.address = newAddress;
+      }
+    });
+  }
+  didUpdateAddress();
 }
