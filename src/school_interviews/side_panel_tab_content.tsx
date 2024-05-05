@@ -1,6 +1,8 @@
 import Tab from "react-bootstrap/Tab";
 import FloatingLabel from 'react-bootstrap/FloatingLabel';
 import Form from 'react-bootstrap/Form';
+import Row from 'react-bootstrap/Row';
+import Col from 'react-bootstrap/Col';
 import { Family } from "../common/models/family";
 import { Parent, Student } from "../common/models/person";
 import { FamilyRepository } from "../common/family_repository";
@@ -50,12 +52,16 @@ function PersonForm({family, peopleIndex, personKey, didUpdateAddress}: PersonFo
   const person = family.people[peopleIndex];
   const inputStyle = {
     backgroundColor: "var(--bs-form-control-bg)",
-    border: "var(--bs-border-width) solid var(--bs-border-color)"
-  }
+    border: "var(--bs-border-width) solid var(--bs-border-color)",
+    maxWidth: "initial"
+  };
   const textAreaStyle = {
-    maxWidth: "25em",
     height: "120px"
-  }
+  };
+  const checkboxStyle = {
+    width: "1em",
+    marginTop: "0.25em"
+  };
 
   return (
     <Form autoComplete="off">
@@ -121,18 +127,33 @@ function PersonForm({family, peopleIndex, personKey, didUpdateAddress}: PersonFo
         />
       </FloatingLabel>
 
-      <FloatingLabel label="Address" controlId={`${personKey}_address`}>
-        <Form.Control
-          className="mb-2"
-          type="text"
-          placeholder="address"
-          name="address"
-          value={person.address}
-          onChange={(e) => { updateAddress(family, peopleIndex, e.target.value, didUpdateAddress) } }
-          onBlur={(e) => { FamilyRepository.saveFamily(family) }}
-          style={inputStyle}
-        />
-      </FloatingLabel>
+      <Row className="mb-2 align-items-center">
+        <Col md="auto" style={{paddingRight: 0}}>
+          <Form.Check id={`${personKey}_unique`} type="checkbox">
+            <Form.Check.Input
+              type="checkbox"
+              style={checkboxStyle}
+              name="isAddressUnique"
+              defaultChecked={person.isAddressUnique}
+              onChange={(e) => { updatePerson(family, peopleIndex, e.target.name, e.target.checked ? "on" : "off") }}
+            />
+            <Form.Check.Label>Unique</Form.Check.Label>
+          </Form.Check>
+        </Col>
+        <Col>
+          <FloatingLabel label="Address" controlId={`${personKey}_address`}>
+            <Form.Control
+              type="text"
+              placeholder="address"
+              name="address"
+              value={person.address}
+              onChange={(e) => { updateAddress(family, peopleIndex, e.target.value, didUpdateAddress) } }
+              onBlur={(e) => { FamilyRepository.saveFamily(family) }}
+              style={inputStyle}
+            />
+          </FloatingLabel>
+        </Col>
+      </Row>
 
       {person instanceof Parent && (
         <FloatingLabel label="Parent notes" controlId={`${personKey}_parentNotes`}>
@@ -205,6 +226,10 @@ function updatePerson(
     case "lastName":
     case "phone": {
       person[fieldName] = value;
+      break;
+    }
+    case "isAddressUnique": {
+      person.isAddressUnique = value === "on";
       break;
     }
     case "email":
