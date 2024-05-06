@@ -8,6 +8,7 @@ import Col from "react-bootstrap/Col";
 import Button from "react-bootstrap/Button";
 import { Family } from "../common/models/family";
 import { FamilyRepository } from "../common/family_repository";
+import PopupEmptyState from "./popup_empty_state";
 
 interface PopupProps {
   version: string;
@@ -84,6 +85,14 @@ export default function Popup({version}: PopupProps) {
           </Col>
         </Row>
       </FormGroup>
+
+      <Container className="g-0">
+        {families.length === 0 ? (
+          <PopupEmptyState />
+        ) : (
+          "something"
+        )}
+      </Container>
 
       <footer>
         <p className="mt-3 text text-end text-black-50 fs-6">Version {version}</p>
