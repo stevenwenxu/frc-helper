@@ -15,6 +15,7 @@ interface PopupProps {
 
 export default function Popup({version}: PopupProps) {
   const [families, setFamilies] = useState<Family[]>([]);
+  const [selectedFamilyId, setSelectedFamilyId] = useState<string | undefined>(undefined);
 
   const familiesByVisitDate = families.reduce((acc, family) => {
     const visitDate = family.visitDate.toDateString();
@@ -26,12 +27,29 @@ export default function Popup({version}: PopupProps) {
     return acc;
   }, {} as { [visitDate: string]: Family[] });
 
+  const deleteFamily = () => {
+    if (!selectedFamilyId) {
+      return;
+    }
+
+    const familyName = families.find(family => family.uniqueId === selectedFamilyId)?.displayName;
+    if (!window.confirm(`Are you sure you want to delete ${familyName}?`)) {
+      return;
+    }
+    FamilyRepository.deleteFamily(selectedFamilyId).then(() => {
+      const newFamilies = families.filter(family => family.uniqueId !== selectedFamilyId);
+      setFamilies(newFamilies);
+      setSelectedFamilyId(newFamilies[0]?.uniqueId);
+    });
+  }
+
   useEffect(() => {
     let ignore = false;
     FamilyRepository.getFamilies().then((families) => {
       if (!ignore) {
         families.sort((a, b) => b.visitDate.getTime() - a.visitDate.getTime());
         setFamilies(families);
+        setSelectedFamilyId(families[0]?.uniqueId);
       }
     });
     return () => {
@@ -47,7 +65,7 @@ export default function Popup({version}: PopupProps) {
         <FormLabel className="mt-2">Select a family</FormLabel>
         <Row className="mb-2 gx-2">
           <Col>
-            <FormSelect>
+            <FormSelect value={selectedFamilyId} onChange={(e) => { setSelectedFamilyId(e.target.value) }}>
               {Object.keys(familiesByVisitDate).map((visitDate) => (
                 <optgroup label={visitDate} key={visitDate}>
                   {familiesByVisitDate[visitDate].map((family) => (
@@ -58,7 +76,7 @@ export default function Popup({version}: PopupProps) {
             </FormSelect>
           </Col>
           <Col className="col-auto">
-            <Button variant="outline-danger">
+            <Button variant="outline-danger" onClick={deleteFamily}>
               <svg width="16" height="16" fill="currentColor">
                 <use href="/images/trash.svg#trash-svg"/>
               </svg>
