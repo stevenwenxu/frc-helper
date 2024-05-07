@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import Container from "react-bootstrap/Container";
 import FormGroup from "react-bootstrap/FormGroup";
 import FormSelect from "react-bootstrap/FormSelect";
@@ -9,6 +9,7 @@ import Button from "react-bootstrap/Button";
 import { Family } from "../common/models/family";
 import { FamilyRepository } from "../common/family_repository";
 import PopupEmptyState from "./popup_empty_state";
+import PopupFamily from "./popup_family";
 
 interface PopupProps {
   version: string;
@@ -18,23 +19,31 @@ export default function Popup({version}: PopupProps) {
   const [families, setFamilies] = useState<Family[]>([]);
   const [selectedFamilyId, setSelectedFamilyId] = useState<string | undefined>(undefined);
 
-  const familiesByVisitDate = families.reduce((acc, family) => {
-    const visitDate = family.visitDate.toDateString();
-    if (acc[visitDate]) {
-      acc[visitDate].push(family);
-    } else {
-      acc[visitDate] = [family];
+  const selectedFamily = useMemo(() => {
+    if (!selectedFamilyId) {
+      return undefined;
     }
-    return acc;
-  }, {} as { [visitDate: string]: Family[] });
+    return families.find(family => family.uniqueId === selectedFamilyId);
+  }, [families, selectedFamilyId]);
+
+  const familiesByVisitDate = useMemo(() => {
+    return families.reduce((acc, family) => {
+      const visitDate = family.visitDate.toDateString();
+      if (acc[visitDate]) {
+        acc[visitDate].push(family);
+      } else {
+        acc[visitDate] = [family];
+      }
+      return acc;
+    }, {} as { [visitDate: string]: Family[] });
+  }, [families]);
 
   const deleteFamily = () => {
     if (!selectedFamilyId) {
       return;
     }
 
-    const familyName = families.find(family => family.uniqueId === selectedFamilyId)?.displayName;
-    if (!window.confirm(`Are you sure you want to delete ${familyName}?`)) {
+    if (!window.confirm(`Are you sure you want to delete ${selectedFamily?.displayName}?`)) {
       return;
     }
     FamilyRepository.deleteFamily(selectedFamilyId).then(() => {
@@ -87,10 +96,10 @@ export default function Popup({version}: PopupProps) {
       </FormGroup>
 
       <Container className="g-0">
-        {families.length === 0 ? (
+        {(families.length === 0 || !selectedFamily) ? (
           <PopupEmptyState />
         ) : (
-          "something"
+          <PopupFamily family={selectedFamily} />
         )}
       </Container>
 
