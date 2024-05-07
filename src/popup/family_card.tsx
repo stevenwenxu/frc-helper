@@ -10,41 +10,41 @@ import { Parent, Student } from '../common/models/person';
 import { SchoolCategory } from '../common/models/school_category';
 import { StatusInCanada } from '../common/models/status_in_canada';
 
-interface PopupFamilyProps {
+interface FamilyCardProps {
   family: Family;
 }
 
-interface PopupHeaderProps {
+interface HeaderProps {
   family: Family;
   selectedPersonKey: string;
   setSelectedPersonKey: (key: string) => void;
 }
 
-interface PopupBodyProps {
+interface BodyProps {
   family: Family;
   selectedPersonKey: string;
 }
 
-export default function PopupFamily({family}: PopupFamilyProps) {
+export default function FamilyCard({family}: FamilyCardProps) {
   const [selectedPersonKey, setSelectedPersonKey] = useState("person_0");
 
   return (
     <Card>
       <Card.Header>
-        <PopupHeader
+        <Header
           family={family}
           selectedPersonKey={selectedPersonKey}
           setSelectedPersonKey={setSelectedPersonKey}
         />
       </Card.Header>
       <Card.Body>
-        <PopupBody family={family} selectedPersonKey={selectedPersonKey} />
+        <Body family={family} selectedPersonKey={selectedPersonKey} />
       </Card.Body>
     </Card>
   )
 }
 
-function PopupHeader({family, selectedPersonKey, setSelectedPersonKey}: PopupHeaderProps) {
+function Header({family, selectedPersonKey, setSelectedPersonKey}: HeaderProps) {
   let parentIndex = 1;
 
   return (
@@ -66,7 +66,7 @@ function PopupHeader({family, selectedPersonKey, setSelectedPersonKey}: PopupHea
   );
 }
 
-function PopupBody({family, selectedPersonKey}: PopupBodyProps) {
+function Body({family, selectedPersonKey}: BodyProps) {
   return (
     <TabContent>
       {family.people.map((person, index) => {

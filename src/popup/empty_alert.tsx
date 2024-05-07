@@ -1,7 +1,7 @@
 import Alert from "react-bootstrap/Alert";
 import Button from 'react-bootstrap/Button';
 
-export default function PopupEmptyState() {
+export default function EmptyAlert() {
   return (
     <Alert variant="primary" className="mt-4">
       <Alert.Heading>No families here</Alert.Heading>
