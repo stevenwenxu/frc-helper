@@ -9,6 +9,8 @@ import { Family } from '../common/models/family';
 import { Parent, Student } from '../common/models/person';
 import { SchoolCategory } from '../common/models/school_category';
 import { StatusInCanada } from '../common/models/status_in_canada';
+import OCDSB031Button from './ocdsb_031_button';
+import StepButton from './step_button';
 
 interface FamilyCardProps {
   family: Family;
@@ -155,25 +157,9 @@ function Body({family, selectedPersonKey}: BodyProps) {
             {person instanceof Student && (
               <div className="d-flex gap-3 mb-3">
                 {isOCDSB031Available && (
-                  <Button
-                    variant="outline-primary"
-                    className="flex-fill"
-                  >
-                    <svg width="16" height="16" fill="currentColor">
-                      <use href="/images/download.svg#download-svg"/>
-                    </svg>
-                    OCDSB 031
-                  </Button>
+                  <OCDSB031Button student={person} firstParent={family.parents[0] as Parent} />
                 )}
-                <Button
-                  variant="outline-primary"
-                  className="flex-fill"
-                >
-                  <svg width="16" height="16" fill="currentColor">
-                    <use href="/images/download.svg#download-svg"/>
-                  </svg>
-                  STEP
-                </Button>
+                <StepButton student={person} />
                 <Button
                   variant="outline-primary"
                   className="flex-fill"
