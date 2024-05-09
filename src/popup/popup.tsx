@@ -1,18 +1,21 @@
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import Container from "react-bootstrap/Container";
 import { Family } from "../common/models/family";
 import { FamilyRepository } from "../common/family_repository";
 import EmptyAlert from "./empty_alert";
 import FamilyCard from "./family_card";
 import FamilyPicker from "./family_picker";
+import { MainContentContext } from "./main_content_context";
 
 interface PopupProps {
   version: string;
 }
 
+
 export default function Popup({version}: PopupProps) {
   const [families, setFamilies] = useState<Family[]>([]);
   const [selectedFamilyId, setSelectedFamilyId] = useState<string | undefined>(undefined);
+  const { mainContentType, setMainContentType } = useContext(MainContentContext);
 
   const selectedFamily = families.find(family => family.uniqueId === selectedFamilyId);
 
@@ -30,6 +33,27 @@ export default function Popup({version}: PopupProps) {
     }
   }, []);
 
+  useEffect(() => {
+    if (families.length === 0 || !selectedFamily) {
+      setMainContentType("empty");
+    } else {
+      setMainContentType("familyCard");
+    }
+  }, [families.length, selectedFamily, setMainContentType])
+
+  let mainContent: JSX.Element | null = null;
+  switch (mainContentType) {
+    case "empty":
+      mainContent = <EmptyAlert />;
+      break;
+    case "familyCard":
+      mainContent = <FamilyCard family={selectedFamily!} />;
+      break;
+    case "email":
+      mainContent = <h1>Email!!!</h1>
+      break;
+  }
+
   return (
     <Container>
       <h1 className="mt-4">Family Reception Centre</h1>
@@ -42,11 +66,7 @@ export default function Popup({version}: PopupProps) {
       />
 
       <Container className="g-0">
-        {(families.length === 0 || !selectedFamily) ? (
-          <EmptyAlert />
-        ) : (
-          <FamilyCard family={selectedFamily} />
-        )}
+        {mainContent}
       </Container>
 
       <footer>

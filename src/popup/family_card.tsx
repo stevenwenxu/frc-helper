@@ -11,6 +11,7 @@ import { SchoolCategory } from '../common/models/school_category';
 import { StatusInCanada } from '../common/models/status_in_canada';
 import OCDSB031Button from './ocdsb_031_button';
 import StepButton from './step_button';
+import GenerateEmailButton from './generate_email_button';
 
 interface FamilyCardProps {
   family: Family;
@@ -160,12 +161,7 @@ function Body({family, selectedPersonKey}: BodyProps) {
                   <OCDSB031Button student={person} firstParent={family.parents[0] as Parent} />
                 )}
                 <StepButton student={person} />
-                <Button
-                  variant="outline-primary"
-                  className="flex-fill"
-                >
-                  Generate email
-                </Button>
+                <GenerateEmailButton family={family} peopleIndex={index} />
               </div>
             )}
           </TabPane>
