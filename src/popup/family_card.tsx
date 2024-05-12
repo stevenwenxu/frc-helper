@@ -1,60 +1,52 @@
-import { useState } from 'react';
 import Card from 'react-bootstrap/Card';
 import Nav from 'react-bootstrap/Nav';
 import TabContent from 'react-bootstrap/TabContent';
 import TabPane from 'react-bootstrap/TabPane';
 import Button from "react-bootstrap/Button";
 import Table from 'react-bootstrap/Table';
-import { Family } from '../common/models/family';
 import { Parent, Student } from '../common/models/person';
 import { SchoolCategory } from '../common/models/school_category';
 import { StatusInCanada } from '../common/models/status_in_canada';
 import OCDSB031Button from './ocdsb_031_button';
 import StepButton from './step_button';
 import GenerateEmailButton from './generate_email_button';
+import { useFamilyContext } from './family_context';
 
-interface FamilyCardProps {
-  family: Family;
-}
-
-interface HeaderProps {
-  family: Family;
-  selectedPersonKey: string;
-  setSelectedPersonKey: (key: string) => void;
-}
-
-interface BodyProps {
-  family: Family;
-  selectedPersonKey: string;
-}
-
-export default function FamilyCard({family}: FamilyCardProps) {
-  const [selectedPersonKey, setSelectedPersonKey] = useState("person_0");
+export default function FamilyCard() {
 
   return (
     <Card>
       <Card.Header>
-        <Header
-          family={family}
-          selectedPersonKey={selectedPersonKey}
-          setSelectedPersonKey={setSelectedPersonKey}
-        />
+        <Header />
       </Card.Header>
       <Card.Body>
-        <Body family={family} selectedPersonKey={selectedPersonKey} />
+        <Body />
       </Card.Body>
     </Card>
   )
 }
 
-function Header({family, selectedPersonKey, setSelectedPersonKey}: HeaderProps) {
+function Header() {
+  const { selectedFamily: family, selectedPeopleIndex, setSelectedPeopleIndex } = useFamilyContext();
+
+  if (!family || selectedPeopleIndex === undefined) {
+    console.error("FamilyCard.Header: unexpected empty state", family, selectedPeopleIndex);
+    return null;
+  }
+
   let parentIndex = 1;
+  const activeKey = `person_${selectedPeopleIndex}`;
+  const onSelect = (key: string | null) => {
+    if (key) {
+      setSelectedPeopleIndex(Number(key.split("_")[1]));
+    }
+  }
 
   return (
     <Nav
       variant="tabs"
-      activeKey={selectedPersonKey}
-      onSelect={(key) => { setSelectedPersonKey(key ?? "person_0") }}
+      activeKey={activeKey}
+      onSelect={onSelect}
     >
       {family.people.map((person, index) => {
         const displayName = person instanceof Student ? person.firstNameWithGrade : `Parent ${parentIndex++}`;
@@ -69,7 +61,14 @@ function Header({family, selectedPersonKey, setSelectedPersonKey}: HeaderProps) 
   );
 }
 
-function Body({family, selectedPersonKey}: BodyProps) {
+function Body() {
+  const { selectedFamily: family, selectedPeopleIndex } = useFamilyContext();
+
+  if (!family || selectedPeopleIndex === undefined) {
+    console.error("FamilyCard.Body: unexpected empty state", family, selectedPeopleIndex);
+    return null;
+  }
+
   return (
     <TabContent>
       {family.people.map((person, index) => {
@@ -84,7 +83,7 @@ function Body({family, selectedPersonKey}: BodyProps) {
         );
 
         return (
-          <TabPane key={key} eventKey={key} active={selectedPersonKey === key}>
+          <TabPane key={key} eventKey={key} active={ key === `person_${selectedPeopleIndex}` }>
             <div className="d-flex gap-3 mb-3">
               <Button
                 variant="outline-primary"
@@ -161,7 +160,7 @@ function Body({family, selectedPersonKey}: BodyProps) {
                   <OCDSB031Button student={person} firstParent={family.parents[0] as Parent} />
                 )}
                 <StepButton student={person} />
-                <GenerateEmailButton family={family} peopleIndex={index} />
+                <GenerateEmailButton />
               </div>
             )}
           </TabPane>

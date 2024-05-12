@@ -6,16 +6,17 @@ import Col from "react-bootstrap/Col";
 import Button from "react-bootstrap/Button";
 import { Family } from "../common/models/family";
 import { FamilyRepository } from "../common/family_repository";
+import { useFamilyContext } from "./family_context";
 
-interface FamilyPickerProps {
-  families: Family[];
-  setFamilies: (families: Family[]) => void;
-  selectedFamilyId: string | undefined;
-  setSelectedFamilyId: (id: string) => void;
-}
-
-export default function FamilyPicker({families, setFamilies, selectedFamilyId, setSelectedFamilyId}: FamilyPickerProps) {
-  const selectedFamily = families.find(family => family.uniqueId === selectedFamilyId);
+export default function FamilyPicker() {
+  const {
+    families,
+    setFamilies,
+    selectedFamilyId,
+    setSelectedFamilyId,
+    selectedFamily,
+    setSelectedPeopleIndex,
+  } = useFamilyContext();
 
   const familiesByVisitDate = families.reduce((acc, family) => {
     const visitDate = family.visitDate.toDateString();
@@ -28,10 +29,10 @@ export default function FamilyPicker({families, setFamilies, selectedFamilyId, s
   }, {} as { [visitDate: string]: Family[] });
 
   const deleteFamily = () => {
-    if (!selectedFamilyId) {
+    if (!selectedFamilyId || !selectedFamily) {
       return;
     }
-    if (!window.confirm(`Are you sure you want to delete ${selectedFamily?.displayName}?`)) {
+    if (!window.confirm(`Are you sure you want to delete ${selectedFamily.displayName}?`)) {
       return;
     }
 
@@ -39,6 +40,7 @@ export default function FamilyPicker({families, setFamilies, selectedFamilyId, s
       const newFamilies = families.filter(family => family.uniqueId !== selectedFamilyId);
       setFamilies(newFamilies);
       setSelectedFamilyId(newFamilies[0]?.uniqueId);
+      setSelectedPeopleIndex(0);
     });
   }
 

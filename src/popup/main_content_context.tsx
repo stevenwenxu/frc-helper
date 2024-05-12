@@ -1,6 +1,6 @@
 import { createContext, useState, useContext, Dispatch, SetStateAction } from 'react';
 
-type MainContentType = "empty" | "familyCard" | "email" | null;
+type MainContentType = "loading" | "empty" | "family" | "email";
 
 interface MainContentContextType {
   mainContentType: MainContentType;
@@ -8,7 +8,7 @@ interface MainContentContextType {
 };
 
 export const MainContentContext = createContext<MainContentContextType>({
-  mainContentType: null,
+  mainContentType: "loading",
   setMainContentType: () => {},
 });
 
@@ -17,10 +17,10 @@ interface MainContentTypeProviderProps {
 };
 
 export function MainContentTypeProvider({ children }: MainContentTypeProviderProps) {
-  const [mainContentType, setMainContentType] = useState<MainContentType>(null);
+  const [mainContentType, setMainContentType] = useState<MainContentType>("loading");
 
   return (
-    <MainContentContext.Provider value={ { mainContentType, setMainContentType } }>
+    <MainContentContext.Provider value={{ mainContentType, setMainContentType }}>
       {children}
     </MainContentContext.Provider>
   );

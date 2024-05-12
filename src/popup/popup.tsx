@@ -1,56 +1,56 @@
-import { useContext, useEffect, useState } from "react";
+import { useContext, useEffect } from "react";
 import Container from "react-bootstrap/Container";
-import { Family } from "../common/models/family";
 import { FamilyRepository } from "../common/family_repository";
 import EmptyAlert from "./empty_alert";
-import FamilyCard from "./family_card";
-import FamilyPicker from "./family_picker";
 import { MainContentContext } from "./main_content_context";
+import FamilyMain from "./family_main";
+import { FamilyContext } from "./family_context";
+import Email from "./email";
 
 interface PopupProps {
   version: string;
 }
 
-
 export default function Popup({version}: PopupProps) {
-  const [families, setFamilies] = useState<Family[]>([]);
-  const [selectedFamilyId, setSelectedFamilyId] = useState<string | undefined>(undefined);
+  const { families, setFamilies, setSelectedFamilyId, setSelectedPeopleIndex } = useContext(FamilyContext);
   const { mainContentType, setMainContentType } = useContext(MainContentContext);
-
-  const selectedFamily = families.find(family => family.uniqueId === selectedFamilyId);
 
   useEffect(() => {
     let ignore = false;
-    FamilyRepository.getFamilies().then((families) => {
+    FamilyRepository.getFamilies().then((fetchedFamilies) => {
       if (!ignore) {
-        families.sort((a, b) => b.visitDate.getTime() - a.visitDate.getTime());
-        setFamilies(families);
-        setSelectedFamilyId(families[0]?.uniqueId);
+        fetchedFamilies.sort((a, b) => b.visitDate.getTime() - a.visitDate.getTime());
+        setFamilies(fetchedFamilies);
+        setSelectedFamilyId(fetchedFamilies[0]?.uniqueId);
+        setSelectedPeopleIndex(0);
       }
     });
     return () => {
       ignore = true;
     }
-  }, []);
+  }, [setFamilies, setSelectedFamilyId, setSelectedPeopleIndex]);
 
   useEffect(() => {
-    if (families.length === 0 || !selectedFamily) {
+    if (families.length === 0) {
       setMainContentType("empty");
     } else {
-      setMainContentType("familyCard");
+      setMainContentType("family");
     }
-  }, [families.length, selectedFamily, setMainContentType])
+  }, [families.length, setMainContentType])
 
-  let mainContent: JSX.Element | null = null;
+  let mainContent: JSX.Element;
   switch (mainContentType) {
+    case "loading":
+      mainContent = <span>Loading...</span>
+      break;
     case "empty":
       mainContent = <EmptyAlert />;
       break;
-    case "familyCard":
-      mainContent = <FamilyCard family={selectedFamily!} />;
+    case "family":
+      mainContent = <FamilyMain />;
       break;
     case "email":
-      mainContent = <h1>Email!!!</h1>
+      mainContent = <Email />
       break;
   }
 
@@ -58,16 +58,7 @@ export default function Popup({version}: PopupProps) {
     <Container>
       <h1 className="mt-4">Family Reception Centre</h1>
 
-      <FamilyPicker
-        families={families}
-        setFamilies={setFamilies}
-        selectedFamilyId={selectedFamilyId}
-        setSelectedFamilyId={setSelectedFamilyId}
-      />
-
-      <Container className="g-0">
-        {mainContent}
-      </Container>
+      {mainContent}
 
       <footer>
         <p className="mt-3 text text-end text-black-50 fs-6">Version {version}</p>
