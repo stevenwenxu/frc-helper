@@ -3,7 +3,7 @@ import Button from 'react-bootstrap/Button';
 
 export default function EmptyAlert() {
   return (
-    <Alert variant="primary" className="mt-4">
+    <Alert variant="primary">
       <Alert.Heading>No families here</Alert.Heading>
       <hr />
       <p>You finished all your work today! 🎉</p>

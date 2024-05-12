@@ -15,7 +15,7 @@ export default function OCDSB031Button({student, firstParent}: OCDSB031ButtonPro
       className="flex-fill"
       onClick={() => { download(student, firstParent) }}
     >
-      <svg width="16" height="16" fill="currentColor">
+      <svg width="16" height="16" fill="currentColor" className="me-1">
         <use href="/images/download.svg#download-svg"/>
       </svg>
       OCDSB 031

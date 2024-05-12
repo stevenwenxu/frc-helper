@@ -1,10 +1,10 @@
-import { useContext, useEffect } from "react";
+import { useEffect } from "react";
 import Container from "react-bootstrap/Container";
 import { FamilyRepository } from "../common/family_repository";
 import EmptyAlert from "./empty_alert";
-import { MainContentContext } from "./main_content_context";
+import { useMainContentType } from "./main_content_context";
 import FamilyMain from "./family_main";
-import { FamilyContext } from "./family_context";
+import { useFamilyContext } from "./family_context";
 import Email from "./email";
 
 interface PopupProps {
@@ -12,8 +12,8 @@ interface PopupProps {
 }
 
 export default function Popup({version}: PopupProps) {
-  const { families, setFamilies, setSelectedFamilyId, setSelectedPeopleIndex } = useContext(FamilyContext);
-  const { mainContentType, setMainContentType } = useContext(MainContentContext);
+  const { setFamilies, setSelectedFamilyId, setSelectedPeopleIndex } = useFamilyContext();
+  const { mainContentType, setMainContentType } = useMainContentType();
 
   useEffect(() => {
     let ignore = false;
@@ -21,22 +21,19 @@ export default function Popup({version}: PopupProps) {
       if (!ignore) {
         fetchedFamilies.sort((a, b) => b.visitDate.getTime() - a.visitDate.getTime());
         setFamilies(fetchedFamilies);
-        setSelectedFamilyId(fetchedFamilies[0]?.uniqueId);
-        setSelectedPeopleIndex(0);
+        if (fetchedFamilies.length > 0) {
+          setSelectedFamilyId(fetchedFamilies[0].uniqueId);
+          setSelectedPeopleIndex(0);
+          setMainContentType("family")
+        } else {
+          setMainContentType("empty");
+        }
       }
     });
     return () => {
       ignore = true;
     }
-  }, [setFamilies, setSelectedFamilyId, setSelectedPeopleIndex]);
-
-  useEffect(() => {
-    if (families.length === 0) {
-      setMainContentType("empty");
-    } else {
-      setMainContentType("family");
-    }
-  }, [families.length, setMainContentType])
+  }, [setFamilies, setSelectedFamilyId, setSelectedPeopleIndex, setMainContentType]);
 
   let mainContent: JSX.Element;
   switch (mainContentType) {
@@ -56,7 +53,7 @@ export default function Popup({version}: PopupProps) {
 
   return (
     <Container>
-      <h1 className="mt-4">Family Reception Centre</h1>
+      <h1 className="my-4">Family Reception Centre</h1>
 
       {mainContent}
 

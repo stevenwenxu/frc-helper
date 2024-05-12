@@ -13,7 +13,7 @@ export default function StepButton({student}: StepButtonProps) {
       className="flex-fill"
       onClick={() => { download(student) }}
     >
-      <svg width="16" height="16" fill="currentColor">
+      <svg width="16" height="16" fill="currentColor" className="me-1">
         <use href="/images/download.svg#download-svg"/>
       </svg>
       STEP
