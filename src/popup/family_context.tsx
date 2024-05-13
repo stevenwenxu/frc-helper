@@ -1,5 +1,6 @@
 import { createContext, useState, useContext, Dispatch, SetStateAction } from 'react';
 import { Family } from '../common/models/family';
+import { Parent, Student } from '../common/models/person';
 
 interface FamilyContextType {
   families: Family[];
@@ -9,6 +10,7 @@ interface FamilyContextType {
   selectedFamily?: Family;
   selectedPeopleIndex?: number;
   setSelectedPeopleIndex: Dispatch<SetStateAction<number | undefined>>;
+  selectedPerson?: Parent | Student;
 };
 
 export const FamilyContext = createContext<FamilyContextType>({
@@ -16,8 +18,10 @@ export const FamilyContext = createContext<FamilyContextType>({
   setFamilies: () => {},
   selectedFamilyId: undefined,
   setSelectedFamilyId: () => {},
+  selectedFamily: undefined,
   selectedPeopleIndex: undefined,
   setSelectedPeopleIndex: () => {},
+  selectedPerson: undefined,
 });
 
 interface FamilyContextProviderProps {
@@ -30,6 +34,9 @@ export function FamilyContextProvider({ children }: FamilyContextProviderProps) 
   const [selectedPeopleIndex, setSelectedPeopleIndex] = useState<number | undefined>(undefined);
 
   const selectedFamily = families.find(family => family.uniqueId === selectedFamilyId);
+  const selectedPerson = (selectedFamily && selectedPeopleIndex !== undefined)
+    ? selectedFamily.people[selectedPeopleIndex]
+    : undefined;
 
   return (
     <FamilyContext.Provider value={{
@@ -40,6 +47,7 @@ export function FamilyContextProvider({ children }: FamilyContextProviderProps) 
       selectedFamily,
       selectedPeopleIndex,
       setSelectedPeopleIndex,
+      selectedPerson,
     }}>
       {children}
     </FamilyContext.Provider>

@@ -7,6 +7,7 @@ import Button from "react-bootstrap/Button";
 import { Family } from "../common/models/family";
 import { FamilyRepository } from "../common/family_repository";
 import { useFamilyContext } from "./family_context";
+import { useMainContentType } from "./main_content_context";
 
 export default function FamilyPicker() {
   const {
@@ -17,6 +18,7 @@ export default function FamilyPicker() {
     selectedFamily,
     setSelectedPeopleIndex,
   } = useFamilyContext();
+  const { setMainContentType } = useMainContentType();
 
   const familiesByVisitDate = families.reduce((acc, family) => {
     const visitDate = family.visitDate.toDateString();
@@ -39,8 +41,12 @@ export default function FamilyPicker() {
     FamilyRepository.deleteFamily(selectedFamilyId).then(() => {
       const newFamilies = families.filter(family => family.uniqueId !== selectedFamilyId);
       setFamilies(newFamilies);
-      setSelectedFamilyId(newFamilies[0]?.uniqueId);
-      setSelectedPeopleIndex(0);
+      if (newFamilies.length > 0) {
+        setSelectedFamilyId(newFamilies[0].uniqueId);
+        setSelectedPeopleIndex(0);
+      } else {
+        setMainContentType("empty");
+      }
     });
   }
 

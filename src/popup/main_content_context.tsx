@@ -1,6 +1,6 @@
 import { createContext, useState, useContext, Dispatch, SetStateAction } from 'react';
 
-type MainContentType = "loading" | "empty" | "family" | "email";
+type MainContentType = "loading" | "empty" | "family" | "email" | "mathAssessment";
 
 interface MainContentContextType {
   mainContentType: MainContentType;

@@ -9,8 +9,9 @@ import { SchoolCategory } from '../common/models/school_category';
 import { StatusInCanada } from '../common/models/status_in_canada';
 import OCDSB031Button from './ocdsb_031_button';
 import StepButton from './step_button';
-import GenerateEmailButton from './generate_email_button';
 import { useFamilyContext } from './family_context';
+import { useMainContentType } from './main_content_context';
+import MathAssessmentButton from './math_assessment_button';
 
 export default function FamilyCard() {
 
@@ -63,6 +64,7 @@ function Header() {
 
 function Body() {
   const { selectedFamily: family, selectedPeopleIndex } = useFamilyContext();
+  const { setMainContentType } = useMainContentType();
 
   if (!family || selectedPeopleIndex === undefined) {
     console.error("FamilyCard.Body: unexpected empty state", family, selectedPeopleIndex);
@@ -91,14 +93,7 @@ function Body() {
               >
                 Fill
               </Button>
-              {isSecondaryStudent && (
-                <Button
-                  variant="outline-secondary"
-                  className="flex-fill"
-                >
-                  Math Assessment
-                </Button>
-              )}
+              { isSecondaryStudent && <MathAssessmentButton /> }
             </div>
 
             <Table>
@@ -160,7 +155,13 @@ function Body() {
                   <OCDSB031Button student={person} firstParent={family.parents[0] as Parent} />
                 )}
                 <StepButton student={person} />
-                <GenerateEmailButton />
+                <Button
+                  variant="outline-primary"
+                  className="flex-fill"
+                  onClick={() => { setMainContentType("email") }}
+                >
+                  Generate email
+                </Button>
               </div>
             )}
           </TabPane>
