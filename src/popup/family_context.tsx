@@ -1,10 +1,11 @@
 import { createContext, useState, useContext, Dispatch, SetStateAction } from 'react';
 import { Family } from '../common/models/family';
 import { Parent, Student } from '../common/models/person';
+import { Updater, useImmer } from 'use-immer';
 
 interface FamilyContextType {
   families: Family[];
-  setFamilies: Dispatch<SetStateAction<Family[]>>;
+  setFamilies: Updater<Family[]>;
   selectedFamilyId?: string;
   setSelectedFamilyId: Dispatch<SetStateAction<string | undefined>>;
   selectedFamily?: Family;
@@ -29,7 +30,7 @@ interface FamilyContextProviderProps {
 };
 
 export function FamilyContextProvider({ children }: FamilyContextProviderProps) {
-  const [families, setFamilies] = useState<Family[]>([]);
+  const [families, setFamilies] = useImmer<Family[]>([]);
   const [selectedFamilyId, setSelectedFamilyId] = useState<string | undefined>(undefined);
   const [selectedPeopleIndex, setSelectedPeopleIndex] = useState<number | undefined>(undefined);
 
