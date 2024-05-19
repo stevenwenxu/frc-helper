@@ -4,8 +4,11 @@ import { Gender } from "./gender";
 import { LanguageCategory } from "./language_category";
 import { SchoolCategory } from "./school_category";
 import { StatusInCanada } from "./status_in_canada";
+import { immerable } from "immer";
 
 export abstract class Person {
+  [immerable] = true;
+
   firstName = "";
   middleName = "";
   lastName = "";

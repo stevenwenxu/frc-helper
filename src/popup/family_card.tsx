@@ -160,7 +160,7 @@ function Body() {
                   className="flex-fill"
                   onClick={() => { setMainContentType("email") }}
                 >
-                  Generate email
+                  Preview email
                 </Button>
               </div>
             )}

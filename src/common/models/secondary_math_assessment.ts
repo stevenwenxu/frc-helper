@@ -1,4 +1,5 @@
 import { SecondaryMathExams } from "./secondary_math_exams";
+import { immerable, produce } from "immer";
 
 export const SecondaryMathAssessmentGrade = ["P", "S", "L"] as const;
 export type SecondaryMathAssessmentGrade = typeof SecondaryMathAssessmentGrade[number];
@@ -9,6 +10,8 @@ export const SecondaryMathExamLevel = [9, 10, 11, 12] as const;
 export type SecondaryMathExamLevel = typeof SecondaryMathExamLevel[number];
 
 export class SecondaryMathAssessment {
+  [immerable] = true;
+
   diagnosticTasks: string[];
   courseCode: string;
   gradingTable: SecondaryMathAssessmentGrading;

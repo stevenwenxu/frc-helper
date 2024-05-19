@@ -7,32 +7,35 @@ import CloseButton from 'react-bootstrap/CloseButton';
 import Table from 'react-bootstrap/Table';
 import ToggleButton from 'react-bootstrap/ToggleButton';
 import Stack from 'react-bootstrap/Stack';
+import { WritableDraft } from 'immer';
+import { Updater, useImmer } from 'use-immer';
 import { useMainContentType } from './main_content_context';
 import { useFamilyContext } from './family_context';
 import { Student } from '../common/models/person';
 import { SecondaryMathExams } from '../common/models/secondary_math_exams';
 import { SecondaryMathTasks } from '../common/models/secondary_math_tasks';
 import { FRCTrackerMathFields } from '../aspen/helpers/frc_tracker_math_fields';
-import { Family } from '../common/models/family';
-import { Updater } from 'use-immer';
+import { FamilyRepository } from '../common/family_repository';
+import { SecondaryMathAssessmentGrade } from '../common/models/secondary_math_assessment';
 
 interface ComponentProps {
   student: Student;
-  setFamilies: Updater<Family[]>;
-};
+  setStudent: Updater<Student>;
+}
 
 export default function MathAssessment() {
   const { setMainContentType } = useMainContentType();
-  const {selectedFamilyId, selectedPeopleIndex, selectedPerson: student, setFamilies} = useFamilyContext();
+  const {selectedFamilyId, selectedPeopleIndex, selectedPerson: initialStudent} = useFamilyContext();
+  const [student, setStudent] = useImmer(initialStudent as Student);
 
   if (
     !selectedFamilyId ||
     selectedPeopleIndex === undefined ||
-    !student ||
-    !(student instanceof Student) ||
-    !student.secondaryMathAssessment
+    !initialStudent ||
+    !(initialStudent instanceof Student) ||
+    !initialStudent.secondaryMathAssessment
   ) {
-    console.error("MathAssessment: unexpected state", selectedFamilyId, selectedPeopleIndex, student);
+    console.error("MathAssessment: unexpected state", selectedFamilyId, selectedPeopleIndex, initialStudent);
     return null;
   }
 
@@ -40,8 +43,8 @@ export default function MathAssessment() {
     <>
       <CloseButton onClick={() => { setMainContentType("family") }} />
       <h4>Secondary Math Assessment: {student.fullName}</h4>
-      <ConfigurationCard student={student} setFamilies={setFamilies} />
-      <MathObservationsCard student={student} setFamilies={setFamilies} />
+      <ConfigurationCard student={student} setStudent={setStudent} />
+      <MathObservationsCard student={student} setStudent={setStudent} />
     </>
   )
 }
@@ -62,8 +65,30 @@ function ConfigurationCard(props: ComponentProps) {
   );
 }
 
-function DiagnosticTasks({student, setFamilies}: ComponentProps) {
+function DiagnosticTasks({student, setStudent}: ComponentProps) {
+  const familyContext = useFamilyContext();
   const assessment = student.secondaryMathAssessment!;
+
+  const mutateStudent = (aStudent: Student | WritableDraft<Student>, changedValue: string) => {
+    const diagnosticTasks = aStudent.secondaryMathAssessment!.diagnosticTasks;
+    if (diagnosticTasks.includes(changedValue)) {
+      diagnosticTasks.splice(diagnosticTasks.indexOf(changedValue), 1);
+    } else {
+      diagnosticTasks.push(changedValue);
+    }
+    diagnosticTasks.sort();
+  }
+
+  const onChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const value = event.target.value;
+
+    setStudent((draft) => mutateStudent(draft, value));
+
+    FamilyRepository.updateStudent(familyContext.selectedFamilyId!, familyContext.selectedPeopleIndex!, (aStudent) => {
+      mutateStudent(aStudent, value);
+      return Promise.resolve(aStudent);
+    });
+  };
 
   return (
     <Form.Group as={Row} className="align-items-center mb-2">
@@ -73,6 +98,7 @@ function DiagnosticTasks({student, setFamilies}: ComponentProps) {
           const id = `diagnostic${task}`;
           const value = `Diagnostic Task ${task}`;
           const checked = assessment.diagnosticTasks.includes(value);
+
           return (
             <Form.Check
               inline
@@ -81,7 +107,8 @@ function DiagnosticTasks({student, setFamilies}: ComponentProps) {
               type="checkbox"
               name="diagnosticTask"
               value={value}
-              defaultChecked={checked}
+              checked={checked}
+              onChange={onChange}
               label={task}
             />
           );
@@ -91,13 +118,32 @@ function DiagnosticTasks({student, setFamilies}: ComponentProps) {
   );
 }
 
-function CourseCodeSelector({student, setFamilies}: ComponentProps) {
+function CourseCodeSelector({student, setStudent}: ComponentProps) {
+  const familyContext = useFamilyContext();
   const assessment = student.secondaryMathAssessment!;
+
+  const mutateStudent = (aStudent: Student | WritableDraft<Student>, changedValue: string) => {
+    aStudent.secondaryMathAssessment!.courseCode = changedValue;
+    aStudent.secondaryMathAssessment!.gradingTable.P = [];
+    aStudent.secondaryMathAssessment!.gradingTable.S = [];
+    aStudent.secondaryMathAssessment!.gradingTable.L = [];
+  }
+
+  const onChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
+    const value = event.target.value;
+
+    setStudent((draft) => mutateStudent(draft, value));
+
+    FamilyRepository.updateStudent(familyContext.selectedFamilyId!, familyContext.selectedPeopleIndex!, (aStudent) => {
+      mutateStudent(aStudent, value);
+      return Promise.resolve(aStudent);
+    });
+  };
 
   return (
     <Row className="mb-2">
       <FloatingLabel as={Col} xs={12} controlId="courseCode" label="Course" className="g-2">
-        <Form.Select defaultValue={assessment.courseCode}>
+        <Form.Select value={assessment.courseCode} onChange={onChange}>
           {Object.entries(SecondaryMathExams).map(([courseCode, {gradeLevel}]) => {
             if (gradeLevel === 8) {
               return null;
@@ -115,9 +161,40 @@ function CourseCodeSelector({student, setFamilies}: ComponentProps) {
   );
 }
 
-function GradingTable({student, setFamilies}: ComponentProps) {
+function GradingTable({student, setStudent}: ComponentProps) {
+  const familyContext = useFamilyContext();
   const assessment = student.secondaryMathAssessment!;
   const topicsAndQuestions = SecondaryMathExams[assessment.courseCode].exams[0].topicsAndQuestions;
+
+  const mutateStudent = (
+    aStudent: Student | WritableDraft<Student>,
+    topic: string,
+    grade: SecondaryMathAssessmentGrade
+  ) => {
+    const gradingTable = aStudent.secondaryMathAssessment!.gradingTable;
+
+    // Remove topic from old grades.
+    SecondaryMathAssessmentGrade.forEach((grade) => {
+      const index = gradingTable[grade].indexOf(topic);
+      if (index > -1) {
+        gradingTable[grade].splice(index, 1);
+      }
+    });
+    // Add topic to the new grade.
+    gradingTable[grade].push(topic);
+  }
+
+  const onChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const topic = event.target.name;
+    const grade = event.target.value as SecondaryMathAssessmentGrade;
+
+    setStudent((draft) => mutateStudent(draft, topic, grade));
+
+    FamilyRepository.updateStudent(familyContext.selectedFamilyId!, familyContext.selectedPeopleIndex!, (aStudent) => {
+      mutateStudent(aStudent, topic, grade);
+      return Promise.resolve(aStudent);
+    });
+  };
 
   return (
     <Row className="mb-2">
@@ -147,7 +224,8 @@ function GradingTable({student, setFamilies}: ComponentProps) {
                         variant="outline-success"
                         name={topic}
                         value="P"
-                        defaultChecked={pChecked}
+                        checked={pChecked}
+                        onChange={onChange}
                       >
                         P
                       </ToggleButton>
@@ -157,7 +235,8 @@ function GradingTable({student, setFamilies}: ComponentProps) {
                         variant="outline-warning"
                         name={topic}
                         value="S"
-                        defaultChecked={sChecked}
+                        checked={sChecked}
+                        onChange={onChange}
                       >
                         S
                       </ToggleButton>
@@ -167,7 +246,8 @@ function GradingTable({student, setFamilies}: ComponentProps) {
                         variant="outline-danger"
                         name={topic}
                         value="L"
-                        defaultChecked={lChecked}
+                        checked={lChecked}
+                        onChange={onChange}
                       >
                         L
                       </ToggleButton>
@@ -183,13 +263,29 @@ function GradingTable({student, setFamilies}: ComponentProps) {
   );
 }
 
-function OutcomeSelector({student, setFamilies}: ComponentProps) {
+function OutcomeSelector({student, setStudent}: ComponentProps) {
+  const familyContext = useFamilyContext();
   const assessment = student.secondaryMathAssessment!;
+
+  const mutateStudent = (aStudent: Student | WritableDraft<Student>, newValue: string) => {
+    aStudent.secondaryMathAssessment!.passed = newValue === "1";
+  }
+
+  const onChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
+    const value = event.target.value;
+
+    setStudent((draft) => mutateStudent(draft, value));
+
+    FamilyRepository.updateStudent(familyContext.selectedFamilyId!, familyContext.selectedPeopleIndex!, (aStudent) => {
+      mutateStudent(aStudent, value);
+      return Promise.resolve(aStudent);
+    });
+  };
 
   return (
     <Row className="mb-2">
       <FloatingLabel as={Col} xs={12} controlId="outcome" label="Outcome" className="g-2">
-        <Form.Select defaultValue={assessment.passed ? "1" : "0"}>
+        <Form.Select value={assessment.passed ? "1" : "0"} onChange={onChange}>
           <option value="1">Passed</option>
           <option value="0">Failed</option>
         </Form.Select>
