@@ -8,7 +8,6 @@ import Table from 'react-bootstrap/Table';
 import ToggleButton from 'react-bootstrap/ToggleButton';
 import Stack from 'react-bootstrap/Stack';
 import { WritableDraft } from 'immer';
-import { Updater, useImmer } from 'use-immer';
 import { useMainContentType } from './main_content_context';
 import { useFamilyContext } from './family_context';
 import { Student } from '../common/models/person';
@@ -18,55 +17,50 @@ import { FRCTrackerMathFields } from '../aspen/helpers/frc_tracker_math_fields';
 import { FamilyRepository } from '../common/family_repository';
 import { SecondaryMathAssessmentGrade } from '../common/models/secondary_math_assessment';
 
-interface ComponentProps {
-  student: Student;
-  setStudent: Updater<Student>;
-}
-
 export default function MathAssessment() {
   const { setMainContentType } = useMainContentType();
-  const {selectedFamilyId, selectedPeopleIndex, selectedPerson: initialStudent} = useFamilyContext();
-  const [student, setStudent] = useImmer(initialStudent as Student);
+  const { selectedFamilyId, selectedPeopleIndex, selectedPerson } = useFamilyContext();
 
   if (
     !selectedFamilyId ||
     selectedPeopleIndex === undefined ||
-    !initialStudent ||
-    !(initialStudent instanceof Student) ||
-    !initialStudent.secondaryMathAssessment
+    !selectedPerson ||
+    !(selectedPerson instanceof Student) ||
+    !selectedPerson.secondaryMathAssessment
   ) {
-    console.error("MathAssessment: unexpected state", selectedFamilyId, selectedPeopleIndex, initialStudent);
+    console.error("MathAssessment: unexpected state", selectedFamilyId, selectedPeopleIndex, selectedPerson);
     return null;
   }
 
   return (
     <>
       <CloseButton onClick={() => { setMainContentType("family") }} />
-      <h4>Secondary Math Assessment: {student.fullName}</h4>
-      <ConfigurationCard student={student} setStudent={setStudent} />
-      <MathObservationsCard student={student} setStudent={setStudent} />
+      <h4>Secondary Math Assessment: {selectedPerson.fullName}</h4>
+      <ConfigurationCard />
+      <MathObservationsCard />
     </>
   )
 }
 
-function ConfigurationCard(props: ComponentProps) {
+function ConfigurationCard() {
   return (
     <Card className="mb-4">
       <Card.Header>Configuration</Card.Header>
       <Card.Body>
         <Form>
-          <DiagnosticTasks {...props} />
-          <CourseCodeSelector {...props} />
-          <GradingTable {...props} />
-          <OutcomeSelector {...props} />
+          <DiagnosticTasks />
+          <CourseCodeSelector />
+          <GradingTable />
+          <OutcomeSelector />
         </Form>
       </Card.Body>
   </Card>
   );
 }
 
-function DiagnosticTasks({student, setStudent}: ComponentProps) {
+function DiagnosticTasks() {
   const familyContext = useFamilyContext();
+  const student = familyContext.selectedPerson as Student;
   const assessment = student.secondaryMathAssessment!;
 
   const mutateStudent = (aStudent: Student | WritableDraft<Student>, changedValue: string) => {
@@ -82,7 +76,11 @@ function DiagnosticTasks({student, setStudent}: ComponentProps) {
   const onChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const value = event.target.value;
 
-    setStudent((draft) => mutateStudent(draft, value));
+    familyContext.setFamilies((draft) => {
+      const familyDraft = draft.find((family) => family.uniqueId === familyContext.selectedFamilyId)!;
+      const studentDraft = familyDraft.people[familyContext.selectedPeopleIndex!] as WritableDraft<Student>;
+      mutateStudent(studentDraft, value);
+    });
 
     FamilyRepository.updateStudent(familyContext.selectedFamilyId!, familyContext.selectedPeopleIndex!, (aStudent) => {
       mutateStudent(aStudent, value);
@@ -118,8 +116,9 @@ function DiagnosticTasks({student, setStudent}: ComponentProps) {
   );
 }
 
-function CourseCodeSelector({student, setStudent}: ComponentProps) {
+function CourseCodeSelector() {
   const familyContext = useFamilyContext();
+  const student = familyContext.selectedPerson as Student;
   const assessment = student.secondaryMathAssessment!;
 
   const mutateStudent = (aStudent: Student | WritableDraft<Student>, changedValue: string) => {
@@ -132,7 +131,11 @@ function CourseCodeSelector({student, setStudent}: ComponentProps) {
   const onChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
     const value = event.target.value;
 
-    setStudent((draft) => mutateStudent(draft, value));
+    familyContext.setFamilies((draft) => {
+      const familyDraft = draft.find((family) => family.uniqueId === familyContext.selectedFamilyId)!;
+      const studentDraft = familyDraft.people[familyContext.selectedPeopleIndex!] as WritableDraft<Student>;
+      mutateStudent(studentDraft, value);
+    });
 
     FamilyRepository.updateStudent(familyContext.selectedFamilyId!, familyContext.selectedPeopleIndex!, (aStudent) => {
       mutateStudent(aStudent, value);
@@ -161,8 +164,9 @@ function CourseCodeSelector({student, setStudent}: ComponentProps) {
   );
 }
 
-function GradingTable({student, setStudent}: ComponentProps) {
+function GradingTable() {
   const familyContext = useFamilyContext();
+  const student = familyContext.selectedPerson as Student;
   const assessment = student.secondaryMathAssessment!;
   const topicsAndQuestions = SecondaryMathExams[assessment.courseCode].exams[0].topicsAndQuestions;
 
@@ -188,7 +192,11 @@ function GradingTable({student, setStudent}: ComponentProps) {
     const topic = event.target.name;
     const grade = event.target.value as SecondaryMathAssessmentGrade;
 
-    setStudent((draft) => mutateStudent(draft, topic, grade));
+    familyContext.setFamilies((draft) => {
+      const familyDraft = draft.find((family) => family.uniqueId === familyContext.selectedFamilyId)!;
+      const studentDraft = familyDraft.people[familyContext.selectedPeopleIndex!] as WritableDraft<Student>;
+      mutateStudent(studentDraft, topic, grade);
+    });
 
     FamilyRepository.updateStudent(familyContext.selectedFamilyId!, familyContext.selectedPeopleIndex!, (aStudent) => {
       mutateStudent(aStudent, topic, grade);
@@ -263,8 +271,9 @@ function GradingTable({student, setStudent}: ComponentProps) {
   );
 }
 
-function OutcomeSelector({student, setStudent}: ComponentProps) {
+function OutcomeSelector() {
   const familyContext = useFamilyContext();
+  const student = familyContext.selectedPerson as Student;
   const assessment = student.secondaryMathAssessment!;
 
   const mutateStudent = (aStudent: Student | WritableDraft<Student>, newValue: string) => {
@@ -274,7 +283,11 @@ function OutcomeSelector({student, setStudent}: ComponentProps) {
   const onChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
     const value = event.target.value;
 
-    setStudent((draft) => mutateStudent(draft, value));
+    familyContext.setFamilies((draft) => {
+      const familyDraft = draft.find((family) => family.uniqueId === familyContext.selectedFamilyId)!;
+      const studentDraft = familyDraft.people[familyContext.selectedPeopleIndex!] as WritableDraft<Student>;
+      mutateStudent(studentDraft, value);
+    });
 
     FamilyRepository.updateStudent(familyContext.selectedFamilyId!, familyContext.selectedPeopleIndex!, (aStudent) => {
       mutateStudent(aStudent, value);
@@ -294,7 +307,10 @@ function OutcomeSelector({student, setStudent}: ComponentProps) {
   );
 }
 
-function MathObservationsCard({student}: ComponentProps) {
+function MathObservationsCard() {
+  const familyContext = useFamilyContext();
+  const student = familyContext.selectedPerson as Student;
+
   return (
     <Card>
       <Card.Header>Math Observations</Card.Header>
