@@ -1,6 +1,8 @@
 import { FamilyRepository } from "./common/family_repository";
 import { OptionsRepository } from "./common/options_repository";
 
+console.log("Background script loaded");
+
 chrome.runtime.onInstalled.addListener(async () => {
   chrome.alarms.create("storage cleanup", {
     // once a day

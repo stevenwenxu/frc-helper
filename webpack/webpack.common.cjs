@@ -28,7 +28,12 @@ module.exports = {
       cacheGroups: {
         react: {
           name: "react",
-          test: /[\\/]node_modules[\\/](react|react-dom|react-bootstrap)[\\/]/,
+          test: /[\\/]node_modules[\\/](.*react.*|@restart|scheduler|dom-helpers|classnames)[\\/]/,
+          chunks: "all",
+        },
+        immer: {
+          name: "immer",
+          test: /[\\/]node_modules[\\/](.*immer.*)[\\/]/,
           chunks: "all",
         },
         bootstrap: {

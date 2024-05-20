@@ -1,5 +1,5 @@
 import { SecondaryMathExams } from "./secondary_math_exams";
-import { immerable, produce } from "immer";
+import { immerable } from "immer";
 
 export const SecondaryMathAssessmentGrade = ["P", "S", "L"] as const;
 export type SecondaryMathAssessmentGrade = typeof SecondaryMathAssessmentGrade[number];

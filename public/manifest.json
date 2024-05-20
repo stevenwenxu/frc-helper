@@ -8,7 +8,7 @@
   },
   "content_scripts": [
     {
-      "js": ["js/school_interviews.js", "js/react.js"],
+      "js": ["js/school_interviews.js", "js/react.js", "js/immer.js"],
       "matches": [
         "https://www.schoolinterviews.com.au/*"
       ]
@@ -33,7 +33,8 @@
     }
   ],
   "background": {
-    "service_worker": "js/background.js"
+    "service_worker": "js/service_worker.js",
+    "type": "module"
   },
   "options_ui": {
     "page": "html/options.html",
