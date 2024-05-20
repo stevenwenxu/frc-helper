@@ -37,6 +37,57 @@ export default function Popup({version}: PopupProps) {
     }
   }, [setFamilies, setSelectedFamilyId, setSelectedPeopleIndex, setMainContentType]);
 
+  useEffect(() => {
+    const handleMessage = (
+      message: any,
+      sender: chrome.runtime.MessageSender,
+      sendResponse: (response?: any) => void
+    ) => {
+      switch (message.type) {
+        case "fillResponse": {
+          switch (message.message) {
+            case "ok": {
+              console.log("Fill was successful");
+              break;
+            }
+            case "refreshRequired": {
+              FamilyRepository.getFamilies().then((fetchedFamilies) => {
+                fetchedFamilies.sort((a, b) => b.visitDate.getTime() - a.visitDate.getTime());
+                setFamilies(fetchedFamilies);
+              });
+              console.log("Refreshed families");
+              break;
+            }
+            case "familyNotFound": {
+              alert("This family has been deleted. Please reload the page.");
+              break;
+            }
+            default: {
+              console.error("FamilyMain: unknown fillResponse", message.message);
+              break;
+            }
+          }
+          break;
+        }
+        case "confirmUpdateStudentName": {
+          const response = window.confirm(`Do you want to update ${message.oldName} to ${message.newName}?`);
+          sendResponse({ confirmUpdateStudentName: response });
+          break;
+        }
+        default: {
+          console.error("FamilyMain: unknown message", message, sender.url);
+          break;
+        }
+      }
+    }
+
+    chrome.runtime.onMessage.addListener(handleMessage);
+
+    return () => {
+      chrome.runtime.onMessage.removeListener(handleMessage);
+    };
+  }, [setFamilies]);
+
   let mainContent: JSX.Element;
   switch (mainContentType) {
     case "loading":

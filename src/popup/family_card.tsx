@@ -11,6 +11,7 @@ import OCDSB031Button from './ocdsb_031_button';
 import StepButton from './step_button';
 import { useFamilyContext } from './family_context';
 import { useMainContentType } from './main_content_context';
+import FillButton from './fill_button';
 import MathAssessmentButton from './math_assessment_button';
 
 export default function FamilyCard() {
@@ -87,12 +88,7 @@ function Body() {
         return (
           <TabPane key={key} eventKey={key} active={ key === `person_${selectedPeopleIndex}` }>
             <div className="d-flex gap-3 mb-3">
-              <Button
-                variant="outline-primary"
-                className="flex-fill"
-              >
-                Fill
-              </Button>
+              <FillButton />
               { isSecondaryStudent && <MathAssessmentButton /> }
             </div>
 
