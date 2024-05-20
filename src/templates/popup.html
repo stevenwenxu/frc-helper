@@ -1,33 +1,9 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <head data-version="<%= htmlWebpackPlugin.options.version %>">
     <title>Family Reception Centre</title>
   </head>
   <body>
-    <div class="container">
-      <h1 class="mt-4">Family Reception Centre</h1>
-
-      <label for="familyPicker" class="form-label mt-2">Select a family</label>
-      <div class="row mb-2 gx-2">
-        <div class="col">
-          <select class="form-select" id="familyPicker" aria-label="Family picker"></select>
-        </div>
-        <div class="col-auto">
-          <button type="button" class="btn btn-outline-danger" id="deleteFamily">
-            <svg width="16" height="16" fill="currentColor">
-              <use href="/images/trash.svg#trash-svg"/>
-            </svg>
-          </button>
-        </div>
-      </div>
-
-      <div class="container g-0" id="familyDetails"></div>
-
-      <footer>
-        <p class="mt-3 text text-end text-black-50 fs-6">Version <%= htmlWebpackPlugin.options.version %></p>
-      </footer>
-    </div>
+    <div id="root"></div>
   </body>
 </html>

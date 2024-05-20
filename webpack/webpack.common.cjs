@@ -11,8 +11,7 @@ module.exports = {
   entry: {
     background: path.join(srcDir, "background.ts"),
     school_interviews: path.join(srcDir, "school_interviews/entry.ts"),
-    popup: path.join(srcDir, "aspen/popup.ts"),
-    popup2: path.join(srcDir, "popup/entry.tsx"),
+    popup: path.join(srcDir, "popup/entry.tsx"),
     aspen_fill: path.join(srcDir, "aspen/fill.ts"),
     laserfische_fill: path.join(srcDir, "laserfische/fill.ts"),
     options: path.join(srcDir, "options/entry.tsx"),
@@ -78,12 +77,6 @@ module.exports = {
       template: "src/templates/popup.html",
       version: require("../package.json").version,
       chunks: ["popup"],
-    }),
-    new HtmlWebpackPlugin({
-      filename: "../html/popup2.html",
-      template: "src/templates/popup2.html",
-      version: require("../package.json").version,
-      chunks: ["popup2"],
     }),
     new HtmlWebpackPlugin({
       filename: "../html/options.html",
