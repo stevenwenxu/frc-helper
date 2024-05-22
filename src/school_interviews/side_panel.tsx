@@ -6,6 +6,7 @@ import SidePanelNav from './side_panel_nav';
 import SidePanelTabContent from './side_panel_tab_content';
 import { Family } from "../common/models/family";
 import { FamilyRepository } from "../common/family_repository";
+import { useImmer } from 'use-immer';
 
 interface SidePanelProps {
   familyId: string;
@@ -15,8 +16,7 @@ interface SidePanelProps {
 export default function SidePanel({familyId, parseNewFamily}: SidePanelProps) {
   const [showSidePanel, setShowSidePanel] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
-  const [family, setFamily] = useState<Family | null>(null);
-  const [activePersonkey, setActivePersonKey] = useState("student_1");
+  const [family, setFamily] = useImmer<Family | null>(null);
 
   useEffect(() => {
     let ignore = false;
@@ -29,7 +29,7 @@ export default function SidePanel({familyId, parseNewFamily}: SidePanelProps) {
     return () => {
       ignore = true;
     }
-  }, [familyId]);
+  }, [familyId, setFamily, setIsLoading]);
 
   const onButtonClick = () => {
     if (family) {
@@ -41,17 +41,6 @@ export default function SidePanel({familyId, parseNewFamily}: SidePanelProps) {
         setShowSidePanel(true);
       });
     }
-  }
-
-  const didUpdateFamily = (updatedFamily: Family, newActivePersonKey?: string) => {
-    setFamily(updatedFamily);
-    if (newActivePersonKey) {
-      setActivePersonKey(newActivePersonKey);
-    }
-  }
-
-  const onSelectTab = (eventKey: string | null) => {
-    setActivePersonKey(eventKey ?? "student_1");
   }
 
   return (
@@ -67,9 +56,9 @@ export default function SidePanel({familyId, parseNewFamily}: SidePanelProps) {
         <Offcanvas.Body>
           {
             family
-              ? <Tab.Container id="family-container" activeKey={activePersonkey} onSelect={onSelectTab}>
-                  <SidePanelNav family={family} didUpdateFamily={didUpdateFamily} />
-                  <SidePanelTabContent family={family} didUpdateFamily={didUpdateFamily} />
+              ? <Tab.Container id="family-container" defaultActiveKey="student_1" >
+                  <SidePanelNav family={family} setFamily={setFamily} />
+                  <SidePanelTabContent family={family} setFamily={setFamily} />
                 </Tab.Container>
               : "Oops, something is wrong... Please refresh the page."
           }

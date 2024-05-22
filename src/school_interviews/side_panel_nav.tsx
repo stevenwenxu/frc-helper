@@ -3,23 +3,41 @@ import Dropdown from 'react-bootstrap/Dropdown';
 import { Family } from '../common/models/family';
 import { Parent, Student } from '../common/models/person';
 import { FamilyRepository } from '../common/family_repository';
+import { Updater } from 'use-immer';
+import { produce } from 'immer';
 
 interface SidePanelNavProps {
   family: Family;
-  didUpdateFamily: (updatedFamily: Family, newActivePersonKey: string) => void;
+  setFamily: Updater<Family | null>;
 }
 
-export default function SidePanelNav({family, didUpdateFamily}: SidePanelNavProps) {
+export default function SidePanelNav({family, setFamily}: SidePanelNavProps) {
   let parentIndex = 1;
   let studentIndex = 1;
 
   const navItems: JSX.Element[] = [];
   const dropdownItems: JSX.Element[] = [];
 
+  const handleAddNewPerson = (peopleIndex: number) => {
+    const newFamily = produce(family, (draft) => {
+      const person = draft.people[peopleIndex];
+      if (person instanceof Parent) {
+        draft.parents.push(person);
+      } else if (person instanceof Student) {
+        draft.students.push(person);
+      }
+    });
+
+    setFamily(newFamily);
+    FamilyRepository.saveFamily(newFamily);
+  };
+
   family.people.forEach((person, peopleIndex) => {
     const individualIndex = person instanceof Student ? studentIndex++ : parentIndex++;
     const navItemKey = person instanceof Student ? `student_${individualIndex}` : `parent_${individualIndex}`;
-    const dropdownItemKey = `new_from_${navItemKey}`;
+    const dropdownEventKey = person instanceof Student ?
+      `student_${family.students.length + 1}` :
+      `parent_${family.parents.length + 1}`;
     const displayName = person instanceof Student ? `Student ${individualIndex}` : `Parent ${individualIndex}`;
 
     navItems.push(
@@ -30,9 +48,9 @@ export default function SidePanelNav({family, didUpdateFamily}: SidePanelNavProp
 
     dropdownItems.push(
       <Dropdown.Item
-        key={dropdownItemKey}
-        eventKey={dropdownItemKey}
-        onClick={() => { newPersonFrom(family, peopleIndex, didUpdateFamily) } }
+        key={`new_from_${navItemKey}`}
+        eventKey={dropdownEventKey}
+        onClick={() => { handleAddNewPerson(peopleIndex) }}
       >
         {displayName}
       </Dropdown.Item>
@@ -51,26 +69,4 @@ export default function SidePanelNav({family, didUpdateFamily}: SidePanelNavProp
       </Dropdown>
     </Nav>
   );
-}
-
-function newPersonFrom(
-  family: Family,
-  peopleIndex: number,
-  didUpdateFamily: (updatedFamily: Family, newActivePersonKey: string) => void
-) {
-  const person = family.people[peopleIndex];
-  let newActivePersonKey = "";
-
-  if (person instanceof Parent) {
-    family.parents.push(person);
-    newActivePersonKey = `parent_${family.parents.length}`;
-  } else {
-    family.students.push(person);
-    newActivePersonKey = `student_${family.students.length}`;
-  }
-
-  FamilyRepository.saveFamily(family).then(() => {
-    // pass back a copy of family, as we shouldn't mutate the original family object (state)
-    didUpdateFamily(FamilyRepository.familyFromStoredFamily(family), newActivePersonKey);
-  });
 }

@@ -6,27 +6,24 @@ import Col from 'react-bootstrap/Col';
 import { Family } from "../common/models/family";
 import { Parent, Student } from "../common/models/person";
 import { FamilyRepository } from "../common/family_repository";
+import { Updater } from "use-immer";
+import { WritableDraft } from "immer";
 
 interface SidePanelTabContentProps {
   family: Family;
-  didUpdateFamily: (updatedFamily: Family) => void;
+  setFamily: Updater<Family | null>;
 }
 
 interface PersonFormProps {
   family: Family;
+  setFamily: Updater<Family | null>;
   peopleIndex: number;
   personKey: string;
-  didUpdateAddress: () => void;
 }
 
-export default function SidePanelTabContent({family, didUpdateFamily}: SidePanelTabContentProps) {
+export default function SidePanelTabContent({family, setFamily}: SidePanelTabContentProps) {
   let parentIndex = 1;
   let studentIndex = 1;
-
-  const didUpdateAddress = () => {
-    // pass back a copy of family, as we shouldn't mutate the original family object (state)
-    didUpdateFamily(FamilyRepository.familyFromStoredFamily(family));
-  }
 
   return (
     <Tab.Content>
@@ -37,9 +34,9 @@ export default function SidePanelTabContent({family, didUpdateFamily}: SidePanel
           <Tab.Pane key={eventKey} eventKey={eventKey}>
             <PersonForm
               family={family}
+              setFamily={setFamily}
               peopleIndex={peopleIndex}
               personKey={eventKey}
-              didUpdateAddress={didUpdateAddress}
             />
           </Tab.Pane>
         )
@@ -48,7 +45,7 @@ export default function SidePanelTabContent({family, didUpdateFamily}: SidePanel
   )
 }
 
-function PersonForm({family, peopleIndex, personKey, didUpdateAddress}: PersonFormProps) {
+function PersonForm({family, setFamily, peopleIndex, personKey}: PersonFormProps) {
   const person = family.people[peopleIndex];
   const inputStyle = {
     backgroundColor: "var(--bs-form-control-bg)",
@@ -71,8 +68,13 @@ function PersonForm({family, peopleIndex, personKey, didUpdateAddress}: PersonFo
           type="text"
           placeholder="firstName"
           name="firstName"
-          defaultValue={person.firstName}
-          onBlur={(e) => { updatePerson(family, peopleIndex, e.target.name, e.target.value) }}
+          value={person.firstName}
+          onChange={(e) => {
+            setFamily((draft) => {
+              updatePerson(draft!, peopleIndex, e.target.name, e.target.value);
+            });
+          }}
+          onBlur={() => { FamilyRepository.saveFamily(family) }}
           style={inputStyle}
         />
       </FloatingLabel>
@@ -83,8 +85,13 @@ function PersonForm({family, peopleIndex, personKey, didUpdateAddress}: PersonFo
           type="text"
           placeholder="middleName"
           name="middleName"
-          defaultValue={person.middleName}
-          onBlur={(e) => { updatePerson(family, peopleIndex, e.target.name, e.target.value) }}
+          value={person.middleName}
+          onChange={(e) => {
+            setFamily((draft) => {
+              updatePerson(draft!, peopleIndex, e.target.name, e.target.value);
+            });
+          }}
+          onBlur={() => { FamilyRepository.saveFamily(family) }}
           style={inputStyle}
         />
       </FloatingLabel>
@@ -95,8 +102,13 @@ function PersonForm({family, peopleIndex, personKey, didUpdateAddress}: PersonFo
           type="text"
           placeholder="lastName"
           name="lastName"
-          defaultValue={person.lastName}
-          onBlur={(e) => { updatePerson(family, peopleIndex, e.target.name, e.target.value) }}
+          value={person.lastName}
+          onChange={(e) => {
+            setFamily((draft) => {
+              updatePerson(draft!, peopleIndex, e.target.name, e.target.value);
+            });
+          }}
+          onBlur={() => { FamilyRepository.saveFamily(family) }}
           style={inputStyle}
         />
       </FloatingLabel>
@@ -108,8 +120,13 @@ function PersonForm({family, peopleIndex, personKey, didUpdateAddress}: PersonFo
             type="email"
             placeholder="email"
             name="email"
-            defaultValue={person.email}
-            onBlur={(e) => { updatePerson(family, peopleIndex, e.target.name, e.target.value) }}
+            value={person.email}
+            onChange={(e) => {
+              setFamily((draft) => {
+                updatePerson(draft!, peopleIndex, e.target.name, e.target.value);
+              });
+            }}
+            onBlur={() => { FamilyRepository.saveFamily(family) }}
             style={inputStyle}
           />
         </FloatingLabel>
@@ -121,8 +138,13 @@ function PersonForm({family, peopleIndex, personKey, didUpdateAddress}: PersonFo
           type="tel"
           placeholder="phone"
           name="phone"
-          defaultValue={person.phone}
-          onBlur={(e) => { updatePerson(family, peopleIndex, e.target.name, e.target.value) }}
+          value={person.phone}
+          onChange={(e) => {
+            setFamily((draft) => {
+              updatePerson(draft!, peopleIndex, e.target.name, e.target.value);
+            });
+          }}
+          onBlur={() => { FamilyRepository.saveFamily(family) }}
           style={inputStyle}
         />
       </FloatingLabel>
@@ -135,7 +157,11 @@ function PersonForm({family, peopleIndex, personKey, didUpdateAddress}: PersonFo
               placeholder="address"
               name="address"
               value={person.address}
-              onChange={(e) => { updateAddress(family, peopleIndex, e.target.value, didUpdateAddress) } }
+              onChange={(e) => {
+                setFamily((draft) => {
+                  updateAddress(draft!, peopleIndex, e.target.value)
+                });
+              }}
               onBlur={() => { FamilyRepository.saveFamily(family) }}
               style={inputStyle}
             />
@@ -147,8 +173,13 @@ function PersonForm({family, peopleIndex, personKey, didUpdateAddress}: PersonFo
               type="checkbox"
               style={checkboxStyle}
               name="isAddressUnique"
-              defaultChecked={person.isAddressUnique}
-              onChange={(e) => { updatePerson(family, peopleIndex, e.target.name, e.target.checked ? "on" : "off") }}
+              checked={person.isAddressUnique}
+              onChange={(e) => {
+                setFamily((draft) => {
+                  updatePerson(draft!, peopleIndex, e.target.name, e.target.checked ? "on" : "off")
+                });
+                FamilyRepository.saveFamily(family);
+              }}
             />
             <Form.Check.Label>Unique</Form.Check.Label>
           </Form.Check>
@@ -162,8 +193,13 @@ function PersonForm({family, peopleIndex, personKey, didUpdateAddress}: PersonFo
             as="textarea"
             placeholder="parentNotes"
             name="parentNotes"
-            defaultValue={person.parentNotes}
-            onBlur={(e) => { updatePerson(family, peopleIndex, e.target.name, e.target.value) }}
+            value={person.parentNotes}
+            onChange={(e) => {
+              setFamily((draft) => {
+                updatePerson(draft!, peopleIndex, e.target.name, e.target.value);
+              });
+            }}
+            onBlur={() => { FamilyRepository.saveFamily(family) }}
             style={textAreaStyle}
           />
         </FloatingLabel>
@@ -177,8 +213,13 @@ function PersonForm({family, peopleIndex, personKey, didUpdateAddress}: PersonFo
               type="text"
               placeholder="dateOfBirth"
               name="dateOfBirth"
-              defaultValue={person.dateOfBirth}
-              onBlur={(e) => { updatePerson(family, peopleIndex, e.target.name, e.target.value) }}
+              value={person.dateOfBirth}
+              onChange={(e) => {
+                setFamily((draft) => {
+                  updatePerson(draft!, peopleIndex, e.target.name, e.target.value);
+                });
+              }}
+              onBlur={() => { FamilyRepository.saveFamily(family) }}
               style={inputStyle}
             />
           </FloatingLabel>
@@ -189,8 +230,13 @@ function PersonForm({family, peopleIndex, personKey, didUpdateAddress}: PersonFo
               type="text"
               placeholder="countryOfBirth"
               name="countryOfBirth"
-              defaultValue={person.countryOfBirth}
-              onBlur={(e) => { updatePerson(family, peopleIndex, e.target.name, e.target.value) }}
+              value={person.countryOfBirth}
+              onChange={(e) => {
+                setFamily((draft) => {
+                  updatePerson(draft!, peopleIndex, e.target.name, e.target.value);
+                });
+              }}
+              onBlur={() => { FamilyRepository.saveFamily(family) }}
               style={inputStyle}
             />
           </FloatingLabel>
@@ -201,8 +247,13 @@ function PersonForm({family, peopleIndex, personKey, didUpdateAddress}: PersonFo
               as="textarea"
               placeholder="studentNotes"
               name="studentNotes"
-              defaultValue={person.studentNotes}
-              onBlur={(e) => { updatePerson(family, peopleIndex, e.target.name, e.target.value) }}
+              value={person.studentNotes}
+              onChange={(e) => {
+                setFamily((draft) => {
+                  updatePerson(draft!, peopleIndex, e.target.name, e.target.value);
+                });
+              }}
+              onBlur={() => { FamilyRepository.saveFamily(family) }}
               style={textAreaStyle}
             />
           </FloatingLabel>
@@ -213,12 +264,12 @@ function PersonForm({family, peopleIndex, personKey, didUpdateAddress}: PersonFo
 }
 
 function updatePerson(
-  family: Family,
+  family: WritableDraft<Family>,
   peopleIndex: number,
   fieldName: string,
   value: string
 ) {
-  const person = family.people[peopleIndex];
+  const person = family.people[peopleIndex] as WritableDraft<Parent | Student>;
 
   switch (fieldName) {
     case "firstName":
@@ -252,15 +303,12 @@ function updatePerson(
     default:
       throw new Error(`Unknown input name: ${fieldName}`);
   }
-
-  FamilyRepository.saveFamily(family);
 }
 
 function updateAddress(
-  family: Family,
+  family: WritableDraft<Family>,
   peopleIndex: number,
   newAddress: string,
-  didUpdateAddress: () => void
 ) {
   family.people[peopleIndex].address = newAddress;
   if (!family.people[peopleIndex].isAddressUnique) {
@@ -270,5 +318,4 @@ function updateAddress(
       }
     });
   }
-  didUpdateAddress();
 }
