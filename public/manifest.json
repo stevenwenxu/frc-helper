@@ -20,13 +20,13 @@
       ]
     },
     {
-      "js": ["js/aspen_fill.js"],
+      "js": ["js/aspen_fill.js", "js/immer.js"],
       "matches": [
         "https://ocdsb.myontarioedu.ca/aspen/*"
       ]
     },
     {
-      "js": ["js/laserfische_fill.js"],
+      "js": ["js/laserfische_fill.js", "js/immer.js"],
       "matches": [
         "https://ecm.ocdsb.ca/laserfiche/*"
       ]
