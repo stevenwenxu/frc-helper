@@ -1,28 +1,27 @@
-import { FamilyRepository } from "../../common/family_repository";
-import { Student } from "../../common/models/person";
+import Button from "react-bootstrap/Button";
+import { Student } from '../common/models/person';
+import { PDFDocument } from "pdf-lib";
 
-type PDFDocumentType = typeof import("pdf-lib").PDFDocument;
-type PDFDocument = import("pdf-lib").PDFDocument;
-let _PDFDocument: PDFDocumentType | null = null;
+interface StepButtonProps {
+  student: Student;
+}
 
-export function setupStepButtons(familyId: string) {
-  const stepButtons = document.querySelectorAll<HTMLButtonElement>(".tab-pane button[data-function='downloadStep'");
-  for (const stepButton of Array.from(stepButtons)) {
-    stepButton.addEventListener("click", async () => {
-      const family = await FamilyRepository.getFamilyWithUniqueId(familyId);
-      if (family) {
-        const personIndex = parseInt(stepButton.dataset.personIndex!);
-
-        await download(family.people[personIndex] as Student);
-      } else {
-        alert("This family has been deleted. Please reload the page.");
-      }
-    });
-  }
+export default function StepButton({student}: StepButtonProps) {
+  return (
+    <Button
+      variant="outline-primary"
+      className="flex-fill"
+      onClick={() => { download(student) }}
+    >
+      <svg width="16" height="16" fill="currentColor" className="me-1">
+        <use href="/images/download.svg#download-svg"/>
+      </svg>
+      STEP
+    </Button>
+  );
 }
 
 async function download(student: Student) {
-  const PDFDocument = await loadPDFLib();
   const doc = await PDFDocument.create();
   try {
     doc.addPage(await oral(student, doc));
@@ -44,7 +43,6 @@ async function oral(student: Student, finalDoc: PDFDocument) {
 
   const url = chrome.runtime.getURL("static/oral.pdf");
   const content = await (await fetch(url)).arrayBuffer();
-  const PDFDocument = await loadPDFLib();
   const pdfDoc = await PDFDocument.load(content);
   const page = pdfDoc.getPage(0);
 
@@ -75,7 +73,6 @@ async function readingWriting(student: Student, finalDoc: PDFDocument) {
   }
 
   const content = await (await fetch(url)).arrayBuffer();
-  const PDFDocument = await loadPDFLib();
   const pdfDoc = await PDFDocument.load(content);
 
   return (await finalDoc.copyPages(pdfDoc, [0]))[0];
@@ -95,9 +92,4 @@ async function generate(student: Student, pdfDocument: PDFDocument) {
   link.click();
 
   URL.revokeObjectURL(pdfUrl);
-}
-
-async function loadPDFLib() {
-  _PDFDocument = _PDFDocument ?? (await import("pdf-lib")).PDFDocument;
-  return _PDFDocument;
 }

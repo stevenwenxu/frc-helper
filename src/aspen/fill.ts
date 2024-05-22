@@ -15,19 +15,13 @@ import { fillELL } from "./fill/programs_ell";
 chrome.runtime.onMessage.addListener(
   function(request, sender, sendResponse) {
     console.log("Aspen content script got message", request);
-    if (Object.hasOwn(request, "familyId") &&
-        Object.hasOwn(request, "personIndex") &&
-        Object.hasOwn(request, "pathname") &&
-        Object.hasOwn(request, "context")) {
+    if (request.type === "fillAspen") {
       fill(request.familyId, request.personIndex, request.pathname, request.context).then((fillResponse) => {
-        sendResponse({ type: "fillResponse", message: fillResponse });
+        chrome.runtime.sendMessage({ type: "fillResponse", message: fillResponse });
       });
     } else {
-      sendResponse({ message: `Aspen content script didn't understand request: ${request}` });
+      console.log("ignoring request", request);
     }
-
-    // https://stackoverflow.com/a/56483156
-    return true;
   }
 );
 
@@ -69,13 +63,15 @@ async function fill(familyId: string, personIndex: number, pathname: string, con
         case SupportedContext.EducationalBackground:
           setupEducationalBackgroundHooks(family.uniqueId, personIndex);
           fillEducationalBackground(person as Student);
-          saveEducationComments(family.uniqueId, personIndex);
+          await saveEducationComments(family.uniqueId, personIndex);
+          response = "refreshRequired";
           break;
         case SupportedContext.FRCTracker:
           setupFRCTrackerHooks(family.uniqueId, personIndex);
           fillFRCTracker(person as Student);
           setupFRCTrackerTooltips();
-          saveFRCTrackerDetails(family.uniqueId, personIndex);
+          await saveFRCTrackerDetails(family.uniqueId, personIndex);
+          response = "refreshRequired";
           break;
         case SupportedContext.ProgramsELL:
           fillELL(person as Student);

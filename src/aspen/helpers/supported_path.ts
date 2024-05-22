@@ -14,6 +14,10 @@ export enum SupportedPath {
   StudentPersonAddressDetail = "/aspen/studentPersonAddressDetail.do"
 }
 
+export const supportedUrls = Object.values(SupportedPath).map((path) => {
+  return `https://ocdsb.myontarioedu.ca${path}*`
+});
+
 export enum SupportedContext {
   Phone = "person.phone.popup",
   Address = "person.address.popup",

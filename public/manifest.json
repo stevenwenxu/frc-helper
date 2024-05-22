@@ -8,32 +8,33 @@
   },
   "content_scripts": [
     {
-      "js": ["js/school_interviews.js"],
+      "js": ["js/school_interviews.js", "js/react.js", "js/immer.js"],
       "matches": [
         "https://www.schoolinterviews.com.au/*"
       ]
     },
     {
-      "css": ["css/school_interviews.css"],
+      "css": ["css/bootstrap.css"],
       "matches": [
         "https://www.schoolinterviews.com.au/*/parents/*/details"
       ]
     },
     {
-      "js": ["js/aspen_fill.js"],
+      "js": ["js/aspen_fill.js", "js/immer.js"],
       "matches": [
         "https://ocdsb.myontarioedu.ca/aspen/*"
       ]
     },
     {
-      "js": ["js/laserfische_fill.js"],
+      "js": ["js/laserfische_fill.js", "js/immer.js"],
       "matches": [
         "https://ecm.ocdsb.ca/laserfiche/*"
       ]
     }
   ],
   "background": {
-    "service_worker": "js/background.js"
+    "service_worker": "js/service_worker.js",
+    "type": "module"
   },
   "options_ui": {
     "page": "html/options.html",
@@ -46,11 +47,5 @@
     "48": "images/icon-48.png",
     "128": "images/icon-128.png",
     "256": "images/icon-256.png"
-  },
-  "web_accessible_resources": [
-    {
-      "resources": ["html/details_page.html"],
-      "matches": ["https://www.schoolinterviews.com.au/*"]
-    }
-  ]
+  }
 }

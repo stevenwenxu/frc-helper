@@ -1,6 +1,9 @@
 import { Parent, Student } from "./person";
+import { immerable } from "immer";
 
 export class Family {
+  [immerable] = true;
+
   parents: Parent[] = [];
   students: Student[] = [];
   private _visitDate: string = "";
