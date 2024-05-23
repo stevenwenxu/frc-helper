@@ -112,7 +112,7 @@ export class Student extends Person {
   }
 
   get legalFullName() {
-    return `${this.legalLastName}, ${this.legalFirstName} ${this.legalMiddleName}`;
+    return `${this.legalLastName}, ${this.legalFirstName} ${this.legalMiddleName}`.trim();
   }
 
   get firstNameWithGrade() {

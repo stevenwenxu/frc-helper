@@ -116,7 +116,7 @@ function emailBody(students: Student[]) {
           <tbody>
               <tr>
                 <td>Student Name</td>
-                <td>${emptyGuard(student.lastName)}, ${emptyGuard(student.firstName)}</td>
+                <td>${combinedName(student)}</td>
               </tr>
               <tr>
                 <td>Local ID #</td>
@@ -189,6 +189,22 @@ function emailBody(students: Student[]) {
       </body>
     </html>
   `;
+}
+
+function combinedName(student: Student) {
+  if (
+    student.firstName.length === 0 ||
+    student.lastName.length === 0 ||
+    student.legalFirstName.length === 0 ||
+    student.legalLastName.length === 0
+  ) {
+    return emptyGuard("");
+  }
+
+  const isLegalNameSameAsPreferred =
+    student.legalFullName === `${student.lastName}, ${student.firstName} ${student.middleName}`.trim();
+
+  return `${student.displayName}${isLegalNameSameAsPreferred ? "" : ` (${student.legalFullName})`}`;
 }
 
 function grade(student: Student) {
