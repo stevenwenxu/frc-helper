@@ -5,7 +5,7 @@ export class AddressSanitizer {
       .replace(/ottawa|nepean|kanata|stittsville|manotick|barrhaven|orleans|ontario|canada/gi, "")
       .replace(/ ON /i, "")
       .replace(/[A-Za-z]\d[A-Za-z][ -]?\d[A-Za-z]\d/i, "")
-      .replace(/north|south|east|west/i, "")
+      .replace(/\bnorth\b|\bsouth\b|\beast\b|\bwest\b/i, "")
       .replace(/crescent/i, "cres")
       .replace(/street/i, "st")
       .replace(/avenue/i, "ave")
