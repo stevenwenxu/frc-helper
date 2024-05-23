@@ -40,6 +40,7 @@ function fillCheckboxes() {
   const elements = document.forms.namedItem("personAddressDetailForm")!.elements;
 
   const relationship = elements.namedItem("propertyValue(ctjRelateCode)") as HTMLInputElement;
+  const hasPortalAccess = elements.namedItem("prefixpropertyValue(ctjPortalAcs)") as HTMLInputElement;
   const livesWithStudent = elements.namedItem("prefixpropertyValue(ctjLivesWith)") as HTMLInputElement;
   const pickupAccess = elements.namedItem("prefixpropertyValue(ctjFieldA005)") as HTMLInputElement;
   const guardian = elements.namedItem("prefixpropertyValue(ctjFieldA002)") as HTMLInputElement;
@@ -50,7 +51,7 @@ function fillCheckboxes() {
   const receiveOtherMailing = elements.namedItem("prefixpropertyValue(ctjMailOther)") as HTMLInputElement;
   const receiveEmail = elements.namedItem("prefixpropertyValue(ctjRecEmail)") as HTMLInputElement;
 
-  const allCheckboxes = [livesWithStudent, pickupAccess, guardian, legalCustody, accessToRecords, receiveMarkMailing, receiveIncidentsMailing, receiveOtherMailing, receiveEmail];
+  const allCheckboxes = [hasPortalAccess, livesWithStudent, pickupAccess, guardian, legalCustody, accessToRecords, receiveMarkMailing, receiveIncidentsMailing, receiveOtherMailing, receiveEmail];
 
   const check = () => {
     if (relationship.value === "Mother" || relationship.value === "Father") {
