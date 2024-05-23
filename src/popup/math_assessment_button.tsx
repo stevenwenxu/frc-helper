@@ -9,19 +9,20 @@ import { WritableDraft } from "immer";
 
 export default function MathAssessmentButton() {
   const { setMainContentType } = useMainContentType();
-  const {selectedFamilyId, selectedPeopleIndex, selectedPerson: student, setFamilies} = useFamilyContext();
+  const {selectedFamilyId, selectedPeopleIndex, selectedPerson, setFamilies} = useFamilyContext();
 
   if (
     !selectedFamilyId ||
-    selectedPeopleIndex === undefined ||
-    !student ||
-    !(student instanceof Student)
+    selectedPeopleIndex === undefined
   ) {
-    console.error("MathAssessmentButton: unexpected state", selectedFamilyId, selectedPeopleIndex, student);
+    console.error("MathAssessmentButton: unexpected state", selectedFamilyId, selectedPeopleIndex);
     return null;
   }
 
   const onClick = () => {
+    // The selected person is guaranteed to be a secondary student. Otherwise the button isn't visible.
+    const student = selectedPerson as Student;
+
     if (student.secondaryMathAssessment) {
       setMainContentType("mathAssessment");
     } else {
