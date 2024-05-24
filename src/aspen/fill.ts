@@ -17,11 +17,16 @@ chrome.runtime.onMessage.addListener(
     console.log("Aspen content script got message", request);
     if (request.type === "fillAspen") {
       fill(request.familyId, request.personIndex, request.pathname, request.context).then((fillResponse) => {
+        // to update FillButton
+        sendResponse(fillResponse);
+        // for popup to respond
         chrome.runtime.sendMessage({ type: "fillResponse", message: fillResponse });
       });
     } else {
       console.log("ignoring request", request);
     }
+
+    return true;
   }
 );
 
@@ -83,7 +88,8 @@ async function fill(familyId: string, personIndex: number, pathname: string, con
       response = "refreshRequired";
       break;
     default:
-      console.log("Unknown page", pathname);
+      console.error("Unknown page", pathname);
+      response = "unknownPage";
       break;
   }
 

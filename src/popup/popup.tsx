@@ -62,6 +62,10 @@ export default function Popup({version}: PopupProps) {
               alert("This family has been deleted. Please reload the page.");
               break;
             }
+            case "unknownPage": {
+              alert("Something went wrong. Are you filling the correct page?");
+              break;
+            }
             default: {
               console.error("FamilyMain: unknown fillResponse", message.message);
               break;
