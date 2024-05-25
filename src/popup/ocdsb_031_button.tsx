@@ -1,14 +1,19 @@
 import Button from "react-bootstrap/Button";
 import { Parent, Student } from '../common/models/person';
 import { StatusInCanada } from '../common/models/status_in_canada';
+import { useFamilyContext } from "./family_context";
 import { PDFDocument } from "pdf-lib";
 
-interface OCDSB031ButtonProps {
-  student: Student;
-  firstParent: Parent;
-}
+export default function OCDSB031Button() {
+  const { selectedFamily, selectedPerson: student } = useFamilyContext();
 
-export default function OCDSB031Button({student, firstParent}: OCDSB031ButtonProps) {
+  if (!student || !(student instanceof Student) || !selectedFamily) {
+    console.error("OCDSB031Button: unexpected state", student, selectedFamily);
+    return null;
+  }
+
+  const firstParent = selectedFamily.parents[0];
+
   return (
     <Button
       variant="outline-primary"

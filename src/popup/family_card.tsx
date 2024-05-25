@@ -1,7 +1,5 @@
 import Card from 'react-bootstrap/Card';
 import Nav from 'react-bootstrap/Nav';
-import TabContent from 'react-bootstrap/TabContent';
-import TabPane from 'react-bootstrap/TabPane';
 import Button from "react-bootstrap/Button";
 import Table from 'react-bootstrap/Table';
 import { Parent, Student } from '../common/models/person';
@@ -64,105 +62,98 @@ function Header() {
 }
 
 function Body() {
-  const { selectedFamily: family, selectedPeopleIndex } = useFamilyContext();
+  const { selectedFamily: family, selectedPerson } = useFamilyContext();
   const { setMainContentType } = useMainContentType();
 
-  if (!family || selectedPeopleIndex === undefined) {
-    console.error("FamilyCard.Body: unexpected empty state", family, selectedPeopleIndex);
+  if (!family || selectedPerson === undefined) {
+    console.error("FamilyCard.Body: unexpected empty state", family, selectedPerson);
     return null;
   }
 
-  return (
-    <TabContent>
-      {family.people.map((person, index) => {
-        const key = `person_${index}`;
-        const notesStyle = {
-          whiteSpace: "pre-wrap"
-        };
-        const isSecondaryStudent = person instanceof Student && person.schoolCategory === SchoolCategory.Secondary;
-        const isOCDSB031Available = person instanceof Student && (
-          person.statusInCanada === StatusInCanada.CanadianCitizen ||
-          person.statusInCanada === StatusInCanada.PermanentResident
-        );
+  const notesStyle = {
+    whiteSpace: "pre-wrap"
+  };
 
-        return (
-          <TabPane key={key} eventKey={key} active={ key === `person_${selectedPeopleIndex}` }>
-            <div className="d-flex gap-3 mb-3">
-              <FillButton />
-              { isSecondaryStudent && <MathAssessmentButton /> }
-            </div>
-
-            <Table>
-              <tbody>
-                <tr>
-                  <th scope="row">First Name</th>
-                  <td>{person.firstName}</td>
-                </tr>
-                <tr>
-                  <th scope="row">Middle Name</th>
-                  <td>{person.middleName}</td>
-                </tr>
-                <tr>
-                  <th scope="row">Last Name</th>
-                  <td>{person.lastName}</td>
-                </tr>
-                {person instanceof Parent && (
-                  <tr>
-                    <th scope="row">Email</th>
-                    <td>{person.email}</td>
-                  </tr>
-                )}
-                <tr>
-                  <th scope="row">Phone</th>
-                  <td>{person.phone}</td>
-                </tr>
-                <tr>
-                  <th scope="row">Address</th>
-                  <td>{person.address}</td>
-                </tr>
-                {person instanceof Parent && (
-                  <tr>
-                    <th scope="row">Parent notes</th>
-                    <td style={notesStyle}>{person.parentNotes}</td>
-                  </tr>
-                )}
-                {person instanceof Student && (
-                  <>
-                    <tr>
-                      <th scope="row">Date of birth</th>
-                      <td>{person.dateOfBirth}</td>
-                    </tr>
-                    <tr>
-                      <th scope="row">Country of birth</th>
-                      <td>{person.countryOfBirth}</td>
-                    </tr>
-                    <tr>
-                      <th scope="row">Student notes</th>
-                      <td style={notesStyle}>{person.studentNotes}</td>
-                    </tr>
-                  </>
-                )}
-              </tbody>
-            </Table>
-
-            {person instanceof Student && (
-              <div className="d-flex gap-3 mb-3">
-                {isOCDSB031Available && (
-                  <OCDSB031Button student={person} firstParent={family.parents[0] as Parent} />
-                )}
-                <StepButton student={person} />
-                <Button
-                  variant="outline-primary"
-                  className="flex-fill"
-                  onClick={() => { setMainContentType("email") }}
-                >
-                  Preview email
-                </Button>
-              </div>
-            )}
-          </TabPane>
-        )
-      })}
-    </TabContent>
+  const isSecondaryStudent = selectedPerson instanceof Student &&
+    selectedPerson.schoolCategory === SchoolCategory.Secondary;
+  const isOCDSB031Available = selectedPerson instanceof Student && (
+    selectedPerson.statusInCanada === StatusInCanada.CanadianCitizen ||
+    selectedPerson.statusInCanada === StatusInCanada.PermanentResident
   );
+
+  return <>
+    <div className="d-flex gap-3 mb-3">
+      <FillButton />
+      { isSecondaryStudent && <MathAssessmentButton /> }
+    </div>
+
+    <Table>
+      <tbody>
+        <tr>
+          <th scope="row">First Name</th>
+          <td>{selectedPerson.firstName}</td>
+        </tr>
+        <tr>
+          <th scope="row">Middle Name</th>
+          <td>{selectedPerson.middleName}</td>
+        </tr>
+        <tr>
+          <th scope="row">Last Name</th>
+          <td>{selectedPerson.lastName}</td>
+        </tr>
+        {selectedPerson instanceof Parent && (
+          <tr>
+            <th scope="row">Email</th>
+            <td>{selectedPerson.email}</td>
+          </tr>
+        )}
+        <tr>
+          <th scope="row">Phone</th>
+          <td>{selectedPerson.phone}</td>
+        </tr>
+        <tr>
+          <th scope="row">Address</th>
+          <td>{selectedPerson.address}</td>
+        </tr>
+        {selectedPerson instanceof Parent && (
+          <tr>
+            <th scope="row">Parent notes</th>
+            <td style={notesStyle}>{selectedPerson.parentNotes}</td>
+          </tr>
+        )}
+        {selectedPerson instanceof Student && (
+          <>
+            <tr>
+              <th scope="row">Date of birth</th>
+              <td>{selectedPerson.dateOfBirth}</td>
+            </tr>
+            <tr>
+              <th scope="row">Country of birth</th>
+              <td>{selectedPerson.countryOfBirth}</td>
+            </tr>
+            <tr>
+              <th scope="row">Student notes</th>
+              <td style={notesStyle}>{selectedPerson.studentNotes}</td>
+            </tr>
+          </>
+        )}
+      </tbody>
+    </Table>
+
+    {selectedPerson instanceof Student && (
+      <div className="d-flex gap-3 mb-3">
+        {isOCDSB031Available && (
+          <OCDSB031Button />
+        )}
+        <StepButton />
+        <Button
+          variant="outline-primary"
+          className="flex-fill"
+          onClick={() => { setMainContentType("email") }}
+        >
+          Preview email
+        </Button>
+      </div>
+    )}
+  </>;
 }

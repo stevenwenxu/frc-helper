@@ -1,12 +1,15 @@
 import Button from "react-bootstrap/Button";
 import { Student } from '../common/models/person';
+import { useFamilyContext } from "./family_context";
 import { PDFDocument } from "pdf-lib";
 
-interface StepButtonProps {
-  student: Student;
-}
+export default function StepButton() {
+  const { selectedPerson: student } = useFamilyContext();
+  if (!student || !(student instanceof Student)) {
+    console.error("StepButton: unexpected state", student);
+    return null;
+  }
 
-export default function StepButton({student}: StepButtonProps) {
   return (
     <Button
       variant="outline-primary"
