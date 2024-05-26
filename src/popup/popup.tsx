@@ -1,6 +1,8 @@
 import { useEffect } from "react";
 import Container from "react-bootstrap/Container";
 import Spinner from 'react-bootstrap/Spinner';
+import Modal from 'react-bootstrap/Modal';
+import Button from 'react-bootstrap/Button';
 import { FamilyRepository } from "../common/family_repository";
 import EmptyAlert from "./empty_alert";
 import { useMainContentType } from "./main_content_context";
@@ -8,6 +10,7 @@ import FamilyMain from "./family_main";
 import { useFamilyContext } from "./family_context";
 import Email from "./email";
 import MathAssessment from "./math_assessment";
+import { useModal } from "./modal_context";
 
 interface PopupProps {
   version: string;
@@ -16,6 +19,17 @@ interface PopupProps {
 export default function Popup({version}: PopupProps) {
   const { setFamilies, setSelectedFamilyId, setSelectedPeopleIndex } = useFamilyContext();
   const { mainContentType, setMainContentType } = useMainContentType();
+  const {
+    shouldShowModal,
+    setShouldShowModal,
+    showModal,
+    modalHeader,
+    modalBody,
+    modalPrimaryButtonText,
+    modalPrimaryButtonOnClick,
+    modalSecondaryButtonText,
+    modalSecondaryButtonOnClick,
+  } = useModal();
 
   useEffect(() => {
     let ignore = false;
@@ -43,6 +57,7 @@ export default function Popup({version}: PopupProps) {
       sender: chrome.runtime.MessageSender,
       sendResponse: (response?: any) => void
     ) => {
+      console.log("Popup got message", message);
       switch (message.type) {
         case "fillResponse": {
           switch (message.message) {
@@ -59,11 +74,26 @@ export default function Popup({version}: PopupProps) {
               break;
             }
             case "familyNotFound": {
-              alert("This family has been deleted. Please reload the page.");
+              showModal(
+                "Family not found",
+                "This family has been deleted. Please re-add them from SchoolInterviews if needed.",
+                "Close",
+                () => {
+                  // Reload the page to ensure we have the latest data
+                  window.location.reload();
+                }
+              )
               break;
             }
             case "unknownPage": {
-              alert("Something went wrong. Are you filling the correct page?");
+              showModal(
+                "Unknown page",
+                "The page you are trying to fill is not recognised. Is this a new flow?",
+                "Close",
+                () => {
+                  setShouldShowModal(false);
+                }
+              )
               break;
             }
             default: {
@@ -74,8 +104,20 @@ export default function Popup({version}: PopupProps) {
           break;
         }
         case "confirmUpdateStudentName": {
-          const response = window.confirm(`Do you want to update ${message.oldName} to ${message.newName}?`);
-          sendResponse({ confirmUpdateStudentName: response });
+          showModal(
+            "Update student name",
+            `Do you want to update ${message.oldName} to ${message.newName}?`,
+            "Yes",
+            () => {
+              sendResponse({ confirmUpdateStudentName: true });
+              setShouldShowModal(false);
+            },
+            "No",
+            () => {
+              sendResponse({ confirmUpdateStudentName: false });
+              setShouldShowModal(false);
+            }
+          )
           break;
         }
         default: {
@@ -83,6 +125,8 @@ export default function Popup({version}: PopupProps) {
           break;
         }
       }
+
+      return true;
     }
 
     chrome.runtime.onMessage.addListener(handleMessage);
@@ -90,7 +134,7 @@ export default function Popup({version}: PopupProps) {
     return () => {
       chrome.runtime.onMessage.removeListener(handleMessage);
     };
-  }, [setFamilies]);
+  }, [setFamilies, setShouldShowModal, showModal]);
 
   let mainContent: JSX.Element;
   switch (mainContentType) {
@@ -116,6 +160,20 @@ export default function Popup({version}: PopupProps) {
       <h1 className="my-4">Family Reception Centre</h1>
 
       {mainContent}
+
+      <Modal show={shouldShowModal} backdrop="static" keyboard={false} >
+        <Modal.Header>
+          <Modal.Title>{modalHeader}</Modal.Title>
+        </Modal.Header>
+        <Modal.Body>{modalBody}</Modal.Body>
+        <Modal.Footer>
+          {
+            modalSecondaryButtonText && modalSecondaryButtonOnClick &&
+            <Button variant="secondary" onClick={modalSecondaryButtonOnClick}>{modalSecondaryButtonText}</Button>
+          }
+          <Button variant="primary" onClick={modalPrimaryButtonOnClick}>{modalPrimaryButtonText}</Button>
+        </Modal.Footer>
+      </Modal>
 
       <footer>
         <p className="mt-3 text text-end text-black-50 fs-6">Version {version}</p>

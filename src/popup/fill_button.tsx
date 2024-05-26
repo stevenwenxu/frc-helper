@@ -1,6 +1,7 @@
 import Button from "react-bootstrap/Button";
-import { Parent, Student } from "../common/models/person";
+import { Student } from "../common/models/person";
 import { useFamilyContext } from "./family_context";
+import { useModal } from "./modal_context";
 import { SupportedPath, supportedUrls } from "../aspen/helpers/supported_path";
 import { useState } from "react";
 import "./fill_button.css";
@@ -10,6 +11,7 @@ type ButtonStatus = "idle" | "filling" | "success" | "failed";
 export default function FillButton() {
   const { selectedFamilyId, selectedPeopleIndex, selectedPerson } = useFamilyContext();
   const [status, setStatus] = useState<ButtonStatus>("idle");
+  const { showModal, setShouldShowModal } = useModal();
 
   if (!selectedFamilyId || selectedPeopleIndex === undefined || !selectedPerson) {
     console.error("FillButton: unexpected state", selectedFamilyId, selectedPeopleIndex, selectedPerson);
@@ -29,34 +31,77 @@ export default function FillButton() {
       buttonText = <Cross />;
   }
 
-  const handleClick = async () => {
-    try {
-      setStatus("filling");
+  const identifyTab = async () => {
+    const tabs = await chrome.tabs.query({ active: true, url: supportedUrls });
+    console.log("State of tabs", tabs.map(tab => [tab.url, tab.active]));
 
-      const {tabId, pathname, context} = await identifyTabs(selectedPerson);
-
-      const response = await chrome.tabs.sendMessage(tabId, {
-        type: "fillAspen",
-        familyId: selectedFamilyId,
-        personIndex: selectedPeopleIndex,
-        pathname: pathname,
-        context: context
-      });
-
-      if (response !== "ok" && response !== "refreshRequired") {
-        setStatus("failed");
-      } else {
-        setStatus("success");
-      }
-    } catch (error) {
-      setStatus("failed");
-      alert((error as Error).message);
-    } finally {
-      setTimeout(() => {
-        setStatus("idle");
-      }, 1500);
+    if (tabs.length === 0) {
+      showModal(
+        "Aspen not found",
+        "Ensure Aspen is open and active.",
+        "Close",
+        () => {
+          setShouldShowModal(false);
+          setStatus("idle");
+        }
+      );
+      return null;
     }
-  }
+
+    const tab = tabs.at(-1)!;
+    console.log("Filling tab: ", tab.url);
+
+    const personType = selectedPerson instanceof Student ? "student" : "parent";
+    const url = new URL(tab.url!);
+    const pathname = url.pathname;
+    const context = url.searchParams.get("context");
+    const expected = expectedPersonType(pathname);
+    if (!expected.includes(personType)) {
+      showModal(
+        "Oops",
+        `You selected a ${personType}, but the Aspen page is for a ${expected.join(" or ")}.`,
+        "Close",
+        () => {
+          setShouldShowModal(false);
+          setStatus("idle");
+        }
+      );
+      return null;
+    }
+
+    return {tabId: tab.id!, pathname, context};
+  };
+
+  const handleClick = async () => {
+    setStatus("filling");
+
+    const tab = await identifyTab();
+
+    if (!tab) {
+      setStatus("failed");
+      return;
+    }
+
+    const response = await chrome.tabs.sendMessage(tab.tabId, {
+      type: "fillAspen",
+      familyId: selectedFamilyId,
+      personIndex: selectedPeopleIndex,
+      pathname: tab.pathname,
+      context: tab.context
+    });
+
+    console.log("FillButton got response", response);
+
+    if (response !== "ok" && response !== "refreshRequired") {
+      setStatus("failed");
+    } else {
+      setStatus("success");
+    }
+
+    setTimeout(() => {
+      setStatus("idle");
+    }, 1500);
+  };
 
   return (
     <Button
@@ -86,29 +131,6 @@ function Cross() {
       <path className="cross_check" fill="none" d="M16 16 36 36 M36 16 16 36"/>
     </svg>
   );
-}
-
-async function identifyTabs(selectedPerson: Parent | Student) {
-  const tabs = await chrome.tabs.query({ active: true, url: supportedUrls });
-  console.log("State of tabs", tabs.map(tab => [tab.url, tab.active]));
-
-  if (tabs.length === 0) {
-    throw new Error("You don't have any active Aspen pages to fill.");
-  }
-
-  const tab = tabs.at(-1)!;
-  console.log("Filling tab: ", tab.url);
-
-  const personType = selectedPerson instanceof Student ? "student" : "parent";
-  const url = new URL(tab.url!);
-  const pathname = url.pathname;
-  const context = url.searchParams.get("context");
-  const expected = expectedPersonType(pathname);
-  if (!expected.includes(personType)) {
-    throw new Error(`You selected a ${personType}, but the form is for a ${expected.join(" or ")}.`);
-  }
-
-  return {tabId: tab.id!, pathname, context};
 }
 
 function expectedPersonType(pathname: string) {
