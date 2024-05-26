@@ -8,6 +8,7 @@ import { Family } from "../common/models/family";
 import { FamilyRepository } from "../common/family_repository";
 import { useFamilyContext } from "./family_context";
 import { useMainContentType } from "./main_content_context";
+import { useModal } from "./modal_context";
 
 export default function FamilyPicker() {
   const {
@@ -19,6 +20,7 @@ export default function FamilyPicker() {
     setSelectedPeopleIndex,
   } = useFamilyContext();
   const { setMainContentType } = useMainContentType();
+  const { showModal, hideModal } = useModal();
 
   const familiesByVisitDate = families.reduce((acc, family) => {
     const visitDate = family.visitDate.toDateString();
@@ -34,28 +36,41 @@ export default function FamilyPicker() {
     if (!selectedFamilyId || !selectedFamily) {
       return;
     }
-    if (!window.confirm(`Are you sure you want to delete ${selectedFamily.displayName}?`)) {
-      return;
-    }
 
-    FamilyRepository.deleteFamily(selectedFamilyId).then(() => {
-      const newFamilies = families.filter(family => family.uniqueId !== selectedFamilyId);
-      setFamilies(newFamilies);
-      if (newFamilies.length > 0) {
-        setSelectedFamilyId(newFamilies[0].uniqueId);
-        setSelectedPeopleIndex(0);
-      } else {
-        setMainContentType("empty");
+    showModal(
+      "Delete family",
+      `Are you sure you want to delete ${selectedFamily.displayName}?`,
+      "Yes",
+      () => {
+        const newFamilies = families.filter(family => family.uniqueId !== selectedFamilyId);
+        setFamilies(newFamilies);
+        if (newFamilies.length > 0) {
+          setSelectedFamilyId(newFamilies[0].uniqueId);
+          setSelectedPeopleIndex(0);
+        } else {
+          setMainContentType("empty");
+        }
+        hideModal();
+        FamilyRepository.deleteFamily(selectedFamilyId);
+      },
+      "No",
+      () => {
+        hideModal();
       }
-    });
+    );
   }
+
+  const onChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
+    setSelectedFamilyId(event.target.value);
+    setSelectedPeopleIndex(0);
+  };
 
   return (
     <FormGroup controlId="familyPicker">
       <FormLabel className="mt-2">Select a family</FormLabel>
       <Row className="mb-2 gx-2">
         <Col>
-          <FormSelect value={selectedFamilyId} onChange={(e) => { setSelectedFamilyId(e.target.value) }}>
+          <FormSelect value={selectedFamilyId} onChange={onChange}>
             {Object.keys(familiesByVisitDate).map((visitDate) => (
               <optgroup label={visitDate} key={visitDate}>
                 {familiesByVisitDate[visitDate].map((family) => (
