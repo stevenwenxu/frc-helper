@@ -1,8 +1,6 @@
 import { useEffect } from "react";
 import Container from "react-bootstrap/Container";
 import Spinner from 'react-bootstrap/Spinner';
-import Modal from 'react-bootstrap/Modal';
-import Button from 'react-bootstrap/Button';
 import { FamilyRepository } from "../common/family_repository";
 import EmptyAlert from "./empty_alert";
 import { useMainContentType } from "./main_content_context";
@@ -19,17 +17,7 @@ interface PopupProps {
 export default function Popup({version}: PopupProps) {
   const { setFamilies, setSelectedFamilyId, setSelectedPeopleIndex } = useFamilyContext();
   const { mainContentType, setMainContentType } = useMainContentType();
-  const {
-    shouldShowModal,
-    setShouldShowModal,
-    showModal,
-    modalHeader,
-    modalBody,
-    modalPrimaryButtonText,
-    modalPrimaryButtonOnClick,
-    modalSecondaryButtonText,
-    modalSecondaryButtonOnClick,
-  } = useModal();
+  const { showModal, hideModal } = useModal();
 
   useEffect(() => {
     let ignore = false;
@@ -91,7 +79,7 @@ export default function Popup({version}: PopupProps) {
                 "The page you are trying to fill is not recognised. Is this a new flow?",
                 "Close",
                 () => {
-                  setShouldShowModal(false);
+                  hideModal();
                 }
               )
               break;
@@ -110,12 +98,12 @@ export default function Popup({version}: PopupProps) {
             "Yes",
             () => {
               sendResponse({ confirmUpdateStudentName: true });
-              setShouldShowModal(false);
+              hideModal();
             },
             "No",
             () => {
               sendResponse({ confirmUpdateStudentName: false });
-              setShouldShowModal(false);
+              hideModal();
             }
           )
           break;
@@ -134,7 +122,7 @@ export default function Popup({version}: PopupProps) {
     return () => {
       chrome.runtime.onMessage.removeListener(handleMessage);
     };
-  }, [setFamilies, setShouldShowModal, showModal]);
+  }, [setFamilies, showModal, hideModal]);
 
   let mainContent: JSX.Element;
   switch (mainContentType) {
@@ -160,20 +148,6 @@ export default function Popup({version}: PopupProps) {
       <h1 className="my-4">Family Reception Centre</h1>
 
       {mainContent}
-
-      <Modal show={shouldShowModal} backdrop="static" keyboard={false} >
-        <Modal.Header>
-          <Modal.Title>{modalHeader}</Modal.Title>
-        </Modal.Header>
-        <Modal.Body>{modalBody}</Modal.Body>
-        <Modal.Footer>
-          {
-            modalSecondaryButtonText && modalSecondaryButtonOnClick &&
-            <Button variant="secondary" onClick={modalSecondaryButtonOnClick}>{modalSecondaryButtonText}</Button>
-          }
-          <Button variant="primary" onClick={modalPrimaryButtonOnClick}>{modalPrimaryButtonText}</Button>
-        </Modal.Footer>
-      </Modal>
 
       <footer>
         <p className="mt-3 text text-end text-black-50 fs-6">Version {version}</p>

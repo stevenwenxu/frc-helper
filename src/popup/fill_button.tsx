@@ -11,7 +11,7 @@ type ButtonStatus = "idle" | "filling" | "success" | "failed";
 export default function FillButton() {
   const { selectedFamilyId, selectedPeopleIndex, selectedPerson } = useFamilyContext();
   const [status, setStatus] = useState<ButtonStatus>("idle");
-  const { showModal, setShouldShowModal } = useModal();
+  const { showModal, hideModal } = useModal();
 
   if (!selectedFamilyId || selectedPeopleIndex === undefined || !selectedPerson) {
     console.error("FillButton: unexpected state", selectedFamilyId, selectedPeopleIndex, selectedPerson);
@@ -41,7 +41,7 @@ export default function FillButton() {
         "Ensure Aspen is open and active.",
         "Close",
         () => {
-          setShouldShowModal(false);
+          hideModal();
           setStatus("idle");
         }
       );
@@ -62,7 +62,7 @@ export default function FillButton() {
         `You selected a ${personType}, but the Aspen page is for a ${expected.join(" or ")}.`,
         "Close",
         () => {
-          setShouldShowModal(false);
+          hideModal();
           setStatus("idle");
         }
       );

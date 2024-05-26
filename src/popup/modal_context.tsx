@@ -1,34 +1,22 @@
-import { createContext, useState, useContext, Dispatch, SetStateAction } from 'react';
+import { createContext, useState, useContext } from 'react';
+import Modal from 'react-bootstrap/Modal';
+import Button from 'react-bootstrap/Button';
 
 interface ModalContextType {
-  shouldShowModal: boolean;
-  setShouldShowModal: Dispatch<SetStateAction<boolean>>;
   showModal: (
     header: string,
     body: string,
-    modalPrimaryButtonText: string,
-    modalPrimaryButtonOnClick: () => void,
-    modalSecondaryButtonText?: string,
-    modalSecondaryButtonOnClick?: () => void,
+    primaryButtonText: string,
+    primaryButtonOnClick: () => void,
+    secondaryButtonText?: string,
+    secondaryButtonOnClick?: () => void,
   ) => void;
-  modalHeader: string;
-  modalBody: string;
-  modalPrimaryButtonText: string;
-  modalPrimaryButtonOnClick: () => void;
-  modalSecondaryButtonText?: string;
-  modalSecondaryButtonOnClick?: () => void;
+  hideModal: () => void;
 };
 
 export const ModalContext = createContext<ModalContextType>({
-  shouldShowModal: false,
-  setShouldShowModal: () => {},
   showModal: () => {},
-  modalHeader: "",
-  modalBody: "",
-  modalPrimaryButtonText: "",
-  modalPrimaryButtonOnClick: () => {},
-  modalSecondaryButtonText: undefined,
-  modalSecondaryButtonOnClick: undefined,
+  hideModal: () => {},
 });
 
 interface ModalProviderProps {
@@ -36,13 +24,13 @@ interface ModalProviderProps {
 };
 
 export function ModalProvider({ children }: ModalProviderProps) {
-  const [shouldShowModal, setShouldShowModal] = useState<boolean>(false);
-  const [modalHeader, setModalHeader] = useState("");
-  const [modalBody, setModalBody] = useState("");
-  const [modalPrimaryButtonText, setModalPrimaryButtonText] = useState("");
-  const [modalPrimaryButtonOnClick, setModalPrimaryButtonOnClick] = useState<() => void>(() => {});
-  const [modalSecondaryButtonText, setModalSecondaryButtonText] = useState<string | undefined>(undefined);
-  const [modalSecondaryButtonOnClick, setModalSecondaryButtonOnClick] = useState<(() => void) | undefined>(undefined);
+  const [shouldShow, setShouldShow] = useState<boolean>(false);
+  const [header, setHeader] = useState("");
+  const [body, setBody] = useState("");
+  const [primaryButtonText, setPrimaryButtonText] = useState("");
+  const [primaryButtonOnClick, setPrimaryButtonOnClick] = useState<() => void>(() => {});
+  const [secondaryButtonText, setSecondaryButtonText] = useState<string | undefined>(undefined);
+  const [secondaryButtonOnClick, setSecondaryButtonOnClick] = useState<(() => void) | undefined>(undefined);
 
   const showModal = (
     header: string,
@@ -52,33 +40,41 @@ export function ModalProvider({ children }: ModalProviderProps) {
     secondaryButtonText?: string,
     secondaryButtonOnClick?: () => void,
 ) => {
-    setModalHeader(header);
-    setModalBody(body);
-    setModalPrimaryButtonText(primaryButtonText);
-    setModalPrimaryButtonOnClick(() => primaryButtonOnClick);
+    setHeader(header);
+    setBody(body);
+    setPrimaryButtonText(primaryButtonText);
+    setPrimaryButtonOnClick(() => primaryButtonOnClick);
     if (secondaryButtonText && secondaryButtonOnClick) {
-      setModalSecondaryButtonText(secondaryButtonText);
-      setModalSecondaryButtonOnClick(() => secondaryButtonOnClick);
+      setSecondaryButtonText(secondaryButtonText);
+      setSecondaryButtonOnClick(() => secondaryButtonOnClick);
     } else {
-      setModalSecondaryButtonText(undefined);
-      setModalSecondaryButtonOnClick(undefined);
+      setSecondaryButtonText(undefined);
+      setSecondaryButtonOnClick(undefined);
     }
-    setShouldShowModal(true);
+    setShouldShow(true);
   };
 
+  const hideModal = () => {
+    setShouldShow(false);
+  }
+
   return (
-    <ModalContext.Provider value={{
-      shouldShowModal,
-      setShouldShowModal,
-      showModal,
-      modalHeader,
-      modalBody,
-      modalPrimaryButtonText,
-      modalPrimaryButtonOnClick,
-      modalSecondaryButtonText,
-      modalSecondaryButtonOnClick,
-    }}>
+    <ModalContext.Provider value={{ showModal, hideModal }}>
       {children}
+
+      <Modal show={shouldShow} backdrop="static" keyboard={false} >
+        <Modal.Header>
+          <Modal.Title>{header}</Modal.Title>
+        </Modal.Header>
+        <Modal.Body>{body}</Modal.Body>
+        <Modal.Footer>
+          {
+            secondaryButtonText && secondaryButtonOnClick &&
+            <Button variant="secondary" onClick={secondaryButtonOnClick}>{secondaryButtonText}</Button>
+          }
+          <Button variant="primary" onClick={primaryButtonOnClick}>{primaryButtonText}</Button>
+        </Modal.Footer>
+      </Modal>
     </ModalContext.Provider>
   );
 };
