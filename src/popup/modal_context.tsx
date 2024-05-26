@@ -66,7 +66,7 @@ export function ModalProvider({ children }: ModalProviderProps) {
         <Modal.Header>
           <Modal.Title>{header}</Modal.Title>
         </Modal.Header>
-        <Modal.Body>{body}</Modal.Body>
+        <Modal.Body style={{whiteSpace: "pre-wrap"}}>{body}</Modal.Body>
         <Modal.Footer>
           {
             secondaryButtonText && secondaryButtonOnClick &&

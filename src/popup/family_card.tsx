@@ -1,6 +1,5 @@
 import Card from 'react-bootstrap/Card';
 import Nav from 'react-bootstrap/Nav';
-import Button from "react-bootstrap/Button";
 import Table from 'react-bootstrap/Table';
 import { Parent, Student } from '../common/models/person';
 import { SchoolCategory } from '../common/models/school_category';
@@ -8,9 +7,9 @@ import { StatusInCanada } from '../common/models/status_in_canada';
 import OCDSB031Button from './ocdsb_031_button';
 import StepButton from './step_button';
 import { useFamilyContext } from './family_context';
-import { useMainContentType } from './main_content_context';
 import FillButton from './fill_button';
 import MathAssessmentButton from './math_assessment_button';
+import EmailButton from './email_button';
 
 export default function FamilyCard() {
 
@@ -63,7 +62,6 @@ function Header() {
 
 function Body() {
   const { selectedFamily: family, selectedPerson } = useFamilyContext();
-  const { setMainContentType } = useMainContentType();
 
   if (!family || selectedPerson === undefined) {
     console.error("FamilyCard.Body: unexpected empty state", family, selectedPerson);
@@ -146,13 +144,7 @@ function Body() {
           <OCDSB031Button />
         )}
         <StepButton />
-        <Button
-          variant="outline-primary"
-          className="flex-fill"
-          onClick={() => { setMainContentType("email") }}
-        >
-          Preview email
-        </Button>
+        <EmailButton />
       </div>
     )}
   </>;

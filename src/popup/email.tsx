@@ -10,14 +10,14 @@ import { LanguageCategory } from '../common/models/language_category';
 
 export default function Email() {
   const { setMainContentType } = useMainContentType();
-  const {selectedFamily: family, selectedPeopleIndex} = useFamilyContext();
+  const { selectedFamily: family, selectedPerson: student } = useFamilyContext();
 
-  if (!family || selectedPeopleIndex === undefined) {
-    console.error("Email: unexpected empty state", family, selectedPeopleIndex);
+  if (!family || !student || !(student instanceof Student)) {
+    console.error("Email: unexpected state", family, student);
     return null;
   }
 
-  const students = family.studentsInSameSchool(family.people[selectedPeopleIndex] as Student);
+  const students = family.studentsInSameSchool(student);
 
   return (
     <>
@@ -64,7 +64,6 @@ function emailBody(students: Student[]) {
   const lastNames = formatter.format([...new Set(students.map(s => s.lastName))]);
   const student = students[0];
   const moreThanOneStudent = students.length > 1;
-  const pendingTransferChecked = students.map(s => s.pendingTransferChecked).every(Boolean);
 
   return `
     <html>
@@ -104,7 +103,7 @@ function emailBody(students: Student[]) {
         ${ student.isPreRegistration ? `
         Based on the home address provided during the intake meeting, their ${moreThanOneStudent ? "children have" : "child has"} been pre-registered in Aspen to your school. You will find them in Aspen in your "All Pre-reg Students" list.
         ` : student.isNewRegistration ? `
-        Based on the home address provided during the intake meeting, their ${moreThanOneStudent ? "children have" : "child has"} been activated in Aspen in the "FRC Holding School" and ${moreThanOneStudent ? "are" : "is"} ${ pendingTransferChecked ? "ready to transfer" : "<span class=\"error\">ready to transfer</span>" } to your school.
+        Based on the home address provided during the intake meeting, their ${moreThanOneStudent ? "children have" : "child has"} been activated in Aspen in the "FRC Holding School" and ${moreThanOneStudent ? "are" : "is"} ready to transfer to your school.
         ` : `
         ${ moreThanOneStudent ? "These students are" : "This student is" } already enrolled at your school.
         `
