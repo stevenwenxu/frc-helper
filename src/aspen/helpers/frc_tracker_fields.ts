@@ -27,7 +27,7 @@ export class FRCTrackerFields {
       (dropdownValue >= 20 && dropdownValue <= 24) ||
       (dropdownValue >= 28 && dropdownValue <= 29)) {
       return LanguageCategory.ELD;
-    } else if (dropdownValue == 9 || dropdownValue == 14 || dropdownValue == 25) {
+    } else if (dropdownValue === 9 || dropdownValue === 14 || dropdownValue === 25) {
       return LanguageCategory.Native;
     } else {
       return LanguageCategory.Unknown;
@@ -43,7 +43,7 @@ export class FRCTrackerFields {
       return "";
     } else if (language === LanguageCategory.Native || overall === "6") {
       return "ENG2D";
-    } else if (language == LanguageCategory.Unknown || overall === "") {
+    } else if (language === LanguageCategory.Unknown || overall === "") {
       return "";
     } else {
       // ESLAO, ESLBO, ..., ELDAO, ELDBO, ...
@@ -157,68 +157,23 @@ Writing ${languageCategory} STEP ${writing}.`;
     if (student.languageCategory === LanguageCategory.ELD) {
       switch (student.grade) {
         case "1": case "2": return "";
-        case "3": case "4": case "5": case "6": case "7": case "8": {
+        case "3": case "4": case "5": case "6": case "7": case "8": case "9": case "10": case "11": case "12": {
           switch (reading) {
-            case "1": return "FRC Early Literacy Task";
-            case "2": return "FRC Early Literacy Task\nReading Comprehension-The Bear and the Bees";
-            default: return "";
-          }
-        }
-        case "9": case "10": case "11": case "12": {
-          switch (reading) {
-            case "1": return "FRC Early Literacy Task";
-            case "2": return "FRC Early Literacy Task\nReading Comprehension-I Want to Be a Teacher";
+            case "1": case "2": return "Core Phonic Survey\nFRC Early Literacy Tasks\nSTEP 1 Reading Task";
             default: return "";
           }
         }
         default: return "";
       }
     }
-    switch (student.grade) {
-      case "1": case "2": case "3": {
-        switch (reading) {
-          case "1": return "FRC Early Literacy Task\nReading Comprehension-My Cat";
-          case "2": return "FRC Early Literacy Task\nReading Comprehension-The Night Sky";
-          case "3": return "Reading Diagnostic Test\nReading Comprehension-A Trip to the Market";
-          case "4": return "Reading Diagnostic Test\nReading Comprehension-A Day at the Market";
-          case "5":
-          case "6": return "Reading Diagnostic Test\nReading Comprehension-All About Koalas";
-          default: return "";
-        }
-      }
-      case "4": case "5": case "6": {
-        switch (reading) {
-          case "1": return "FRC Early Literacy Task\nReading Comprehension-Ali's Garden";
-          case "2": return "FRC Early Literacy Task\nReading Comprehension-The Bear and the Bees";
-          case "3": return "Reading Diagnostic Test\nReading Comprehension-The New Red Car";
-          case "4": return "Reading Diagnostic Test\nReading Comprehension-Bears";
-          case "5":
-          case "6": return "Reading Diagnostic Test\nReading Comprehension-Tsunamis";
-          default: return "";
-        }
-      }
-      case "7": case "8": {
-        switch (reading) {
-          case "1": return "FRC Early Literacy Task\nReading Comprehension-The Bear and the Bees";
-          case "2": return "FRC Early Literacy Task\nReading Comprehension-Everyone Uses Math";
-          case "3": return "Reading Diagnostic Test\nReading Comprehension-Texting and Driving is Dangerous";
-          case "4": return "Reading Diagnostic Test\nReading Comprehension-The History of Jeans";
-          case "5":
-          case "6": return "Reading Diagnostic Test\nReading Comprehension-The Boatman and the Professor";
-          default: return "";
-        }
-      }
-      case "9": case "10": case "11": case "12": {
-        switch (reading) {
-          case "1": return "FRC Early Literacy Task\nReading Comprehension-I Want to Be a Teacher";
-          case "2": return "FRC Early Literacy Task\nReading Comprehension-An Honest Man";
-          case "3": return "Reading Diagnostic Test\nReading Comprehension-The History of Jeans";
-          case "4": return "Reading Diagnostic Test\nReading Comprehension-The Boatman and the Professor";
-          case "5":
-          case "6": return "Reading Diagnostic Test\nReading Comprehension-Our Dinner Table University";
-          default: return "";
-        }
-      }
+
+    switch (reading) {
+      case "1": return "Core Phonic Survey\nFRC Early Literacy Task\nSTEP 1 Reading Task";
+      case "2": return "Core Phonic Survey\nFRC Early Literacy Task\nSTEP 2 Reading Task";
+      case "3": return "STEP 3 Reading Task";
+      case "4": return "STEP 4 Reading Task";
+      case "5":
+      case "6": return "STEP 5 Reading Task";
       default: return "";
     }
   }
