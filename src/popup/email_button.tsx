@@ -21,15 +21,16 @@ export default function EmailButton() {
         .map(s => s.firstName);
 
       if (pendingTransferNotChecked.length > 0) {
-        showModal(
-          "Transfer pending not checked",
-          `Re: ${pendingTransferNotChecked.join(", ")}\n\nThe "Transfer pending" checkbox should be checked before sending email to the school.\n\nIf it's already checked, click Fill again to ensure the latest data is used.`,
-          "Continue",
-          () => {
+        showModal({
+          header: "Transfer pending not checked",
+          body: `Re: ${pendingTransferNotChecked.join(", ")}\n\nDon't forget to check the "Transfer pending" checkbox before sending email to the school.\n\nIf it's already checked, click Fill again to ensure the latest data is used.`,
+          primaryButtonText: "Continue",
+          primaryButtonVariant: "warning",
+          primaryButtonOnClick: () => {
             hideModal();
             setMainContentType("email");
-          }
-        );
+          },
+        });
       } else {
         setMainContentType("email");
       }

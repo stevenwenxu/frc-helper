@@ -36,15 +36,15 @@ export default function FillButton() {
     console.log("State of tabs", tabs.map(tab => [tab.url, tab.active]));
 
     if (tabs.length === 0) {
-      showModal(
-        "Aspen not found",
-        "Ensure Aspen is open and active.",
-        "Close",
-        () => {
+      showModal({
+        header: "Aspen not found",
+        body: "Ensure Aspen is open and active.",
+        primaryButtonText: "Close",
+        primaryButtonOnClick: () => {
           hideModal();
           setStatus("idle");
-        }
-      );
+        },
+      });
       return null;
     }
 
@@ -57,15 +57,15 @@ export default function FillButton() {
     const context = url.searchParams.get("context");
     const expected = expectedPersonType(pathname);
     if (!expected.includes(personType)) {
-      showModal(
-        "Oops",
-        `You selected a ${personType}, but the Aspen page is for a ${expected.join(" or ")}.`,
-        "Close",
-        () => {
+      showModal({
+        header: "Wrong person type",
+        body: `You selected a ${personType}, but the Aspen page is for a ${expected.join(" or ")}.`,
+        primaryButtonText: "Close",
+        primaryButtonOnClick: () => {
           hideModal();
           setStatus("idle");
-        }
-      );
+        },
+      });
       return null;
     }
 

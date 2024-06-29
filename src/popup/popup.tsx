@@ -62,26 +62,26 @@ export default function Popup({version}: PopupProps) {
               break;
             }
             case "familyNotFound": {
-              showModal(
-                "Family not found",
-                "This family has been deleted. Please re-add them from SchoolInterviews if needed.",
-                "Close",
-                () => {
+              showModal({
+                header: "Family not found",
+                body: "This family has been deleted. Please re-add them from SchoolInterviews if needed.",
+                primaryButtonText: "Close",
+                primaryButtonOnClick: () => {
                   // Reload the page to ensure we have the latest data
                   window.location.reload();
-                }
-              )
+                },
+              });
               break;
             }
             case "unknownPage": {
-              showModal(
-                "Unknown page",
-                "The page you are trying to fill is not recognised. Is this a new flow?",
-                "Close",
-                () => {
+              showModal({
+                header: "Unknown page",
+                body: "The page you are trying to fill is not recognised. Is this a new flow?",
+                primaryButtonText: "Close",
+                primaryButtonOnClick: () => {
                   hideModal();
-                }
-              )
+                },
+              });
               break;
             }
             default: {
@@ -92,20 +92,20 @@ export default function Popup({version}: PopupProps) {
           break;
         }
         case "confirmUpdateStudentName": {
-          showModal(
-            "Update student name",
-            `Do you want to update ${message.oldName} to ${message.newName}?`,
-            "Yes",
-            () => {
+          showModal({
+            header: "Update student name",
+            body: `Do you want to update ${message.oldName} to ${message.newName}?`,
+            primaryButtonText: "Update",
+            primaryButtonOnClick: () => {
               sendResponse({ confirmUpdateStudentName: true });
               hideModal();
             },
-            "No",
-            () => {
+            secondaryButtonText: "Cancel",
+            secondaryButtonOnClick: () => {
               sendResponse({ confirmUpdateStudentName: false });
               hideModal();
-            }
-          )
+            },
+          });
           break;
         }
         default: {

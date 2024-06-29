@@ -37,11 +37,12 @@ export default function FamilyPicker() {
       return;
     }
 
-    showModal(
-      "Delete family",
-      `Are you sure you want to delete ${selectedFamily.displayName}?`,
-      "Yes",
-      () => {
+    showModal({
+      header: "Delete family",
+      body: `Are you sure you want to delete ${selectedFamily.displayName}?`,
+      primaryButtonText: "Delete",
+      primaryButtonVariant: "danger",
+      primaryButtonOnClick: () => {
         const newFamilies = families.filter(family => family.uniqueId !== selectedFamilyId);
         setFamilies(newFamilies);
         if (newFamilies.length > 0) {
@@ -53,11 +54,11 @@ export default function FamilyPicker() {
         hideModal();
         FamilyRepository.deleteFamily(selectedFamilyId);
       },
-      "No",
-      () => {
+      secondaryButtonText: "Cancel",
+      secondaryButtonOnClick: () => {
         hideModal();
-      }
-    );
+      },
+    });
   }
 
   const onChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
