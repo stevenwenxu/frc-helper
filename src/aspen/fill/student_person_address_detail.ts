@@ -50,7 +50,6 @@ function updateStudentDetails(student: Student) {
   const homeLanguage = elements.namedItem("propertyValue(stdHomeLang)") as HTMLSelectElement | null;
   const currentSchool = elements.namedItem("propertyValue(relStdSklOid_sklSchoolName)") as HTMLInputElement | null;
   const transferSchool = elements.namedItem("#propertyValue(stdSklOIDTrans)") as HTMLInputElement | null;
-  const transferPending = elements.namedItem("prefixpropertyValue(stdTransferInd)") as HTMLInputElement | null;
   const nextYearSchool = elements.namedItem("#propertyValue(stdSklOIDNext)") as HTMLInputElement | null;
 
   // Citizenship
@@ -99,9 +98,6 @@ function updateStudentDetails(student: Student) {
   }
   if (transferSchool) {
     student.transferSchool = transferSchool.value;
-  }
-  if (transferPending) {
-    student.pendingTransferChecked = transferPending.checked;
   }
   if (nextYearSchool) {
     student.nextYearSchool = nextYearSchool.value;

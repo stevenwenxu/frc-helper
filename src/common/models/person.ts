@@ -58,7 +58,6 @@ export class Student extends Person {
   homeLanguage = "";
   currentSchool = "";
   transferSchool = "";
-  pendingTransferChecked = true;
   nextYearSchool = "";
 
   // Fields below are captured from Aspen Citizenship.
