@@ -140,6 +140,7 @@ function expectedPersonType(pathname: string) {
     case SupportedPath.StudentRegistration2:
     case SupportedPath.ChildDetail:
     case SupportedPath.StudentPersonAddressDetail:
+    case SupportedPath.StudentTransfer:
       return ["student"];
     case SupportedPath.MultiplePersonAddressChildDetail:
       return ["student", "parent"];

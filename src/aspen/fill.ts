@@ -11,6 +11,7 @@ import { fillFRCTracker, saveFRCTrackerDetails, setupFRCTrackerHooks, setupFRCTr
 import { fillEducationalBackground, saveEducationComments, setupEducationalBackgroundHooks } from "./fill/educational_background";
 import { saveStudentDetails } from "./fill/student_person_address_detail";
 import { fillELL } from "./fill/programs_ell";
+import { fillTransfer } from "./fill/transfer";
 
 chrome.runtime.onMessage.addListener(
   function(request, sender, sendResponse) {
@@ -86,6 +87,9 @@ async function fill(familyId: string, personIndex: number, pathname: string, con
     case SupportedPath.StudentPersonAddressDetail:
       await saveStudentDetails(family.uniqueId, personIndex);
       response = "refreshRequired";
+      break;
+    case SupportedPath.StudentTransfer:
+      fillTransfer(person as Student);
       break;
     default:
       console.error("Unknown page", pathname);

@@ -4,29 +4,47 @@ import { useFamilyContext } from "./family_context";
 import { useModal } from "./modal_context";
 
 export default function TransferButton() {
-  const { selectedPerson: student } = useFamilyContext();
+  const { selectedFamilyId, selectedPeopleIndex, selectedPerson: student } = useFamilyContext();
   const { showModal, hideModal } = useModal();
 
-  if (!student || !(student instanceof Student)) {
-    console.error("TransferButton: unexpected state", student);
+  if (!selectedFamilyId || selectedPeopleIndex === undefined || !student || !(student instanceof Student)) {
+    console.error("TransferButton: unexpected state", selectedFamilyId, selectedPeopleIndex, student);
     return null;
   }
 
-  const onClick = () => {
+  const onClick = async () => {
     if (student.originalOid.length === 0) {
       showModal({
-        header: "Fill student again",
-        body: "Please fill the student information again.",
+        header: "Missing student information",
+        body: "Please fill the student information from Aspen.",
         primaryButtonText: "OK",
         primaryButtonOnClick: () => {
           hideModal();
         }
-      })
-    } else {
-      chrome.tabs.create({
-        url: `https://ocdsb.myontarioedu.ca/aspen/studentTransfer.do?maximized=false&prefix=ENR&context=student.enrollment.transfer.detailPopup&runningSelection=${student.originalOid}&deploymentId=ocdsbsis`
-      })
+      });
+      return;
     }
+
+    const pathname = "/aspen/studentTransfer.do";
+    const context = "student.enrollment.transfer.detailPopup";
+
+    const newTab = await chrome.tabs.create({
+      url: `https://ocdsb.myontarioedu.ca${pathname}?maximized=false&prefix=ENR&context=${context}&runningSelection=${student.originalOid}&deploymentId=ocdsbsis`
+    });
+
+    chrome.tabs.onUpdated.addListener(async (tabId, changeInfo, tab) => {
+      if (tabId == newTab.id! && changeInfo.status == "complete") {
+        const response = await chrome.tabs.sendMessage(tabId, {
+          type: "fillAspen",
+          familyId: selectedFamilyId,
+          personIndex: selectedPeopleIndex,
+          pathname: pathname,
+          context: context
+        });
+
+        console.log("Filling transfer response", response);
+      }
+    });
   }
 
   return (

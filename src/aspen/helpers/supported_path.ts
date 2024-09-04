@@ -11,7 +11,9 @@ export enum SupportedPath {
   // Educational background, FRC tracker, Programs ELL
   ChildDetail = "/aspen/childDetail.do",
   // Demographics
-  StudentPersonAddressDetail = "/aspen/studentPersonAddressDetail.do"
+  StudentPersonAddressDetail = "/aspen/studentPersonAddressDetail.do",
+  // Transfer student to another school
+  StudentTransfer = "/aspen/studentTransfer.do"
 }
 
 export const supportedUrls = Object.values(SupportedPath).map((path) => {
