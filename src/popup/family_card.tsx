@@ -10,6 +10,7 @@ import { useFamilyContext } from './family_context';
 import FillButton from './fill_button';
 import MathAssessmentButton from './math_assessment_button';
 import EmailButton from './email_button';
+import TransferButton from './transfer_button';
 
 export default function FamilyCard() {
 
@@ -145,6 +146,7 @@ function Body() {
         )}
         <StepButton />
         <EmailButton />
+        <TransferButton />
       </div>
     )}
   </>;

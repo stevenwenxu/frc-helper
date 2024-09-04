@@ -46,6 +46,7 @@ function updateStudentDetails(student: Student) {
   const dateOfBirth = elements.namedItem("propertyValue(relStdPsnOid_psnDob)") as HTMLInputElement | null;
   const gender = elements.namedItem("propertyValue(relStdPsnOid_psnGenderCode)") as HTMLSelectElement | null;
   const localId = elements.namedItem("propertyValue(stdIDLocal)") as HTMLInputElement | null;
+  const originalOid = elements.namedItem("originalOid") as HTMLInputElement | null;
   const grade = elements.namedItem("propertyValue(stdGradeLevel)") as HTMLSelectElement | null;
   const homeLanguage = elements.namedItem("propertyValue(stdHomeLang)") as HTMLSelectElement | null;
   const currentSchool = elements.namedItem("propertyValue(relStdSklOid_sklSchoolName)") as HTMLInputElement | null;
@@ -85,6 +86,9 @@ function updateStudentDetails(student: Student) {
   }
   if (localId) {
     student.localId = localId.value.replace(/^(\d{3})(\d{3})(\d{3})$/, "$1-$2-$3");
+  }
+  if (originalOid) {
+    student.originalOid = originalOid.value;
   }
   if (grade) {
     const gradeNum = parseInt(grade.value);

@@ -53,6 +53,7 @@ export class Student extends Person {
   legalLastName = "";
   gender = Gender.PreferNotToDisclose;
   localId = "";
+  originalOid = "";
   // Grade on the page. The actual `grade` is incremented if the student is pre-registered to next year.
   demographicsGrade = "";
   homeLanguage = "";
