@@ -51,9 +51,9 @@ function emailSubject(students: Student[]) {
   const initials = formatter.format(students.map(s => s.initials));
   const student = students[0];
   if (student.isPreRegistration) {
-    return `New Pre-registration ${initials} ${student.targetSchool}`;
+    return `FRC New Pre-registration ${initials} ${student.targetSchool}`;
   } else if (student.isNewRegistration) {
-    return `New Registration ${initials} ${student.targetSchool}`;
+    return `FRC New Registration ${initials} ${student.targetSchool}`;
   } else {
     return `FRC Student Assessment in Aspen ${initials} ${student.targetSchool}`;
   }
@@ -103,7 +103,7 @@ function emailBody(students: Student[]) {
         ${ student.isPreRegistration ? `
         Based on the home address provided during the intake meeting, their ${moreThanOneStudent ? "children have" : "child has"} been pre-registered in Aspen to your school. You will find them in Aspen in your "All Pre-reg Students" list.
         ` : student.isNewRegistration ? `
-        Based on the home address provided during the intake meeting, their ${moreThanOneStudent ? "children have" : "child has"} been activated in Aspen in the "FRC Holding School" and ${moreThanOneStudent ? "are" : "is"} ready to transfer to your school.
+        Based on the home address provided during the intake meeting, their ${moreThanOneStudent ? "children have" : "child has"} been activated in Aspen and can be found in your "All Active Student" list.
         ` : `
         ${ moreThanOneStudent ? "These students are" : "This student is" } already enrolled at your school.
         `
