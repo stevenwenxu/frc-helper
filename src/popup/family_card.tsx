@@ -79,6 +79,7 @@ function Body() {
     selectedPerson.statusInCanada === StatusInCanada.CanadianCitizen ||
     selectedPerson.statusInCanada === StatusInCanada.PermanentResident
   );
+  const isTransferAvailable = selectedPerson instanceof Student && selectedPerson.isNewRegistration;
 
   return <>
     <div className="d-flex gap-3 mb-3">
@@ -146,7 +147,9 @@ function Body() {
         )}
         <StepButton />
         <EmailButton />
-        <TransferButton />
+        {isTransferAvailable && (
+          <TransferButton />
+        )}
       </div>
     )}
   </>;
