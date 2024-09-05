@@ -1,7 +1,6 @@
 import Stack from 'react-bootstrap/Stack';
 import Button from 'react-bootstrap/Button';
 import CloseButton from 'react-bootstrap/CloseButton';
-import Image from 'react-bootstrap/Image'
 import { useMainContentType } from './main_content_context';
 import { useFamilyContext } from './family_context';
 import { Student } from '../common/models/person';
@@ -23,8 +22,10 @@ export default function Email() {
     <>
       <Stack direction="horizontal" gap={3}>
         <CloseButton onClick={() => { setMainContentType("family") }} />
-        <Button variant="outline-success" onClick={() => { openGmail(students) }}>
-          <Image src="/images/gmail.png" width="20px" className="me-1" />
+        <Button variant="outline-primary" onClick={() => { openGmail(students) }}>
+          <svg width="16" height="16" fill="currentColor" className="me-1">
+            <use href="/images/email.svg#email-svg"/>
+          </svg>
           Open Gmail
         </Button>
       </Stack>

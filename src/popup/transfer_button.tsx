@@ -38,7 +38,7 @@ export default function TransferButton() {
 
   return (
     <Button
-      variant="outline-secondary"
+      variant="outline-primary"
       className="flex-fill"
       onClick={onClick}
     >

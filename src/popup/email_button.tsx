@@ -18,11 +18,14 @@ export default function EmailButton() {
 
   return (
     <Button
-      variant="outline-secondary"
+      variant="outline-primary"
       className="flex-fill"
       onClick={onClick}
     >
-      Preview email
+      <svg width="16" height="16" fill="currentColor" className="me-1">
+        <use href="/images/email.svg#email-svg"/>
+      </svg>
+      Email
     </Button>
   )
 }
