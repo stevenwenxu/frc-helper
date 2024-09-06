@@ -76,7 +76,7 @@ export default function Popup({version}: PopupProps) {
             case "unknownPage": {
               showModal({
                 header: "Unknown page",
-                body: "The page you are trying to fill is not recognised. Is this a new flow?",
+                body: "The page you are trying to fill is not recognized. Tell me about it!",
                 primaryButtonText: "Close",
                 primaryButtonOnClick: () => {
                   hideModal();

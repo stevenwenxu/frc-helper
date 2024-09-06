@@ -89,7 +89,7 @@ async function fill(familyId: string, personIndex: number, pathname: string, con
       response = "refreshRequired";
       break;
     case SupportedPath.StudentTransfer:
-      fillTransfer(person as Student);
+      response = fillTransfer(person as Student);
       break;
     default:
       console.error("Unknown page", pathname);

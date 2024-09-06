@@ -3,7 +3,11 @@ import { setValue } from "../../common/helpers/fill_helper";
 import { SchoolCategory } from "../../common/models/school_category";
 
 export function fillTransfer(student: Student) {
-  const elements = document.forms.namedItem("transferForm")!.elements;
+  const elements = document.forms.namedItem("transferForm")?.elements;
+  if (!elements) {
+    console.log("Transfer form not found. Perhaps the user hasn't logged in.");
+    return "unknownPage";
+  }
   let entryCode: string | null;
   switch (student.schoolCategory) {
     case SchoolCategory.Elementary:
@@ -44,4 +48,6 @@ export function fillTransfer(student: Student) {
     elements.namedItem("entryReason") as HTMLInputElement,
     "Ext Admit"
   );
+
+  return "ok";
 }
