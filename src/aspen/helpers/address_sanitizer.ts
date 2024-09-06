@@ -3,7 +3,7 @@ export class AddressSanitizer {
     return address
       .replace(/,|\./g, "")
       .replace(/ottawa|nepean|kanata|stittsville|manotick|barrhaven|orleans|ontario|canada/gi, "")
-      .replace(/ ON /i, "")
+      .replace(/\bON\b/i, "")
       .replace(/[A-Za-z]\d[A-Za-z][ -]?\d[A-Za-z]\d/i, "")
       .replace(/\bnorth\b|\bsouth\b|\beast\b|\bwest\b/i, "")
       .replace(/crescent/i, "cres")
@@ -17,17 +17,19 @@ export class AddressSanitizer {
       .replace(/circle/i, "cir")
       .replace(/highway/i, "hwy")
       .replace(/private/i, "pvt")
-      .replace(/terrance/i, "terr");
+      .replace(/terrance/i, "terr")
+      .replace(/\s\s+/g, " ")
+      .trim();
   }
 
   static addressToFill(address: string) {
     if (/\bapt\b|\bunit\b/i.test(address)) {
-      return address.replace(/(apt|unit) *(\w+) *-?/i, "");
+      return address.replace(/(apt|unit) *(\w+) *-?/i, "").trim();
     } else if (/\w+ *- *\d+/.test(address)) {
-      return address.replace(/\w+ *-/, "");
+      return address.replace(/\w+ *-/, "").trim();
     }
 
-    return address;
+    return address.trim();
   }
 
   static unitType(address: string) {
