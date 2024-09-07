@@ -60,6 +60,6 @@ export class AddressSanitizer {
   }
 
   static postalCode(address: string) {
-    return address.match(/[A-Za-z]\d[A-Za-z][ -]?\d[A-Za-z]\d/i)?.[0] || "";
+    return address.replaceAll("-", "").match(/[A-Za-z]\d[A-Za-z] ?\d[A-Za-z]\d/i)?.[0] || "";
   }
 }
