@@ -5,13 +5,14 @@
     "lib": ["esnext", "dom"],
     "strictNullChecks": true,
     "module": "esnext",
-    "moduleResolution": "node",
+    "moduleResolution": "bundler",
     "target": "es6",
     "esModuleInterop": true,
     "sourceMap": true,
     "rootDir": "src",
     "outDir": "dist/js",
     "noEmitOnError": true,
-    "typeRoots": [ "node_modules/@types" ]
+    "typeRoots": [ "node_modules/@types" ],
+    "types": ["chrome", "bootstrap", "jest", "react", "react-dom", "node"],
   }
 }

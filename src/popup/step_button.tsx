@@ -83,7 +83,7 @@ async function readingWriting(student: Student, finalDoc: PDFDocument) {
 
 async function generate(student: Student, pdfDocument: PDFDocument) {
   const pdfBytes = await pdfDocument.save();
-  const pdfBlob = new Blob([pdfBytes], { type: "application/pdf" });
+  const pdfBlob = new Blob([new Uint8Array(pdfBytes)], { type: "application/pdf" });
   const pdfUrl = URL.createObjectURL(pdfBlob);
   // chrome.tabs.create({ url: pdfUrl });
 

@@ -19,7 +19,7 @@ export default function TransferButton() {
       url: `https://ocdsb.myontarioedu.ca${pathname}?maximized=false&prefix=ENR&context=${context}${runningSelection}&deploymentId=ocdsbsis`
     });
 
-    const myListener = async (tabId: number, changeInfo: chrome.tabs.TabChangeInfo) => {
+    const myListener = async (tabId: number, changeInfo: chrome.tabs.OnUpdatedInfo) => {
       if (tabId == newTab.id && changeInfo.status == "complete") {
         const response = await chrome.tabs.sendMessage(tabId, {
           type: "fillAspen",

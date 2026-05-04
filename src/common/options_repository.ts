@@ -1,6 +1,11 @@
+interface Options {
+  displayMode?: string;
+}
+
 export class OptionsRepository {
   static async getDisplayMode() {
-    const options = (await chrome.storage.sync.get("options"))?.options;
+    const storage = await chrome.storage.sync.get("options");
+    const options = storage.options as Options | undefined;
     return options?.displayMode || "tab";
   }
 

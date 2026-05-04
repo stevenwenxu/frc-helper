@@ -82,7 +82,7 @@ async function download(student: Student, firstParent: Parent) {
   page.drawText(`Local ID: ${student.localId}`);
 
   const pdfBytes = await pdfDoc.save();
-  const pdfBlob = new Blob([pdfBytes], { type: "application/pdf" });
+  const pdfBlob = new Blob([new Uint8Array(pdfBytes)], { type: "application/pdf" });
   const pdfUrl = URL.createObjectURL(pdfBlob);
   chrome.tabs.create({ url: pdfUrl });
 
