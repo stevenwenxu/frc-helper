@@ -162,7 +162,7 @@ function emailBody(students: Student[]) {
           <li>Hard-copy Application for Admission Registration Form</li>
           <li>OCDSB 031</li>
           ` : ""}
-          <li>Previous school reports</li>
+          <li>Previous school reports/relevant documentation</li>
           <li>Initial Assessment STEP sheets highlighted with STEP levels.</li>
         </ul>
 
@@ -216,8 +216,8 @@ function grade(student: Student) {
 function overallStepLevel(student: Student) {
   switch (student.languageCategory) {
     case LanguageCategory.Native: return "No placement on ESL/ELD STEP Continuum needed";
-    case LanguageCategory.ESL: return `ESL STEP ${student.overallStep}`;
-    case LanguageCategory.ELD: return `ELD STEP ${student.overallStep}`;
+    case LanguageCategory.ESL: return `ESL STEP ${student.overallStep}<br>Oral STEP ESL ${student.speakingStep}<br>Reading STEP ESL ${student.readingStep}<br>Writing STEP ESL ${student.writingStep}`;
+    case LanguageCategory.ELD: return `ELD STEP ${student.overallStep}<br>Oral STEP ELD ${student.speakingStep}<br>Reading STEP ELD ${student.readingStep}<br>Writing STEP ELD ${student.writingStep}`;
     case LanguageCategory.Unknown: return "";
   }
 }
