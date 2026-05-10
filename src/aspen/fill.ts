@@ -31,6 +31,21 @@ chrome.runtime.onMessage.addListener(
   }
 );
 
+async function markStepComplete(familyId: string, personIndex: number, stepName: string): Promise<string> {
+  const family = await FamilyRepository.getFamilyWithUniqueId(familyId);
+  if (!family) return "ok";
+
+  const person = family.people[personIndex];
+  if (!person.completedSteps.includes(stepName)) {
+    person.completedSteps.push(stepName);
+  }
+
+  await FamilyRepository.saveFamily(family);
+
+  // Return refreshRequired to trigger popup update
+  return "refreshRequired";
+}
+
 async function fill(familyId: string, personIndex: number, pathname: string, context: string | null) {
   const family = await FamilyRepository.getFamilyWithUniqueId(familyId);
   if (!family) {
@@ -43,26 +58,32 @@ async function fill(familyId: string, personIndex: number, pathname: string, con
   switch (pathname) {
     case SupportedPath.StudentRegistration0:
       fillStudentRegistration0(person as Student);
+      response = "ok";
       break;
     case SupportedPath.StudentRegistration1:
       fillStudentRegistration1(person as Student);
+      response = "ok";
       break;
     case SupportedPath.StudentRegistration2:
       fillStudentRegistration2();
+      response = "ok";
       break;
     case SupportedPath.MultiplePersonAddressChildDetail:
       switch (context) {
         case SupportedContext.Address:
           fillAddress(person);
+          response = await markStepComplete(familyId, personIndex, "address");
           break;
         case SupportedContext.Phone:
           fillPhone(person);
+          response = await markStepComplete(familyId, personIndex, "phone");
           break;
       }
       break;
     case SupportedPath.AddRecord:
     case SupportedPath.ContactDetail:
       fillParent(person as Parent);
+      response = await markStepComplete(familyId, personIndex, "parent");
       break;
     case SupportedPath.ChildDetail:
       switch (context) {
@@ -70,26 +91,28 @@ async function fill(familyId: string, personIndex: number, pathname: string, con
           setupEducationalBackgroundHooks(family.uniqueId, personIndex);
           fillEducationalBackground(person as Student);
           await saveEducationComments(family.uniqueId, personIndex);
-          response = "refreshRequired";
+          response = await markStepComplete(familyId, personIndex, "educationalBackground");
           break;
         case SupportedContext.FRCTracker:
           setupFRCTrackerHooks(family.uniqueId, personIndex);
           fillFRCTracker(person as Student);
           setupFRCTrackerTooltips();
           await saveFRCTrackerDetails(family.uniqueId, personIndex);
-          response = "refreshRequired";
+          response = await markStepComplete(familyId, personIndex, "frcTracker");
           break;
         case SupportedContext.ProgramsELL:
           fillELL(person as Student);
+          response = await markStepComplete(familyId, personIndex, "ell");
           break;
       }
       break;
     case SupportedPath.StudentPersonAddressDetail:
       await saveStudentDetails(family.uniqueId, personIndex);
-      response = "refreshRequired";
+      response = "ok";
       break;
     case SupportedPath.StudentTransfer:
       response = fillTransfer(person as Student);
+      response = "ok";
       break;
     default:
       console.error("Unknown page", pathname);

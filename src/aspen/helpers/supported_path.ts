@@ -25,5 +25,5 @@ export enum SupportedContext {
   Address = "person.address.popup",
   EducationalBackground = "extracurricular.std.edu.bkgd.list.detail",
   FRCTracker = "extracurricular.std.ell.tracker.list.detail",
-  ProgramsELL = "extracurricular.ell.list.detail"
+  ProgramsELL = "extracurricular.ell.list.detail.ocdsb"
 }

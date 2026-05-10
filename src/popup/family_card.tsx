@@ -11,6 +11,7 @@ import FillButton from './fill_button';
 import MathAssessmentButton from './math_assessment_button';
 import EmailButton from './email_button';
 import TransferButton from './transfer_button';
+import { StepTracker, isPersonComplete } from './step_tracker';
 
 export default function FamilyCard() {
 
@@ -51,9 +52,10 @@ function Header() {
       {family.people.map((person, index) => {
         const displayName = person instanceof Student ? person.firstNameWithGrade : `Parent ${parentIndex++}`;
         const key = `person_${index}`;
+        const completionCheckmark = isPersonComplete(person) ? " ✓" : "";
         return (
           <Nav.Item key={key}>
-            <Nav.Link eventKey={key}>{displayName}</Nav.Link>
+            <Nav.Link eventKey={key}>{displayName}{completionCheckmark}</Nav.Link>
           </Nav.Item>
         );
       })}
@@ -82,6 +84,8 @@ function Body() {
   const isTransferAvailable = selectedPerson instanceof Student && selectedPerson.isNewRegistration;
 
   return <>
+    <StepTracker person={selectedPerson} />
+
     <div className="d-flex gap-3 mb-3">
       <FillButton />
       { isSecondaryStudent && <MathAssessmentButton /> }

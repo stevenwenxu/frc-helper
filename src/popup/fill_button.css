@@ -80,3 +80,51 @@
     box-shadow: inset 0px 0px 0px 30px var(--bs-danger);
   }
 }
+
+/* Step Tracker Styles */
+.step-tracker-container {
+  margin-bottom: 10px;
+  display: flex;
+  justify-content: center;
+}
+
+.step-tracker-svg {
+  display: block;
+  width: auto;
+  max-width: 600px;
+}
+
+.step-tracker-line {
+  stroke: #007bff;
+  stroke-width: 2;
+  stroke-linecap: round;
+}
+
+.step-tracker-circle {
+  stroke: #007bff;
+  stroke-width: 2;
+  transition: all 0.3s ease;
+}
+
+.step-tracker-circle.pending {
+  fill: white;
+}
+
+.step-tracker-circle.complete {
+  fill: #007bff;
+}
+
+.step-tracker-text {
+  font-size: 18px;
+  font-weight: bold;
+  font-family: Arial, sans-serif;
+  pointer-events: none;
+}
+
+.step-tracker-label {
+  font-size: 12px;
+  fill: #333;
+  font-weight: 500;
+  font-family: Arial, sans-serif;
+  pointer-events: none;
+}

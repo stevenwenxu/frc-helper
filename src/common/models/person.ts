@@ -17,6 +17,8 @@ export abstract class Person {
   // Address edits are synced across all family members unless this is set to true.
   isAddressUnique = false;
 
+  completedSteps: string[] = [];
+
   set name(name: string) {
     const [firstName, middleName, lastName] = NameHelper.nameToParts(name);
     this.firstName = firstName;
