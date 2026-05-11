@@ -42,8 +42,7 @@ export default function Popup({version}: PopupProps) {
   useEffect(() => {
     const handleMessage = (
       message: any,
-      sender: chrome.runtime.MessageSender,
-      sendResponse: (response?: any) => void
+      sender: chrome.runtime.MessageSender
     ) => {
       console.log("Popup got message", message);
       switch (message.type) {
@@ -89,23 +88,6 @@ export default function Popup({version}: PopupProps) {
               break;
             }
           }
-          break;
-        }
-        case "confirmUpdateStudentName": {
-          showModal({
-            header: "Update student name",
-            body: `Do you want to update ${message.oldName} to ${message.newName}?`,
-            primaryButtonText: "Update",
-            primaryButtonOnClick: () => {
-              sendResponse({ confirmUpdateStudentName: true });
-              hideModal();
-            },
-            secondaryButtonText: "Cancel",
-            secondaryButtonOnClick: () => {
-              sendResponse({ confirmUpdateStudentName: false });
-              hideModal();
-            },
-          });
           break;
         }
         default: {

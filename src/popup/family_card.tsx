@@ -7,7 +7,6 @@ import { StatusInCanada } from '../common/models/status_in_canada';
 import OCDSB031Button from './ocdsb_031_button';
 import StepButton from './step_button';
 import { useFamilyContext } from './family_context';
-import FillButton from './fill_button';
 import MathAssessmentButton from './math_assessment_button';
 import EmailButton from './email_button';
 import TransferButton from './transfer_button';
@@ -87,7 +86,6 @@ function Body() {
     <StepTracker person={selectedPerson} />
 
     <div className="d-flex gap-3 mb-3">
-      <FillButton />
       { isSecondaryStudent && <MathAssessmentButton /> }
     </div>
 

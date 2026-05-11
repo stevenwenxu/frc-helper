@@ -1,6 +1,7 @@
 import { FamilyRepository } from "../common/family_repository";
 import { Parent, Student } from "../common/models/person";
 import { SupportedContext, SupportedPath } from "./helpers/supported_path";
+import { expectedPersonType } from "./helpers/expected_person_type";
 import {
   fillStudentRegistration0, fillStudentRegistration1, fillStudentRegistration2
 } from "./fill/student_registration";
@@ -17,11 +18,11 @@ chrome.runtime.onMessage.addListener(
   function(request, sender, sendResponse) {
     console.log("Aspen content script got message", request);
     if (request.type === "fillAspen") {
-      fill(request.familyId, request.personIndex, request.pathname, request.context).then((fillResponse) => {
-        // to update FillButton
+      const pathname = request.pathname || window.location.pathname;
+      const context = request.context ?? new URLSearchParams(window.location.search).get("context");
+
+      fill(request.familyId, request.personIndex, pathname, context).then((fillResponse) => {
         sendResponse(fillResponse);
-        // for popup to respond
-        chrome.runtime.sendMessage({ type: "fillResponse", message: fillResponse });
       });
     } else {
       console.log("ignoring request", request);
@@ -36,13 +37,15 @@ async function markStepComplete(familyId: string, personIndex: number, stepName:
   if (!family) return "ok";
 
   const person = family.people[personIndex];
+  if (!person) return "ok";
+
   if (!person.completedSteps.includes(stepName)) {
     person.completedSteps.push(stepName);
   }
 
   await FamilyRepository.saveFamily(family);
 
-  // Return refreshRequired to trigger popup update
+  // response handled by background script for context menus
   return "refreshRequired";
 }
 
@@ -53,6 +56,19 @@ async function fill(familyId: string, personIndex: number, pathname: string, con
   }
 
   const person = family.people[personIndex];
+  if (!person) {
+    return "familyNotFound";
+  }
+
+  // Validate person type matches the page
+  const expected = expectedPersonType(pathname);
+  if (expected.length > 0) {
+    const personType = person instanceof Student ? "student" : "parent";
+    if (!expected.includes(personType)) {
+      return "wrongPersonType";
+    }
+  }
+
   let response = "ok";
 
   switch (pathname) {
@@ -111,7 +127,7 @@ async function fill(familyId: string, personIndex: number, pathname: string, con
       response = "ok";
       break;
     case SupportedPath.StudentTransfer:
-      response = fillTransfer(person as Student);
+      fillTransfer(person as Student);
       response = "ok";
       break;
     default:

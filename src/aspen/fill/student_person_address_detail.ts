@@ -11,23 +11,12 @@ export async function saveStudentDetails(familyId: string, personIndex: number) 
 
   await FamilyRepository.updateStudent(familyId, personIndex, async (student) => {
     if (needsToConfirmChange(student)) {
-      const response = await chrome.runtime.sendMessage<object, {confirmUpdateStudentName: boolean}>(
-        {
-          type: "confirmUpdateStudentName",
-          oldName: student.fullName,
-          newName: `${preferredFirstName!.value} ${preferredMiddleName!.value} ${preferredLastName!.value}`
-        }
-      );
-
-      console.log("Confirm update student response:", response);
-      if (response.confirmUpdateStudentName) {
-        return updateStudentDetails(student);
-      } else {
+      const newName = `${preferredFirstName!.value} ${preferredMiddleName!.value} ${preferredLastName!.value}`;
+      if (!confirm(`Update student name from "${student.fullName}" to "${newName}"?`)) {
         return false;
       }
-    } else {
-      return updateStudentDetails(student);
     }
+    return updateStudentDetails(student);
   });
 }
 
