@@ -4,59 +4,84 @@ import { Student } from "../common/models/person";
 
 export function fillImportDocument(student: Student) {
   // Need another selector before #fieldPaneDisplay because there are two divs with the same id...
-  const formElements = document.querySelector("div.modal-dialog #fieldPaneDisplay > form > div.templateFields > div:nth-child(3) > div")!;
-  const firstName = formElements.querySelector("div:nth-child(1) > div.textarea > div > div.fieldInput > div > textarea") as HTMLInputElement | null;
-  const lastName = formElements.querySelector("div:nth-child(2) > div.textarea > div > div.fieldInput > div > textarea") as HTMLInputElement | null;
-  const dateOfBirth = formElements.querySelector("div:nth-child(3) > div:nth-child(2) > div > div.fieldInput > form > div > input") as HTMLInputElement | null;
-  const schoolYear = formElements.querySelector("div:nth-child(4) > div:nth-child(2) > div > div > form > div:nth-child(1) > select") as HTMLInputElement | null;
-  const grade = formElements.querySelector("div:nth-child(5) > div:nth-child(2) > div > div > form > div:nth-child(1) > select") as HTMLInputElement | null;
-  const legalName = formElements.querySelector("div:nth-child(6) > div.textarea > div > div.fieldInput > div > textarea") as HTMLInputElement | null;
-  const schoolName = formElements.querySelector("div:nth-child(7) > div:nth-child(2) > div > div > form > div:nth-child(1) > select") as HTMLInputElement | null;
-  const aspenProfileCreated = formElements.querySelector("div:nth-child(8) > div:nth-child(2) > div > div > form > div:nth-child(1) > select") as HTMLInputElement | null;
-  const studentNumber = formElements.querySelector("div:nth-child(9) > div:nth-child(2) > div > div.fieldInput > div > input") as HTMLInputElement | null;
-  const permitCreated = formElements.querySelector("div:nth-child(10) > div:nth-child(2) > div > div > form > div:nth-child(1) > select") as HTMLInputElement | null;
-  const assessor = formElements.querySelector("div:nth-child(13) > div.textarea > div > div.fieldInput > div > textarea") as HTMLInputElement | null;
+  const formElements = document.querySelector("div.modal-dialog #fieldPaneDisplay > form > section.templateFields > div.section-body > lf-modern-renderer")!.shadowRoot!;
+
+  const firstName = (formElements
+    .querySelector("div > div:nth-child(1) > div > lf-single-field")?.shadowRoot
+    ?.querySelector("div > div > div > lf-single-line")?.shadowRoot
+    ?.querySelector("div > div > div.single-line-input-wrapper.single-line-textarea-container > textarea")
+    ?? null) as HTMLInputElement | null;
+  const lastName = (formElements
+    .querySelector("div > div:nth-child(2) > div > lf-single-field")?.shadowRoot
+    ?.querySelector("div > div > div > lf-single-line")?.shadowRoot
+    ?.querySelector("div > div > div.single-line-input-wrapper.single-line-textarea-container > textarea")
+    ?? null) as HTMLInputElement | null;
+  const dateOfBirth = (formElements
+    .querySelector("div > div:nth-child(3) > div > lf-single-field")?.shadowRoot
+    ?.querySelector("div > div > div > lf-date-time")?.shadowRoot
+    ?.querySelector("div > div > div > input.datetime-input.field-input")
+    ?? null) as HTMLInputElement | null;
+  const schoolYear = (formElements
+    .querySelector("div > div:nth-child(4) > div > lf-single-field")?.shadowRoot
+    ?.querySelector("div > div > div > lf-dropdown")?.shadowRoot
+    ?.querySelector("div > div > div.dropdown-field-select > lf-dropdown-with-filter")?.shadowRoot
+    ?.querySelector("div > div > div.dropdown-select-container > select")
+    ?? null) as HTMLInputElement | null;
+  const grade = (formElements
+    .querySelector("div > div:nth-child(5) > div > lf-single-field")?.shadowRoot
+    ?.querySelector("div > div > div > lf-dropdown")?.shadowRoot
+    ?.querySelector("div > div > div.dropdown-field-select > lf-dropdown-with-filter")?.shadowRoot
+    ?.querySelector("div > div > div.dropdown-select-container > select")
+    ?? null) as HTMLInputElement | null;
+  const legalName = (formElements
+    .querySelector("div > div:nth-child(6) > div > lf-single-field")?.shadowRoot
+    ?.querySelector("div > div > div > lf-single-line")?.shadowRoot
+    ?.querySelector("div > div > div.single-line-input-wrapper.single-line-textarea-container > textarea")
+    ?? null) as HTMLInputElement | null;
+  const schoolName = (formElements
+    .querySelector("div > div:nth-child(7) > div > lf-single-field")?.shadowRoot
+    ?.querySelector("div > div > div > lf-dropdown")?.shadowRoot
+    ?.querySelector("div > div > div.dropdown-field-select > lf-dropdown-with-filter")?.shadowRoot
+    ?.querySelector("div > div > div.dropdown-select-container > select")
+    ?? null) as HTMLInputElement | null;
+  const aspenProfileCreated = (formElements
+    .querySelector("div > div:nth-child(8) > div > lf-single-field")?.shadowRoot
+    ?.querySelector("div > div > div > lf-dropdown")?.shadowRoot
+    ?.querySelector("div > div > div.dropdown-field-select > lf-dropdown-with-filter")?.shadowRoot
+    ?.querySelector("div > div > div.dropdown-select-container > select")
+    ?? null) as HTMLInputElement | null;
+  const studentNumber = (formElements
+    .querySelector("div > div:nth-child(9) > div > lf-single-field")?.shadowRoot
+    ?.querySelector("div > div > div > lf-single-line")?.shadowRoot
+    ?.querySelector("div > div > div.single-line-input-wrapper > input")
+    ?? null) as HTMLInputElement | null;
+  const permitCreated = (formElements
+    .querySelector("div > div:nth-child(10) > div > lf-single-field")?.shadowRoot
+    ?.querySelector("div > div > div.dropdown-field-select > lf-dropdown-with-filter")?.shadowRoot
+    ?.querySelector("div > div > div.dropdown-select-container > select")
+    ?? null) as HTMLInputElement | null;
+  const assessor = (formElements
+    .querySelector("div > div:nth-child(13) > div > lf-single-field")?.shadowRoot
+    ?.querySelector("div > div > div > lf-single-line")?.shadowRoot
+    ?.querySelector("div > div > div.single-line-input-wrapper.single-line-textarea-container > textarea")
+    ?? null) as HTMLInputElement | null;;
 
   setValue(firstName, student.firstName);
   setValue(lastName, student.lastName);
   setValue(
     dateOfBirth,
-    new Date(student.dateOfBirth).toLocaleDateString("en-CA", { year: "numeric", month: "2-digit", day: "2-digit" })
+    new Date(student.dateOfBirth).toLocaleDateString(undefined, { year: "numeric", month: "2-digit", day: "2-digit" })
   );
-  // Allows the form to run formatting on the date
-  dateOfBirth?.dispatchEvent(new Event("blur"));
+  setValue(schoolYear, student.schoolYear);
+  setValue(grade, student.grade);
   if (shouldFillLegalName(student)) {
     setValue(legalName, student.legalFullName);
   }
+  setValue(schoolName, SchoolHelper.aspenNameToLaserfischeName(student.targetSchool));
+  setValue(aspenProfileCreated, "Yes");
   setValue(studentNumber, student.localId);
+  setValue(permitCreated, "Yes");
   setValue(assessor, "Kate Cao");
-
-  // The following fields need a mouseover event to trigger an XHR request to populate the select options
-
-  schoolYear?.dispatchEvent(new Event("mouseover"));
-  setTimeout(() => {
-    setValue(schoolYear, `string:${student.schoolYear}`);
-  }, 1000);
-
-  grade?.dispatchEvent(new Event("mouseover"));
-  setTimeout(() => {
-    setValue(grade, `string:${student.grade}`);
-  }, 1000);
-
-  schoolName?.dispatchEvent(new Event("mouseover"));
-  setTimeout(() => {
-    setValue(schoolName, `string:${SchoolHelper.aspenNameToLaserfischeName(student.targetSchool)}`);
-  }, 1000);
-
-  aspenProfileCreated?.dispatchEvent(new Event("mouseover"));
-  setTimeout(() => {
-    setValue(aspenProfileCreated, "string:Yes");
-  }, 1000);
-
-  permitCreated?.dispatchEvent(new Event("mouseover"));
-  setTimeout(() => {
-    setValue(permitCreated, "string:Yes");
-  }, 1000);
 }
 
 function shouldFillLegalName(student: Student) {

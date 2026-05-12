@@ -19,7 +19,7 @@ chrome.runtime.onMessage.addListener(
 
 async function fill(familyId: string, studentIndex: number) {
   // Need another selector before #fieldPaneDisplay because there are two divs with the same id...
-  const importDocumentModal = document.querySelector("div.modal-dialog #fieldPaneDisplay > form > div.templateFields > div:nth-child(3) > div");
+  const importDocumentModal = document.querySelector("div.modal-dialog #fieldPaneDisplay > form > section.templateFields > div.section-body > lf-modern-renderer")?.shadowRoot;
   if (!importDocumentModal) {
     return "unknownFillDestination";
   }
