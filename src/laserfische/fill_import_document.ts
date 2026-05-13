@@ -57,6 +57,7 @@ export function fillImportDocument(student: Student) {
     ?? null) as HTMLInputElement | null;
   const permitCreated = (formElements
     .querySelector("div > div:nth-child(10) > div > lf-single-field")?.shadowRoot
+    ?.querySelector("div > div > div > lf-dropdown")?.shadowRoot
     ?.querySelector("div > div > div.dropdown-field-select > lf-dropdown-with-filter")?.shadowRoot
     ?.querySelector("div > div > div.dropdown-select-container > select")
     ?? null) as HTMLInputElement | null;
