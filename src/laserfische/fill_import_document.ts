@@ -67,21 +67,50 @@ export function fillImportDocument(student: Student) {
     ?.querySelector("div > div > div.single-line-input-wrapper.single-line-textarea-container > textarea")
     ?? null) as HTMLInputElement | null;;
 
+  // dropdowns need to have a specific parent hovered in order to load the options.
+  [schoolYear, grade, schoolName, aspenProfileCreated, permitCreated].forEach((element) => {
+    if (element) {
+      const root = element.getRootNode() as ShadowRoot;
+      root.host.closest(".dropdown-field-select")?.dispatchEvent(new Event("mouseenter"));
+    }
+  });
+
   setValue(firstName, student.firstName);
   setValue(lastName, student.lastName);
+
   setValue(
     dateOfBirth,
-    new Date(student.dateOfBirth).toLocaleDateString(undefined, { year: "numeric", month: "2-digit", day: "2-digit" })
+    new Date(student.dateOfBirth).toLocaleDateString("en-CA", { year: "numeric", month: "2-digit", day: "2-digit" })
   );
-  setValue(schoolYear, student.schoolYear);
-  setValue(grade, student.grade);
+  // to trigger validation and allow the dates to set in the date picker.
+  dateOfBirth?.dispatchEvent(new Event("blur"));
+
+  setTimeout(() => {
+    setValue(schoolYear, student.schoolYear);
+  }, 1000);
+
+  setTimeout(() => {
+    setValue(grade, student.grade);
+  }, 1000);
+
   if (shouldFillLegalName(student)) {
     setValue(legalName, student.legalFullName);
   }
-  setValue(schoolName, SchoolHelper.aspenNameToLaserfischeName(student.targetSchool));
-  setValue(aspenProfileCreated, "Yes");
+
+  setTimeout(() => {
+    setValue(schoolName, SchoolHelper.aspenNameToLaserfischeName(student.targetSchool));
+  }, 1000);
+
+  setTimeout(() => {
+    setValue(aspenProfileCreated, "Yes");
+  }, 1000);
+
   setValue(studentNumber, student.localId);
-  setValue(permitCreated, "Yes");
+
+  setTimeout(() => {
+    setValue(permitCreated, "Yes");
+  }, 1000);
+
   setValue(assessor, "Kate Cao");
 }
 
