@@ -1,4 +1,4 @@
-import { setValue } from "../common/helpers/fill_helper";
+import { setLaserfischeValue } from "../common/helpers/fill_helper";
 import { SchoolHelper } from "../common/helpers/school_helper";
 import { Student } from "../common/models/person";
 
@@ -67,51 +67,31 @@ export function fillImportDocument(student: Student) {
     ?.querySelector("div > div > div.single-line-input-wrapper.single-line-textarea-container > textarea")
     ?? null) as HTMLInputElement | null;;
 
-  // dropdowns need to have a specific parent hovered in order to load the options.
+  // dropdowns need to have a specific parent hovered in order to load the options. Then fill the value with a delay.
   [schoolYear, grade, schoolName, aspenProfileCreated, permitCreated].forEach((element) => {
     if (element) {
+      element.dispatchEvent(new Event("mouseenter"));
       const root = element.getRootNode() as ShadowRoot;
       root.host.closest(".dropdown-field-select")?.dispatchEvent(new Event("mouseenter"));
     }
   });
 
-  setValue(firstName, student.firstName);
-  setValue(lastName, student.lastName);
-
-  setValue(
+  setLaserfischeValue(firstName, student.firstName);
+  setLaserfischeValue(lastName, student.lastName);
+  setLaserfischeValue(
     dateOfBirth,
     new Date(student.dateOfBirth).toLocaleDateString("en-CA", { year: "numeric", month: "2-digit", day: "2-digit" })
   );
-  // to trigger validation and allow the dates to set in the date picker.
-  dateOfBirth?.dispatchEvent(new Event("blur"));
-
-  setTimeout(() => {
-    setValue(schoolYear, student.schoolYear);
-  }, 1000);
-
-  setTimeout(() => {
-    setValue(grade, student.grade);
-  }, 1000);
-
+  setLaserfischeValue(schoolYear, student.schoolYear, true);
+  setLaserfischeValue(grade, student.grade, true);
   if (shouldFillLegalName(student)) {
-    setValue(legalName, student.legalFullName);
+    setLaserfischeValue(legalName, student.legalFullName);
   }
-
-  setTimeout(() => {
-    setValue(schoolName, SchoolHelper.aspenNameToLaserfischeName(student.targetSchool));
-  }, 1000);
-
-  setTimeout(() => {
-    setValue(aspenProfileCreated, "Yes");
-  }, 1000);
-
-  setValue(studentNumber, student.localId);
-
-  setTimeout(() => {
-    setValue(permitCreated, "Yes");
-  }, 1000);
-
-  setValue(assessor, "Kate Cao");
+  setLaserfischeValue(schoolName, SchoolHelper.aspenNameToLaserfischeName(student.targetSchool), true);
+  setLaserfischeValue(aspenProfileCreated, "Yes", true);
+  setLaserfischeValue(studentNumber, student.localId);
+  setLaserfischeValue(permitCreated, "Yes", true);
+  setLaserfischeValue(assessor, "Kate Cao");
 }
 
 function shouldFillLegalName(student: Student) {
