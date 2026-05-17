@@ -34,6 +34,7 @@ async function download(student: Student, firstParent: Parent) {
   const pdfDoc = await PDFDocument.load(content);
   const form = pdfDoc.getForm();
 
+  // Helpful website to add fields: https://www.sejda.com/pdf-forms
   // console.log(form.getFields().map(field => field.getName()));
 
   form.getTextField("School - Grade").setText(`${student.targetSchool}-${isNaN(parseInt(student.grade)) ? "" : "G"}${student.grade}`);
@@ -74,6 +75,7 @@ async function download(student: Student, firstParent: Parent) {
 
   const today = new Date().toLocaleDateString();
   form.getTextField("Date").setText(today);
+  form.getTextField("Date2").setText(today);
 
   form.getTextField("Name Please Print_2").setText(firstParent.fullName);
 
