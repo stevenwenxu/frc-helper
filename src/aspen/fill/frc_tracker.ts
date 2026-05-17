@@ -34,6 +34,13 @@ export function fillFRCTracker(student: Student) {
     false
   );
 
+  // Language at home
+  setValue(
+    elements.namedItem("propertyValue(pgmFieldB001)") as HTMLInputElement,
+    student.homeLanguage,
+    false
+  );
+
   // Exposure to English
   setValue(
     elements.namedItem("propertyValue(pgmFieldC003)") as HTMLInputElement,
@@ -41,12 +48,26 @@ export function fillFRCTracker(student: Student) {
     false
   )
 
+  // Language at school
+  setValue(
+    elements.namedItem("propertyValue(pgmFieldB002)") as HTMLInputElement,
+    student.homeLanguage,
+    false
+  );
+
   // Exposure to other languages
   setValue(
     elements.namedItem("propertyValue(pgmFieldC004)") as HTMLInputElement,
     "No",
     false
   )
+
+  // Language socially
+  setValue(
+    elements.namedItem("propertyValue(pgmFieldB003)") as HTMLInputElement,
+    student.homeLanguage,
+    false
+  );
 
   // Math tasks
   setValue(
