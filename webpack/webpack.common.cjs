@@ -9,7 +9,7 @@ const srcDir = path.join(__dirname, "..", "src");
 module.exports = {
   mode: "production",
   entry: {
-    background: path.join(srcDir, "background.ts"),
+    background: path.join(srcDir, "background/entry.ts"),
     school_interviews: path.join(srcDir, "school_interviews/entry.ts"),
     popup: path.join(srcDir, "popup/entry.tsx"),
     aspen_fill: path.join(srcDir, "aspen/fill.ts"),

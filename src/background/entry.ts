@@ -1,5 +1,5 @@
-import { FamilyRepository } from "./common/family_repository";
-import { OptionsRepository } from "./common/options_repository";
+import { FamilyRepository } from "../common/family_repository";
+import { OptionsRepository } from "../common/options_repository";
 
 console.log("Background script loaded");
 
