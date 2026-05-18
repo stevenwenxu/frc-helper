@@ -108,7 +108,7 @@ async function fill(familyId: string, personIndex: number, pathname: string, con
       break;
     case SupportedPath.StudentPersonAddressDetail:
       await saveStudentDetails(family.uniqueId, personIndex);
-      response = "ok";
+      response = "refreshRequired";
       break;
     case SupportedPath.StudentTransfer:
       response = fillTransfer(person as Student);
