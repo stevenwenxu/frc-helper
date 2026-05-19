@@ -2,7 +2,7 @@ import Button from "react-bootstrap/Button";
 import { Student } from "../common/models/person";
 import { useFamilyContext } from "./family_context";
 import { useModal } from "./modal_context";
-import { SupportedPath, supportedUrls } from "../aspen/helpers/supported_path";
+import { expectedPersonType, supportedUrls } from "../aspen/helpers/supported_path";
 import { useState } from "react";
 import "./fill_button.css";
 
@@ -131,24 +131,4 @@ function Cross() {
       <path className="cross_check" fill="none" d="M16 16 36 36 M36 16 16 36"/>
     </svg>
   );
-}
-
-function expectedPersonType(pathname: string) {
-  switch (pathname) {
-    case SupportedPath.StudentRegistration0:
-    case SupportedPath.StudentRegistration1:
-    case SupportedPath.StudentRegistration2:
-    case SupportedPath.ChildDetail:
-    case SupportedPath.StudentPersonAddressDetail:
-    case SupportedPath.StudentTransfer:
-      return ["student"];
-    case SupportedPath.MultiplePersonAddressChildDetail:
-      return ["student", "parent"];
-    case SupportedPath.AddRecord:
-    case SupportedPath.ContactDetail:
-      return ["parent"];
-    default:
-      console.log("Unknown path:", pathname);
-      return [];
-  }
 }

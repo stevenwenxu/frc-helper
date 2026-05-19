@@ -27,3 +27,49 @@ export enum SupportedContext {
   FRCTracker = "extracurricular.std.ell.tracker.list.detail",
   ProgramsELL = "extracurricular.ell.list.detail.ocdsb"
 }
+
+export function expectedPersonType(pathname: string) {
+  switch (pathname) {
+    case SupportedPath.StudentRegistration0:
+    case SupportedPath.StudentRegistration1:
+    case SupportedPath.StudentRegistration2:
+    case SupportedPath.ChildDetail:
+    case SupportedPath.StudentPersonAddressDetail:
+    case SupportedPath.StudentTransfer:
+      return ["student"];
+    case SupportedPath.MultiplePersonAddressChildDetail:
+      return ["student", "parent"];
+    case SupportedPath.AddRecord:
+    case SupportedPath.ContactDetail:
+      return ["parent"];
+    default:
+      console.log("Unknown path:", pathname);
+      return [];
+  }
+}
+
+export function supportedPathsForPersonType(personType: ("studentOnly" | "parentOnly" | "both")) {
+  switch (personType) {
+    case "studentOnly":
+      return [
+        SupportedPath.StudentRegistration0,
+        SupportedPath.StudentRegistration1,
+        SupportedPath.StudentRegistration2,
+        SupportedPath.ChildDetail,
+        SupportedPath.StudentPersonAddressDetail,
+        SupportedPath.StudentTransfer,
+      ];
+    case "parentOnly":
+      return [
+        SupportedPath.AddRecord,
+        SupportedPath.ContactDetail,
+      ];
+    case "both":
+      return [
+        SupportedPath.MultiplePersonAddressChildDetail,
+      ];
+    default:
+      console.log("Unknown person type:", personType);
+      return [];
+  }
+}
