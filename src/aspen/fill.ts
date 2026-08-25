@@ -122,3 +122,11 @@ async function fill(familyId: string, personIndex: number, pathname: string, con
 
   return response;
 }
+
+// Fix printing on all pages
+const links = document.querySelectorAll('link[rel="stylesheet"]');
+links.forEach(link => {
+  if (link.getAttribute('media') === 'screen') {
+    link.setAttribute('media', 'all');
+  }
+});
